@@ -25,11 +25,11 @@ Her asistan Profil'deki **Görevlerim** kartında masasını görür; kayıt olu
 Alt menüdeki **Seminer** ekranı herkese yaklaşan seminerleri Salı Salı gösterir; histoloji sınavı olan ve "seminer yok" denen Salılar da listede görünür. Sunan kişi kendi seminerine konusunu buradan da yazabilir.
 
 Yöneticiler her seminerin **Düzenle** menüsünden:
-- **Bu hafta seminer yok:** O Salı boş geçilir (neden yazılabilir: tatil, kongre…), o haftanın ve sonraki seminerlerin hepsi birer uygun Salı ileri kayar. Boş geçilen Salıdaki **Geri al** her şeyi bir hafta geri çeker.
+- **Bu hafta seminer yok:** O Salı boş geçilir (neden yazılabilir: tatil, kongre…), o haftanın semineri bir sonraki uygun Salıya geçer; orası doluysa oradaki de bir sonrakine itilir. Arada boş bir Salı varsa kayma orada durur, boşluktan sonraki seminerlere dokunulmaz. Boş geçilen Salıdaki **Geri al** sadece o sırada kayan seminerleri eski yerlerine döndürür.
 - **Yer değiştir:** İki seminerin sunucuları (konu ve danışmanıyla) yer değiştirir, tarihler aynı kalır.
-- **Sıradan çıkar:** Seminer silinir, sonrakiler öne kayar.
+- **Sıradan çıkar:** Seminer silinir, hemen arkasındaki seminerler öne kayar; arada boş Salı varsa kayma orada durur.
 - **+ Sıranın sonuna ekle:** Yeni kişi sıradaki ilk uygun Salıya eklenir.
-- Araya boş bir Salı düşmüşse **Sonrakileri buraya çek** boşluğu kapatır.
+- Araya boş bir Salı düşmüşse **Sonrakileri buraya çek** sadece o boşluğu kapatır (bir sonraki boşlukta durur).
 
 Programa sonradan bir Salı günü histoloji sınavı eklenirse o Salıdaki seminer uyarıyla gösterilir (Yönetim → Yapılacak'ta da çıkar); **Sonrakileri kaydır** ile düzeltilir. "Seminer yok" Salıları `config/seminer` belgesinde tutulur.
 

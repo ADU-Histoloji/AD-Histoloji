@@ -18,7 +18,7 @@ const sonrakiSali = s => { const d = parse(s); d.setDate(d.getDate() + ((2 - d.g
 const buSali = () => sonrakiSali(bugun());
 const pzt = s => { const d = parse(s); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; };
 
-let seminerler = [], sinavGunleri = new Map(), atla = {}, users = [];
+let seminerler = [], sinavGunleri = new Map(), atla = {}, kayan = {}, users = [];
 let degistir = null, gecmisAcik = false, unsub = null;
 
 const sinavMi = g => sinavGunleri.has(g);
@@ -31,15 +31,38 @@ function uygunSalilar(fromDate, adet) {
   return out;
 }
 
-// Verilen seminerleri (sıralı) fromDate'ten itibaren art arda uygun Salılara yerleştirir
-async function yerlestir(fromDate, liste) {
-  const tarihler = uygunSalilar(fromDate, liste.length);
-  const b = F.writeBatch(db); let n = 0;
-  liste.forEach((e, i) => { if (e.date !== tarihler[i]) { b.update(F.doc(db, 'events', e.id), { date: tarihler[i] }); n++; } });
-  if (n) await b.commit();
-  return n;
+const sonrakiUygun = g => uygunSalilar(gunEkle(g, 1), 1)[0];
+async function uygula(tasima) {
+  if (!tasima.length) return 0;
+  const b = F.writeBatch(db);
+  tasima.forEach(([e, g]) => b.update(F.doc(db, 'events', e.id), { date: g }));
+  await b.commit();
+  return tasima.length;
 }
-const sonrakiler = g => seminerler.filter(e => e.date >= g);
+// İleri kaydırma: g günündeki seminer bir sonraki uygun Salıya geçer; orası doluysa oradaki de
+// bir sonrakine itilir… İlk boş uygun Salıda zincir durur, boşluktan sonraki seminerlere dokunulmaz.
+function ileriPlan(g) {
+  const tasima = [], tasinan = new Set();
+  let cur = seminerler.find(e => e.date === g);
+  let hedef = cur && sonrakiUygun(g);
+  while (cur && hedef) {
+    tasima.push([cur, hedef]); tasinan.add(cur.id);
+    cur = seminerler.find(e => e.date === hedef && !tasinan.has(e.id));
+    hedef = cur && sonrakiUygun(hedef);
+  }
+  return tasima;
+}
+// Geri çekme: f günü boşaldı; hemen sonraki uygun Salıdaki seminer buraya gelir, onun yeri boşalır…
+// Arada boş bir uygun Salı varsa zincir orada durur.
+function geriPlan(f, haric = null) {
+  const tasima = [];
+  for (let i = 0; i < 200; i++) {
+    const n = sonrakiUygun(f), e = seminerler.find(x => x.date === n && x.id !== haric);
+    if (!e) break;
+    tasima.push([e, f]); f = n;
+  }
+  return tasima;
+}
 
 function satirlar() {
   const bas = buSali(), son = seminerler.length ? seminerler[seminerler.length - 1].date : bas;
@@ -82,7 +105,7 @@ function render() {
   const el = $('#v-seminer'); if (!el) return;
   const s = satirlar(), gecmis = seminerler.filter(e => e.date < buSali()).reverse();
   el.innerHTML = `
-    <p class="note" style="margin:4px 0 12px">Seminerler her Salı 09:30'da. Histoloji sınavı olan ya da "seminer yok" denen Salılar atlanır, sonraki seminerler bir hafta kayar.${state.admin ? '' : ' Değişiklik için yöneticiye yaz.'}</p>
+    <p class="note" style="margin:4px 0 12px">Seminerler her Salı 09:30'da. Histoloji sınavı olan ya da "seminer yok" denen Salılar atlanır, sonraki seminerler gerektiği kadar kayar; arada boş Salı varsa kayma orada durur.${state.admin ? '' : ' Değişiklik için yöneticiye yaz.'}</p>
     ${degistir ? '<div class="banner">Yer değiştireceğin seminere dokun.</div>' : ''}
     <div class="sem-liste">${s.map(r => r.tur === 'sem' ? semKart(r)
       : `<div class="sem-k bosluk"><div class="sem-t"><b>${esc(kisa(r.g))}</b><span>Salı</span></div>
@@ -98,16 +121,20 @@ function atlaFormu(g) {
   <form id="af">
     <label for="a-neden">Neden (isteğe bağlı)</label>
     <input id="a-neden" maxlength="60" placeholder="Resmi tatil, kongre…">
-    <p class="note">Bu Salı boş geçilir; bu haftanın ve sonraki seminerlerin hepsi birer uygun Salı ileri kayar.</p>
+    <p class="note">Bu Salı boş geçilir ve bu haftanın semineri bir sonraki uygun Salıya kayar. Arkadaki seminerler sadece gerektiği kadar kayar: arada boş bir Salı varsa kayma orada durur.</p>
     <div class="acts"><button class="btn" type="submit">Kaydır</button><button class="btn sec" data-close type="button">Vazgeç</button></div>
   </form>`);
   $('#af').addEventListener('submit', async e => {
     e.preventDefault();
-    const neden = $('#a-neden').value.trim(), liste = sonrakiler(g);
+    const neden = $('#a-neden').value.trim();
     try {
-      await F.setDoc(F.doc(db, 'config', 'seminer'), { atla: { ...atla, [g]: neden || true } });
-      atla = { ...atla, [g]: neden || true };
-      const n = await yerlestir(g, liste); closeSheet(); toast(`${n} seminer kaydırıldı`);
+      const yeni = { ...atla, [g]: neden || true };
+      const eski = atla; atla = yeni;
+      const plan = ileriPlan(g);
+      atla = eski;
+      await F.setDoc(F.doc(db, 'config', 'seminer'), { atla: yeni, kayan: { ...kayan, [g]: plan.map(([e]) => e.id) } });
+      atla = yeni;
+      const n = await uygula(plan); closeSheet(); toast(n ? `${n} seminer bir hafta kaydı` : 'Bu Salı boş geçildi');
     } catch (x) { console.error(x); toast('Kaydedilemedi'); }
   });
 }
@@ -159,18 +186,25 @@ async function onClick(ev) {
     }
     else if (x === 'cikar') {
       if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Emin misin? Sonrakiler öne kayar'; return; }
-      const liste = seminerler.filter(s => s.date >= e.date && s.id !== e.id);
+      const plan = uygun(e.date) ? geriPlan(e.date, e.id) : [];
       await F.deleteDoc(F.doc(db, 'events', e.id));
-      seminerler = seminerler.filter(s => s.id !== e.id);
-      const n = await yerlestir(e.date, liste); toast(`Sıradan çıkarıldı${n ? `, ${n} seminer öne kaydı` : ''}`);
+      const n = await uygula(plan); toast(`Sıradan çıkarıldı${n ? `, ${n} seminer öne kaydı` : ''}`);
     }
     else if (x === 'geri') {
       const yeni = { ...atla }; delete yeni[g];
-      await F.setDoc(F.doc(db, 'config', 'seminer'), { atla: yeni }); atla = yeni;
-      const n = await yerlestir(g, sonrakiler(g)); toast(`Geri alındı${n ? `, ${n} seminer öne kaydı` : ''}`);
+      const yk = { ...kayan }; const ids = yk[g]; delete yk[g];
+      atla = yeni;
+      // Kaydırılırken hangi seminerlerin kaydığı biliniyorsa sadece onları birer uygun Salı geri al
+      let plan;
+      if (Array.isArray(ids)) {
+        plan = []; let bos = g;
+        for (const id of ids) { const e = seminerler.find(x => x.id === id); if (!e) break; plan.push([e, bos]); bos = e.date; }
+      } else plan = geriPlan(g);
+      await F.setDoc(F.doc(db, 'config', 'seminer'), { atla: yeni, kayan: yk });
+      const n = await uygula(plan); toast(`Geri alındı${n ? `, ${n} seminer öne kaydı` : ''}`);
     }
-    else if (x === 'cek') { const n = await yerlestir(g, sonrakiler(g)); toast(`${n} seminer öne kaydı`); }
-    else if (x === 'kaydir') { const n = await yerlestir(g, sonrakiler(g)); toast(`${n} seminer kaydırıldı`); }
+    else if (x === 'cek') { const n = await uygula(geriPlan(g)); toast(`${n} seminer öne kaydı`); }
+    else if (x === 'kaydir') { const n = await uygula(ileriPlan(g)); toast(`${n} seminer kaydırıldı`); }
   } catch (err) { console.error(err); toast('İşlem yapılamadı'); }
 }
 
@@ -183,7 +217,7 @@ export function initSeminer() {
   $('#v-seminer').addEventListener('click', onClick);
   onState(s => {
     if (ready && s.approved && !unsub) {
-      const u1 = F.onSnapshot(F.doc(db, 'config', 'seminer'), q => { atla = q.exists() ? (q.data().atla || {}) : {}; render(); }, () => { });
+      const u1 = F.onSnapshot(F.doc(db, 'config', 'seminer'), q => { atla = q.exists() ? (q.data().atla || {}) : {}; kayan = q.exists() ? (q.data().kayan || {}) : {}; render(); }, () => { });
       const u2 = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(d => ({ id: d.id, ...d.data() })); }, () => { });
       unsub = () => { u1(); u2(); };
     }
