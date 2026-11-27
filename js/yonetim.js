@@ -56,11 +56,10 @@ function render() {
         <select data-masa="${i + 1}"><option value="1"${Number(kap[i + 1] || 1) === 1 ? ' selected' : ''}>1 kişi</option><option value="2"${Number(kap[i + 1]) === 2 ? ' selected' : ''}>2 kişi</option></select></label>`).join('')}</div>
       <button class="btn sec" type="submit">Kaydet</button></form>
     <form class="card" id="f-anl" style="max-width:none"><h3>Anlatıcılar</h3>
-      <p class="note">Her uygulama konusunun anlatıcısı. Boş bırakılırsa programdaki öğretim üyesi gösterilir. Anlatıcı uygulamaya kayıtlıysa listeden seç, bir gün önce ona da bildirim gider.</p>
+      <p class="note">Her uygulama konusunu anlatacak asistanı seç. Seçilen kişi takvimde ve Masalar ekranında anlatıcı olarak görünür, uygulamadan bir gün önce "Yarın anlatıcısın" bildirimi alır. Programdaki öğretim üyesi ayrıca gösterilir.</p>
       <div class="list">${konular.map(k => { const a = anl[k.id] || {}; return `<div class="li" data-k="${esc(k.id)}" data-s="${esc(k.s)}" data-topic="${esc(k.topic)}">
-        <span style="flex:1 1 16em"><span class="nm">${esc(k.topic)}</span><br><span class="note">${esc(k.s)} · ${esc(k.ilk)}${k.who ? ' · programda: ' + esc(k.who) : ''}</span></span>
-        <select data-f="uid" style="width:auto;max-width:14em"><option value="">Kayıtlı değil</option>${users.filter(u => u.onayli).map(u => `<option value="${esc(u.id)}"${a.uid === u.id ? ' selected' : ''}>${esc(u.ad)}</option>`).join('')}</select>
-        <input data-f="ad" value="${esc(a.ad || '')}" placeholder="${esc(k.who || 'Anlatıcının adı')}" style="width:auto;max-width:14em"></div>`; }).join('') || '<p class="note">Programda uygulama yok.</p>'}</div>
+        <span style="flex:1 1 16em"><span class="nm">${esc(k.topic)}</span><br><span class="note">${esc(k.s)} · ${esc(k.ilk)}${k.who ? ' · öğretim üyesi: ' + esc(k.who) : ''}</span></span>
+        <select data-f="uid" style="width:auto;max-width:15em"><option value="">Belirlenmedi</option>${users.filter(u => u.onayli).map(u => `<option value="${esc(u.id)}"${a.uid === u.id ? ' selected' : ''}>${esc(u.ad)}</option>`).join('')}</select></div>`; }).join('') || '<p class="note">Programda uygulama yok.</p>'}</div>
       <button class="btn sec" type="submit">Anlatıcıları kaydet</button></form>
     <form class="card" id="f-kod"><h3>Bölüm kodu</h3>
       <p class="note">Yeni kayıtlar için gereken kod. Değiştirirsen yeni kodu WhatsApp grubunda paylaş.</p>
@@ -177,11 +176,10 @@ export function initYonetim() {
       try {
         for (const row of e.target.querySelectorAll('[data-k]')) {
           const uid = row.querySelector('[data-f=uid]').value || null;
-          let ad = row.querySelector('[data-f=ad]').value.trim();
-          if (!ad && uid) ad = users.find(u => u.id === uid)?.ad || '';
+          const ad = uid ? users.find(u => u.id === uid)?.ad || '' : '';
           const eski = anl[row.dataset.k] || {};
           if ((eski.uid || null) === uid && (eski.ad || '') === ad) continue;
-          if (!uid && !ad) await F.deleteDoc(F.doc(db, 'anlaticilar', row.dataset.k));
+          if (!uid) await F.deleteDoc(F.doc(db, 'anlaticilar', row.dataset.k));
           else await F.setDoc(F.doc(db, 'anlaticilar', row.dataset.k), { s: row.dataset.s, topic: row.dataset.topic, ad, uid });
         }
         toast('Anlatıcılar kaydedildi');

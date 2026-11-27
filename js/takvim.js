@@ -18,6 +18,8 @@ let f = 'all';
 try { f = localStorage.getItem('hp-filter') || 'all'; } catch (e) { }
 
 let linkedFn = () => '';
+let anlaticiFn = () => '';
+export const setAnlatici = fn => { anlaticiFn = fn; render(); };
 let fromDb = false;
 const duzenle = () => ready && fromDb && state.admin;
 const evSubs = new Set();
@@ -70,6 +72,7 @@ function renderWeek() {
           <div class="meta"><span class="c">${esc(e.s)}</span>${e.k === 'M' && e.s === 'Seminer' ? '' : `<span class="kind">${KIND[e.k] || ''}</span>`}${e.g ? `<span class="grp">${esc(e.g)}${String(e.g).length === 1 ? ' grubu' : ''}</span>` : ''}</div>
           <div class="topic">${esc(e.topic)}</div>
           ${e.who || e.yer || e.note ? `<div class="who">${[e.who, e.yer, e.note].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
+          ${e.k === 'U' && anlaticiFn(e) ? `<div class="who">Anlatıcı: <b>${esc(anlaticiFn(e))}</b></div>` : ''}
           ${e.prep ? `<div class="prep">${esc(e.prep)}</div>` : ''}
           ${e.warn ? `<div class="warn">${esc(e.warn)}</div>` : ''}
           ${first ? linkedFn(e.ders) : ''}

@@ -23,9 +23,10 @@ export function oturumlar(gun, events) {
 
 const grup = o => o.gruplar.length ? ` (${o.gruplar.length === 4 && o.gruplar.join('') === 'ABCD' ? 'A–D' : o.gruplar.join(', ')})` : '';
 const satir = o => `${o.ilk} ${isaret(o)} ${o.s} · ${kisalt(o.topic, 32)}${grup(o)}`;
+// Anlatıcılar asistanlardan seçilir; seçilmemişse programdaki öğretim üyesi anlatıcı sayılmaz
 const anlaticiSatiri = (ots, adlar) => {
-  const a = [...new Set(ots.map(o => adlar[o.id] || o.who).filter(Boolean))];
-  return a.length ? `Anlatıcı${a.length > 1 || a.some(x => x.includes(',')) ? 'lar' : ''}: ${a.join(', ')}` : '';
+  const a = [...new Set(ots.map(o => adlar[o.id]).filter(Boolean))];
+  return a.length ? `Anlatıcı${a.length > 1 ? 'lar' : ''}: ${a.join(', ')}` : '';
 };
 
 // kisi: { masa } ya da null (genel duyuru için)

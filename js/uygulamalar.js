@@ -1,6 +1,6 @@
 import { $, esc, state, onState, toast } from './util.js';
 import { ready, db, F } from './fb.js';
-import { onEvents } from './takvim.js';
+import { onEvents, setAnlatici } from './takvim.js';
 
 export const MASA_SAYISI = 8;
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
@@ -81,13 +81,13 @@ function render() {
     </div>`;
   h += ots.map(o => {
     const a = anlatici[o.id];
-    const aAd = a?.ad || o.who || 'Belirlenmedi';
+    const aAd = (a?.uid && ad(a.uid)) || a?.ad || '';
     const aDurum = a?.uid && state.approved ? katilim[a.uid]?.durum : null;
     return `<div class="ev ${o.c === 'dis' ? 'kDU' : 'kU'}" style="grid-template-columns:minmax(0,1fr)">
       <div><div class="meta"><span class="c">${esc(o.s)}</span><span class="kind">Uygulama</span></div>
       <div class="topic">${esc(o.topic)}</div>
-      <div class="who">${o.saatler.map(esc).join(' · ')}</div>
-      <div class="anl">Anlatıcı: <b>${esc(aAd)}</b>${aDurum === 'hayir' ? ' <span class="pill wait">gelemiyor</span>' : aDurum === 'evet' ? ' <span class="pill">onayladı</span>' : ''}</div></div>
+      <div class="who">${o.saatler.map(esc).join(' · ')}${o.who ? ' · Öğretim üyesi: ' + esc(o.who) : ''}</div>
+      <div class="anl">${aAd ? `Anlatıcı: <b>${esc(aAd)}</b>${aDurum === 'hayir' ? ' <span class="pill wait">gelemiyor</span>' : aDurum === 'evet' ? ' <span class="pill">onayladı</span>' : ''}` : '<span class="mute">Anlatıcı belirlenmedi</span>'}</div></div>
     </div>`;
   }).join('');
   if (!ready) { el.innerHTML = h; return; }
@@ -161,7 +161,7 @@ export function initUygulamalar() {
       gunSec(gunler.find(g => g >= bugun) || gunler[gunler.length - 1] || null);
     } else render();
   });
-  if (ready) F.onSnapshot(F.collection(db, 'anlaticilar'), s => { anlatici = {}; s.docs.forEach(x => { anlatici[x.id] = x.data(); }); render(); }, () => { });
+  if (ready) F.onSnapshot(F.collection(db, 'anlaticilar'), s => { anlatici = {}; s.docs.forEach(x => { anlatici[x.id] = x.data(); }); setAnlatici(e => anlatici[konuId(e.s, e.topic)]?.ad || ''); render(); }, () => { });
   onState(s => {
     if (ready && s.approved && !unsubU) {
       unsubU = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(x => ({ id: x.id, ...x.data() })).filter(u => u.onayli); render(); }, () => { });
