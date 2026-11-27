@@ -53,11 +53,21 @@ for (const e of events.filter(x => x.k === 'M' && x.uid)) {
 // Uygulama sınavı gözetmenleri: 1 hafta önce ve bir önceki iş günü
 const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Esra Gökmen Yılmaz', 'Kemal Ergin', 'Erkan Gümüş']; // js/gozetmen.js ile aynı
 const gozetmenli = e => e.k === 'S' && /uygulama sınav/i.test(e.topic || '');
-for (const e of events.filter(x => gozetmenli(x) && (x.date === haftaya || yakin.includes(x.date)))) {
-  const kac = e.date === haftaya ? 7 : 1;
-  const gruplar = (await db.collection('sinavGruplari').doc(e.id).get()).data()?.gruplar || [];
-  const atanan = (await db.collection('gozetmenler').where('ev', '==', e.id).get()).docs.map(d => d.data());
-  for (const a of atanan) await gonder(a.uid, gozetmenMesaj(e, a.grup, gruplar[a.grup]?.hoca ?? VARSAYILAN_HOCALAR[a.grup] ?? '', kac, e.date === yarin), `gozetmen-${e.id}-${kac}`);
+// Aynı gün aynı kurulun oturumları tek sınav sayılır; kayıtlar ilk oturumun kimliğiyle tutulur
+const sinavGunleri = new Map();
+for (const e of events.filter(x => gozetmenli(x) && (x.date === haftaya || yakin.includes(x.date))).sort((a, b) => (a.t || '').localeCompare(b.t || ''))) {
+  const k = e.date + '|' + e.s + '|' + e.topic;
+  if (!sinavGunleri.has(k)) sinavGunleri.set(k, []);
+  sinavGunleri.get(k).push(e);
+}
+for (const ots of sinavGunleri.values()) {
+  const e = { ...ots[0], t: ots.map(o => o.t).join(' ve '), g: '' }, kac = e.date === haftaya ? 7 : 1;
+  const gruplar = (await db.collection('sinavGruplari').doc(ots[0].id).get()).data()?.gruplar || [];
+  const gonderildi = new Set();
+  for (const o of ots) for (const a of (await db.collection('gozetmenler').where('ev', '==', o.id).get()).docs.map(d => d.data())) {
+    if (gonderildi.has(a.uid)) continue; gonderildi.add(a.uid);
+    await gonder(a.uid, gozetmenMesaj(e, a.grup, gruplar[a.grup]?.hoca ?? VARSAYILAN_HOCALAR[a.grup] ?? '', kac, e.date === yarin), `gozetmen-${ots[0].id}-${kac}`);
+  }
 }
 
 // Anlatıcılar: 1 hafta sonraki uygulamalar

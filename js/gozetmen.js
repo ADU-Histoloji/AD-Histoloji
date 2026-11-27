@@ -16,14 +16,25 @@ const dinleyiciler = new Set();
 const haber = () => { dinleyiciler.forEach(fn => fn()); if (acikEv) formuCiz(); };
 export const onGozetmenDegis = fn => dinleyiciler.add(fn);
 
+// Aynı gün aynı kurulun iki oturumu (ör. 09:30 ve 13:30) tek sınav sayılır; gözetmenlik o günün tamamı içindir.
+// Kayıtlar günün ilk oturumunun kimliğiyle tutulur.
+const gunAnahtari = e => e.date + '|' + e.s + '|' + e.topic;
+export const kanonik = evId => {
+  const e = olaylar.find(x => x.id === evId); if (!e) return evId;
+  return olaylar.filter(x => gunAnahtari(x) === gunAnahtari(e)).sort((a, b) => (a.t || '').localeCompare(b.t || ''))[0].id;
+};
+export const oturumlar = evId => { const e = olaylar.find(x => x.id === evId); return e ? olaylar.filter(x => gunAnahtari(x) === gunAnahtari(e)).sort((a, b) => (a.t || '').localeCompare(b.t || '')) : []; };
+export const oturumMetni = evId => oturumlar(evId).map(o => `${o.t}${o.g ? ' (' + o.g + ')' : ''}`).join(' · ');
+
 export const gruplar = evId => {
-  const g = ayar[evId]?.gruplar || [];
+  evId = kanonik(evId);
+  const g = ayar[evId]?.gruplar || oturumlar(evId).map(o => ayar[o.id]?.gruplar).find(Boolean) || [];
   return Array.from({ length: GRUP_SAYISI }, (_, i) => ({ hoca: g[i]?.hoca ?? VARSAYILAN_HOCALAR[i] ?? '', kap: Number(g[i]?.kap ?? VARSAYILAN_KAP) }));
 };
-export const atananlar = evId => atama.filter(a => a.ev === evId);
+export const atananlar = evId => { const k = kanonik(evId); return atama.filter(a => kanonik(a.ev) === k); };
 export const benimGozetmenliklerim = () => {
   const ben = state.user?.uid; if (!ben) return [];
-  return atama.filter(a => a.uid === ben).map(a => ({ a, e: olaylar.find(e => e.id === a.ev) })).filter(x => x.e && x.e.date >= bugun())
+  return atama.filter(a => a.uid === ben).map(a => ({ a, e: olaylar.find(e => e.id === kanonik(a.ev)) })).filter(x => x.e && x.e.date >= bugun())
     .sort((x, y) => (x.e.date + x.e.t).localeCompare(y.e.date + y.e.t));
 };
 export function eksikSayisi(evId) {
@@ -31,7 +42,7 @@ export function eksikSayisi(evId) {
   return g.reduce((t, x, i) => t + Math.max(0, x.kap - at.filter(a => a.grup === i).length), 0);
 }
 // Bu öğretim yılında kişinin kaç gözetmenlik aldığı (adil dağılım için)
-const sayac = uid => atama.filter(a => a.uid === uid).length;
+const sayac = uid => new Set(atama.filter(a => a.uid === uid).map(a => kanonik(a.ev))).size;
 const adi = uid => kisiler.find(u => u.id === uid)?.ad || 'Bilinmeyen kişi';
 
 // Takvimdeki sınav kartının altına konan özet ve düğme
@@ -42,7 +53,7 @@ export function gozetmenKarti(e) {
     <button class="btn sec kucuk" data-gozetmen="${esc(e.id)}">${ben || e.date < bugun() ? 'Gözetmenler' : at.length < kap ? '📝 Gözetmen ol' : 'Gözetmenler'}</button></div>`;
 }
 
-export function gozetmenFormu(evId) { acikEv = evId; formuCiz(true); }
+export function gozetmenFormu(evId) { acikEv = kanonik(evId); formuCiz(true); }
 
 function formuCiz(ilk = false) {
   const e = olaylar.find(x => x.id === acikEv);
@@ -51,9 +62,9 @@ function formuCiz(ilk = false) {
   const ben = state.user.uid, admin = state.admin, gecmis = e.date < bugun();
   const at = atananlar(e.id), benimki = at.find(a => a.uid === ben);
   const g = gruplar(e.id);
-  const html = `<div class="sh"><div><div class="date">${esc(tr(e.date))} · ${esc(e.t)}${e.g ? ' · ' + esc(e.g) + ' grupları' : ''}</div><h3>Gözetmenler</h3></div><button class="x" type="button" aria-label="Kapat">×</button></div>
+  const html = `<div class="sh"><div><div class="date">${esc(tr(e.date))} · ${esc(oturumMetni(e.id))}</div><h3>Gözetmenler</h3></div><button class="x" type="button" aria-label="Kapat">×</button></div>
   <div id="gz-form">
-    <p class="note">${esc(e.s)} · ${esc(e.topic)}</p>
+    <p class="note">${esc(e.s)} · ${esc(e.topic)}${oturumlar(e.id).length > 1 ? '<br>Gözetmenlik günün bütün oturumları içindir.' : ''}</p>
     ${g.map((x, i) => {
       const kisi = at.filter(a => a.grup === i), dolu = kisi.length >= x.kap;
       return `<div class="gz-grup">
@@ -83,7 +94,10 @@ async function ayarKaydet(evId, i, patch) {
   await F.setDoc(F.doc(db, 'sinavGruplari', evId), { gruplar: g });
 }
 const atamaRef = (evId, uid) => F.doc(db, 'gozetmenler', `${evId}_${uid}`);
-async function ata(evId, uid, grup) { await F.setDoc(atamaRef(evId, uid), { ev: evId, uid, grup, t: F.serverTimestamp() }); }
+async function ata(evId, uid, grup) {
+  for (const a of atananlar(evId).filter(x => x.uid === uid && x.ev !== evId)) await F.deleteDoc(atamaRef(a.ev, a.uid));
+  await F.setDoc(atamaRef(evId, uid), { ev: evId, uid, grup, t: F.serverTimestamp() });
+}
 
 async function onClick(ev) {
   const b = ev.target.closest('button'); if (!b) return;
@@ -95,7 +109,8 @@ async function onClick(ev) {
       await ata(evId, state.user.uid, i); toast('Gözetmen olarak yazıldın');
     } else if (b.dataset.gzsil) {
       if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Emin misin?'; return; }
-      await F.deleteDoc(atamaRef(evId, b.dataset.gzsil)); toast('Çıkarıldı');
+      for (const a of atananlar(evId).filter(x => x.uid === b.dataset.gzsil)) await F.deleteDoc(atamaRef(a.ev, a.uid));
+      toast('Çıkarıldı');
     } else if (b.dataset.gzkap !== undefined) {
       const i = Number(b.dataset.gzkap), k = Math.max(0, Math.min(8, gruplar(evId)[i].kap + Number(b.dataset.d)));
       await ayarKaydet(evId, i, { kap: k });

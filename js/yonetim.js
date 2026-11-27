@@ -2,7 +2,7 @@ import { $, esc, state, onState, toast, listeKimligi, girisKimligi, KOD_MIN } fr
 import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
 import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
-import { gozetmenliSinav, eksikSayisi, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
+import { gozetmenliSinav, eksikSayisi, gozetmenFormu, onGozetmenDegis, kanonik, oturumMetni } from './gozetmen.js';
 
 const trAd = a => String(a || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ').trim();
 const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
@@ -40,7 +40,7 @@ function yapilacaklar() {
   const anlEksik = konular.filter(k => k.sonraki && k.sonraki <= sinir && !(anl[k.id] || {}).uid);
   const semEksik = seminerler.filter(e => e.date >= bugun && !e.uid);
   const semCak = seminerler.filter(e => e.date >= bugun && sinavG.has(e.date));
-  const gzEksik = sinavlar.filter(e => e.date >= bugun && e.date <= sinir && eksikSayisi(e.id) > 0);
+  const gzEksik = sinavlar.filter(e => kanonik(e.id) === e.id && e.date >= bugun && e.date <= sinir && eksikSayisi(e.id) > 0);
   const say = {}; users.filter(u => u.onayli && u.masa).forEach(u => { say[u.masa] = (say[u.masa] || 0) + 1; });
   const tasan = Object.entries(say).filter(([m, n]) => n > MASA_KAP).map(([m]) => m);
   const masasiz = users.filter(u => u.onayli && !u.masa);
@@ -49,7 +49,7 @@ function yapilacaklar() {
   if (wait.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Onay bekleyenler</h3><div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div></div>`);
   if (yeniDeg.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Program değişikliği</h3><p>Fakülte programında ${yeniDeg.length} değişiklik bulundu.</p><button class="btn" data-git="prog">Değişikliklere bak</button></div>`);
   if (anlEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Anlatıcısı olmayan uygulamalar</h3><p class="note">Önümüzdeki 3 hafta. Seçtiğin anda kaydedilir.</p><div class="list">${anlEksik.map(anlSatir).join('')}</div></div>`);
-  if (gzEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Gözetmeni eksik sınavlar</h3><p class="note">Önümüzdeki 3 hafta.</p><div class="list">${gzEksik.map(e => `<div class="li"><span><span class="nm">${esc(trTarih(e.date))} · ${esc(e.t)}</span><br><span class="note">${esc(e.s)} · ${eksikSayisi(e.id)} gözetmen eksik</span></span><button class="btn sec" data-gzac="${esc(e.id)}">Gözetmenler</button></div>`).join('')}</div></div>`);
+  if (gzEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Gözetmeni eksik sınavlar</h3><p class="note">Önümüzdeki 3 hafta.</p><div class="list">${gzEksik.map(e => `<div class="li"><span><span class="nm">${esc(trTarih(e.date))} · ${esc(e.s)}</span><br><span class="note">${esc(oturumMetni(e.id))} · ${eksikSayisi(e.id)} gözetmen eksik</span></span><button class="btn sec" data-gzac="${esc(e.id)}">Gözetmenler</button></div>`).join('')}</div></div>`);
   if (semCak.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Seminer çakışması</h3><p>${semCak.map(e => esc(trTarih(e.date)) + ' · ' + esc(e.who || '')).join(', ')} günü histoloji sınavı var.</p><a class="btn" href="#seminer">Seminer sırasını aç</a></div>`);
   if (semEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Eşleşmemiş seminerler</h3><p class="note">Sunan kişiyi seç; kendi konusunu yazabilsin ve hatırlatma alsın.</p><div class="list">${semEksik.map(semSatir).join('')}</div></div>`);
   if (tasan.length || masasiz.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Masalar</h3>${tasan.length ? `<p>2'den fazla kişi olan masa: <b>${tasan.join(', ')}</b></p>` : ''}${masasiz.length ? `<p>Masasını henüz seçmemiş: ${masasiz.map(u => esc(u.ad)).join(', ')}</p>` : ''}<button class="btn sec" data-git="kisi">Kişilere git</button></div>`);
