@@ -16,6 +16,10 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 
 ---
 
+## Yönetim ekranı
+
+**Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masası olmayan ya da kapasitesi aşılmış masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi, masa kapasitesi) seçildiği anda kaydedilir.
+
 ## Klasördeki dosyalar
 
 | Dosya | Ne işe yarar |
@@ -25,7 +29,7 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 | `js/takvim.js` | Takvim ekranı |
 | `js/arsiv.js` | Preparat arşivi |
 | `js/hesap.js` | Kayıt, giriş, profil |
-| `js/yonetim.js` | Yönetim ekranı |
+| `js/yonetim.js` | Yönetim ekranı (sekmeler: Yapılacak · Kişiler · Uygulama · Program) |
 | `data/events.json` | Öğretim yılının ders programı |
 | `firestore.rules` | Veritabanı güvenlik kuralları |
 | `manifest.webmanifest`, `sw.js`, `icons/` | Telefonda "ana ekrana ekle" ile uygulama gibi çalışması için |
@@ -40,20 +44,20 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 4. **Yayına alma:** Depo → Settings → Pages → *Build and deployment* → Source: **Deploy from a branch**, Branch: **main** / **(root)** → Save. Birkaç dakika sonra adres görünür (örneğin `https://adu-histoloji.github.io/histoloji/`).
 5. **Firebase'e adresi tanıtma:** Firebase konsolu → Authentication → Settings → **Authorized domains** → `adu-histoloji.github.io` adresini ekleyin.
 6. **İlk kayıt:** Uygulamayı açın → Profil → **Kayıt ol**. İlk kaydolan kişi otomatik olarak **yönetici** olur ve bölüm kodunu belirler.
-7. **Programı yükleme:** Yönetim → **Programı içe aktar**.
+7. **Programı yükleme:** Yönetim → Program → **Ders programını yükle** → **Tümünü değiştir**.
 8. Bölüm kodunu ve uygulama adresini asistanlarla paylaşın.
 
 ---
 
 ## Günlük kullanım
 
-**Yeni asistan:** Uygulamada Profil → Kayıt ol (bölüm kodu + ad soyad + 6 haneli PIN). Ardından bir yönetici Yönetim → **Onay bekleyenler** bölümünden onaylar, masa no ve seminer sırasını girer.
+**Yeni asistan:** Uygulamada Profil → Kayıt ol (bölüm kodu + ad soyad + 6 haneli PIN). Ardından bir yönetici Yönetim → **Yapılacak** sekmesinden onaylar, Yönetim → Kişiler'den masasını seçer.
 
-**PIN unutulursa:** Yönetim → Kişiler → **Kaydı sıfırla**. Kişi aynı adla yeniden kayıt olur, yönetici tekrar onaylar ve masa/sıra bilgisini yeniden girer.
+**PIN unutulursa:** Yönetim → Kişiler → kişinin yanındaki **Diğer** → **Kaydı sıfırla**. Kişi aynı adla yeniden kayıt olur, yönetici tekrar onaylar ve masasını yeniden seçer.
 
-**Bölümden ayrılan kişi:** Yönetim → Kişiler → Kaydı sıfırla.
+**Bölümden ayrılan kişi:** Yönetim → Kişiler → Diğer → Kaydı sıfırla.
 
-**Yöneticiliği devretmek:** Yönetim → Kişiler → **Yönetici yap**. Bölümde her zaman en az iki yönetici olsun.
+**Yöneticiliği devretmek:** Yönetim → Kişiler → Diğer → **Yönetici yap**. Bölümde her zaman en az iki yönetici olsun.
 
 ---
 
@@ -76,7 +80,7 @@ Program `data/events.json` dosyasındadır. Her ders bir satırdır:
 | `g` | Grup (A, B, C, D), varsa |
 | `yer`, `note`, `prep`, `warn` | İsteğe bağlı: derslik, not, hazırlık notu, uyarı |
 
-Yıl içindeki tek tük değişiklikler için dosyaya dokunmayın: uygulamada yönetici olarak takvimde ilgili güne gidip **Düzenle** ya da **+ Ders** kullanın. Dosya sadece yeni öğretim yılının programı için düzenlenir; ardından Yönetim → **Programı içe aktar** (bu işlem takvimdeki elle yapılmış düzeltmeleri siler).
+Yıl içindeki tek tük değişiklikler için dosyaya dokunmayın: uygulamada yönetici olarak takvimde ilgili güne gidip **Düzenle** ya da **+ Ders** kullanın. Dosya sadece yeni öğretim yılının programı için düzenlenir; ardından Yönetim → Program → Ders programını yükle → **Tümünü değiştir** (bu işlem takvimdeki elle yapılmış düzeltmeleri siler).
 
 ---
 
@@ -103,9 +107,9 @@ Her pazartesi 08:50 civarında (GitHub birkaç dakika geç başlatabilir) haftan
 
 Alttaki **Masalar** sekmesi her uygulama gününü gösterir: günün oturumları, anlatıcı, 8 masalık kroki ve kimin katılıp katılmadığı.
 
-- Herkesin sabit masası **Yönetim → Kişiler**'den, masaların 1 veya 2 kişilik olduğu **Yönetim → Masa kapasiteleri**'nden girilir.
+- Herkesin sabit masası **Yönetim → Kişiler**'den, masaların 1 veya 2 kişilik olduğu **Yönetim → Uygulama**'dan girilir. Seçim yapıldığı anda kaydedilir; Kaydet düğmesi yoktur.
 - Asistan "Katılıyorum / Katılamıyorum" der. Gelemeyen birinin masası boş görünür; katılan başka biri o günlüğüne **Bu masaya geç** ile alabilir.
-- Anlatıcılar asistanlar arasından seçilir: **Yönetim → Anlatıcılar**'dan her uygulama konusu için bir kere. Programdaki öğretim üyesi ayrıca gösterilir; anlatıcı seçilmemişse "Anlatıcı belirlenmedi" yazar.
+- Anlatıcılar asistanlar arasından seçilir: **Yönetim → Uygulama → Anlatıcılar**'dan her uygulama konusu için bir kere. Programdaki öğretim üyesi ayrıca gösterilir; anlatıcı seçilmemişse "Anlatıcı belirlenmedi" yazar.
 - **Bildirim:** Uygulamadan bir gün önce 08:50 civarında herkese "Yarın uygulama var, katılıyor musun?" gider; anlatıcı uygulamaya kayıtlıysa ona "Yarın anlatıcısın" gider. Görev: `.github/workflows/gunluk.yml`, betik: `scripts/gunluk.mjs`. Elle test: Actions → *Uygulama katılım sorusu* → Run workflow.
 
 ---
@@ -116,7 +120,7 @@ Hafta içi her gün 13:20 civarında `.github/workflows/program-kontrol.yml` fak
 
 - PDF'teki histoloji satırlarını öncekiyle karşılaştırır,
 - yöneticilere "Ders programı güncellendi" bildirimi gönderir,
-- ayrıntıyı **Yönetim → Program değişiklikleri** bölümüne yazar.
+- ayrıntıyı **Yönetim → Program** sekmesine yazar.
 
 Satır karşılaştırması PDF tablosundan otomatik çıkarıldığı için ipucudur; kesin bilgi için PDF açılmalıdır. Takvim otomatik değişmez: yönetici takvimde ilgili güne gidip **Düzenle** / **+ Ders** ile düzeltir, sonra **Baktım** der.
 
@@ -148,6 +152,6 @@ Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, �
 - [ ] Bildirime seminer bilgisinin eklenmesi
 - [x] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
 - [x] Seminerler takvimde ve pazartesi bildiriminde (2026-2027 güz listesi, sınav günleri atlanarak)
-- [x] Seminer sunan kişinin kendi konusunu yazması (Yönetim → Seminerler ile eşleştirme, pazartesi hatırlatması)
+- [x] Seminer sunan kişinin kendi konusunu yazması (Yönetim → Program → Seminerler; adı kayıtla aynı olanlar kendiliğinden eşleşir; pazartesi hatırlatması)
 - [ ] Seminer sırası ekranı (tatil/sınav haftalarında otomatik kayma, takas)
 - [ ] Doğum günleri ve özel günler takvimde

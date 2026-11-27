@@ -147,7 +147,7 @@ function renderMe() {
     <div class="card">
       <h3>${esc(p.ad || 'Hesabım')}</h3>
       <p>${p.onayli ? `<span class="pill">${p.rol === 'yonetici' ? 'Yönetici' : 'Asistan'}</span>` : '<span class="pill wait">Onay bekliyor</span>'}</p>
-      ${p.onayli ? `<dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd><dt>Seminer sırası</dt><dd>${p.seminerSira ? esc(p.seminerSira) + '.' : 'Henüz atanmadı'}</dd></dl>` : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, masa ve seminer bilgilerini görebilirsin.</p>'}
+      ${p.onayli ? `<dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd></dl>` : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, masa bilgini görebilirsin.</p>'}
     </div>
     ${(() => {
       const bugun = new Date().toISOString().slice(0, 10);
