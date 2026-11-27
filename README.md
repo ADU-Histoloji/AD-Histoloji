@@ -53,7 +53,8 @@ Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir
 ## Uygulama sınavı kâğıdı
 
 Takvimdeki uygulama sınavı kartında **📄 Sınav kâğıdı** (ya da Yönetim → Program → Sınav kâğıtlarını aç) sınavın kâğıt ekranını açar. Her oturum (ör. 09.30 ve 13.30) için ayrı sorular girilir: soru metni (hazır kalıplardan seçilebilir; daha önce kaydedilmiş kâğıtlardaki sorular da listeye eklenir), puan, cevap ve mikroskoba konacak preparat (arşivden kodla, ör. 9-1). Başlık (dönem, yıl, kurul) ve notlar sınavdan otomatik doldurulur, düzenlenebilir; `__iki alt çizgi__` arasındaki metin altı çizili basılır.
-- Bir soruya **+ Öncül ekle** ile I., II., III. diye numaralanan öncüller eklenebilir; kâğıtta sorunun altında girintili basılır.
+- Bir soru alt sorulara ayrılabilir: **+ A) B) alt soru** (her alt sorunun kendi metni, puanı ve cevabı olur: "1. A) ORGANIN ADINI YAZINIZ … B) OK İLE İŞARETLİ YAPININ …") ya da **+ Numaralı bölge** (öncül cümlesinin altında "1 --- …MİNE… (2 PUAN)" satırları; öncülün sonuna toplam puan yazılır). Soru metninde alt satıra geçilerek çok satırlı öncül yazılabilir.
+- Takvimde olmayan sınavlar (ör. Diş bütünleme, final) için **+ Takvimde olmayan bir sınav için kâğıt** ile Tıp ya da Diş başlıklı boş kâğıt açılır; oturum eklenip silinebilir. Başlıktaki "UYGULAMA SINAVI" satırı da düzenlenebilir (ör. BÜTÜNLEME UYGULAMA SINAVI).
 - **Öğrenci kâğıdını aç** ve **Cevap anahtarını aç** kâğıdı indirmeden ayrı bir sayfada gösterir (her oturum ayrı sayfa, cevaplar kırmızı); sayfanın üstündeki **Yazdır** ile yazdırılır. Word dosyası gerekirse altındaki bağlantılarla iner.
 - Altta oturum oturum **mikroskoplara konacak preparatlar** listesi çıkar.
 - Kâğıtlar `sinavKagitlari` koleksiyonunda tutulur, sadece onaylı üyeler görür; haftalık yedeğe girer.

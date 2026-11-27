@@ -261,3 +261,7 @@ div.kura-son{padding-left:0}
 .kg-oncul{display:grid;grid-template-columns:2.2em 1fr auto;gap:6px;align-items:center}
 .kg-oncul b{text-align:right;font-size:14px}.kg-oncul .linkbtn{min-height:32px;padding:0 6px;text-decoration:none;font-size:18px}
 .kg-oncul-ekle{align-self:flex-start;min-height:32px !important;padding:0 !important;font-size:14px !important}
+.kg-alt{border-left:3px solid var(--line);padding:4px 0 4px 10px;display:flex;flex-direction:column;gap:6px}
+.kg-alt-bas{display:flex;align-items:center;gap:8px}.kg-alt-bas .linkbtn{margin-left:auto;min-height:32px;padding:0 6px;text-decoration:none;font-size:18px}
+.kg-alt-ekle{display:flex;flex-wrap:wrap;gap:4px 16px}.kg-alt-ekle .linkbtn{min-height:36px;padding:0;font-size:14px}
+.kg-yeni{margin-top:10px}.kg-yeni summary{cursor:pointer;color:var(--d1);font-weight:600;font-size:14px;min-height:40px;display:flex;align-items:center}
