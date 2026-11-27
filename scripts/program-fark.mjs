@@ -1,6 +1,13 @@
 // Fakülte sayfalarındaki ders programı PDF'lerinin değişip değişmediğini bulan yardımcılar.
 // Ağ ve Firebase kullanmaz; böylece ayrı ayrı test edilebilir.
 
+// HTML karakter kodlarını (&ouml; &#252; gibi) harfe çevirir
+const VARLIK = { nbsp: ' ', amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', ouml: 'ö', Ouml: 'Ö', uuml: 'ü', Uuml: 'Ü', ccedil: 'ç', Ccedil: 'Ç', iacute: 'í', ndash: '–', mdash: '—' };
+export const varlik = t => t
+  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+  .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d))
+  .replace(/&([a-z]+);/gi, (x, n) => VARLIK[n] ?? x);
+
 // Sayfadaki bütün PDF linklerini {url, etiket} olarak çıkarır
 export function pdfLinkleri(html, taban) {
   const sonuc = [], gorulen = new Set();
@@ -11,7 +18,7 @@ export function pdfLinkleri(html, taban) {
     try { url = new URL(m[1].replace(/&amp;/g, '&'), taban).href; } catch { continue; }
     if (gorulen.has(url)) continue;
     gorulen.add(url);
-    const etiket = m[2].replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
+    const etiket = varlik(m[2].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
       || decodeURIComponent(url.split('/').pop());
     sonuc.push({ url, etiket });
   }
