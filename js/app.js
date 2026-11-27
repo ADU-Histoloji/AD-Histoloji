@@ -1,6 +1,6 @@
 import { $, $$, setState, state } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
-import { initTakvim, setLinked, rerenderTakvim } from './takvim.js';
+import { initTakvim, setLinked, rerenderTakvim, onEvents } from './takvim.js';
 import { initArsiv, linkedHtml, onPrepsChange } from './arsiv.js';
 import { initHesap } from './hesap.js';
 import { initYonetim } from './yonetim.js';
@@ -8,6 +8,7 @@ import { initUygulamalar } from './uygulamalar.js';
 import { initDuyurular } from './duyurular.js';
 import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
+import { initGozetmen } from './gozetmen.js';
 
 const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim'];
 const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
@@ -22,6 +23,7 @@ function route() {
 addEventListener('hashchange', route);
 
 initAnlatici();
+initGozetmen(onEvents);
 initTakvim();
 initArsiv();
 initUygulamalar();

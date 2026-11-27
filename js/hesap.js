@@ -4,6 +4,7 @@ import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
 import { onEvents, etkinlikler, konuFormu, bosKonu } from './takvim.js';
 import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
+import { benimGozetmenliklerim, gruplar as gzGruplar, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
@@ -186,6 +187,11 @@ function gorevlerim(p) {
       ${e.note ? `<div class="note">${esc(e.note)}</div>` : ''}
       <button class="btn sec" style="margin-top:6px" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>
     </div>`).join('') : '<p class="note">Yaklaşan seminerin yok.</p>'}
+    ${(() => { const gz = benimGozetmenliklerim(); return gz.length ? `<h4 class="gorev-bas">📝 Sınav gözetmenliği</h4>${gz.map(({ a, e }) => { const h = gzGruplar(e.id)[a.grup]?.hoca; return `<div class="li" style="display:block">
+      <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}</div>
+      <div>${esc(e.topic)}</div>
+      <div class="note">${a.grup + 1}. grup${h ? ' · ' + esc(h) : ''}${e.g ? ' · ' + esc(e.g) + ' grupları' : ''} <button class="linkbtn" data-gzac="${esc(e.id)}" style="min-height:0;padding:0 0 0 6px">Ayrıntı</button></div>
+    </div>`; }).join('')}` : ''; })()}
     <h4 class="gorev-bas">🔬 Anlatacağın uygulamalar</h4>
     ${anl.length ? anl.slice(0, GOSTER).map(e => `<div class="li" style="display:block">
       <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}${e.g ? ' · ' + esc(e.g) : ''}</div>
@@ -216,6 +222,7 @@ function renderMe() {
       <div class="field"><label for="p-new">Yeni PIN</label><input id="p-new" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" required></div>
       <button class="btn sec" type="submit">PIN'i değiştir</button><p class="err" id="p-err"></p></form>
     <button class="btn del" id="cikis">Çıkış yap</button>`;
+  $('#v-profil').querySelectorAll('[data-gzac]').forEach(b => b.addEventListener('click', () => gozetmenFormu(b.dataset.gzac)));
   $('#v-profil').querySelector('[data-masadegis]')?.addEventListener('click', () => { masaDegis = true; render(); });
   $('#v-profil').querySelector('[data-masavazgec]')?.addEventListener('click', () => { masaDegis = false; render(); });
   $('#v-profil').querySelectorAll('[data-masasec]').forEach(b => b.addEventListener('click', async () => {
@@ -266,6 +273,7 @@ function render() {
 export function initHesap() {
   render();
   onEvents(() => { if (state.user && !$('#v-profil').contains(document.activeElement)) render(); });
+  onGozetmenDegis(() => { if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); });
   onState(() => { if (!document.activeElement || !$('#v-profil').contains(document.activeElement)) render(); });
   $('#who').addEventListener('click', () => { location.hash = 'profil'; });
   onState(s => { $('#who').textContent = s.user ? (s.profile?.ad?.split(' ')[0] || 'Hesabım') : 'Giriş yap'; });

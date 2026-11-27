@@ -222,3 +222,13 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .topbtns{flex:0 0 auto}
 #who{max-width:9.5em;padding:0 12px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:480px){h1{font-size:28px}}
+/* Sınav gözetmenleri */
+.gz-grup{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.gz-bas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gz-kisiler{display:flex;flex-wrap:wrap;gap:6px}
+.gz-k{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:4px 10px;font-size:14px;display:inline-flex;align-items:center;gap:4px}
+.gz-k.ben{border-color:var(--d1);font-weight:600}
+.gz-sil{appearance:none;border:0;background:none;color:var(--mute);font-size:18px;line-height:1;cursor:pointer;padding:0 2px;min-height:28px}
+.gz-ayar{width:100%}.gz-ayar summary{cursor:pointer;color:var(--d1);font-weight:600;font-size:14px;min-height:36px;display:flex;align-items:center}
+.gz-ayar label{display:block;margin:6px 0 0;font-size:14px}.gz-ayar input,.gz-ayar select{width:100%;margin-top:4px}
+.gz-kap{display:inline-flex;align-items:center;gap:10px;margin-left:10px}

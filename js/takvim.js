@@ -1,4 +1,5 @@
 import { $, $$, esc, state, onState, sheet, closeSheet, toast } from './util.js';
+import { gozetmenKarti, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
 import { anlaticiDugmeleri, anlaticiTikla, onAnlaticiDegis, anlaticiKaydi } from './anlatici.js';
 import { ready, db, F } from './fb.js';
 
@@ -75,6 +76,7 @@ function renderWeek() {
           ${e.who || e.yer || e.note ? `<div class="who">${[e.who, e.yer, e.note].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
           ${e.k === 'U' && (anlaticiKaydi(e.s, e.topic)?.ad || anlaticiFn(e)) ? `<div class="who">Anlatıcı: <b>${esc(anlaticiKaydi(e.s, e.topic)?.ad || anlaticiFn(e))}</b></div>` : ''}
           ${e.k === 'U' && fromDb ? anlaticiDugmeleri(e) : ''}
+          ${e.k === 'S' && fromDb ? gozetmenKarti(e) : ''}
           ${e.prep ? `<div class="prep">${esc(e.prep)}</div>` : ''}
           ${e.warn ? `<div class="warn">${esc(e.warn)}</div>` : ''}
           ${first ? linkedFn(e.ders) : ''}
@@ -169,12 +171,14 @@ export function initTakvim() {
   });
   $('#week').addEventListener('click', async e => {
     if (await anlaticiTikla(e.target)) return;
+    const gz = e.target.closest('[data-gozetmen]'); if (gz) return gozetmenFormu(gz.dataset.gozetmen);
     const b = e.target.closest('[data-duzenle],[data-ekle],[data-konu]'); if (!b) return;
     if (b.dataset.konu) return konuFormu(EV.find(x => x.id === b.dataset.konu));
     if (b.dataset.ekle) dersFormu(null, b.dataset.ekle); else dersFormu(EV.find(x => x.id === b.dataset.duzenle));
   });
   onState(() => render());
   onAnlaticiDegis(() => render());
+  onGozetmenDegis(() => render());
   $$('.chip').forEach(b => b.addEventListener('click', () => { f = b.dataset.f; try { localStorage.setItem('hp-filter', f); } catch (e) { } render(); }));
   render();
 

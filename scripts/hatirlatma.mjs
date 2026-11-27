@@ -4,7 +4,7 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
-import { gunSonra, seminerMesaj, anlaticiHaftaMesaj, oturumlar } from './hatirlatma-mesaj.mjs';
+import { gunSonra, seminerMesaj, anlaticiHaftaMesaj, gozetmenMesaj, oturumlar } from './hatirlatma-mesaj.mjs';
 
 const hesap = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
 if (!hesap.private_key) { console.error('FIREBASE_SERVICE_ACCOUNT gizli anahtarı tanımlı değil.'); process.exit(1); }
@@ -15,13 +15,16 @@ const kuru = process.env.KURU === 'true'; // sadece ekrana yaz, gönderme
 // Test için "bugün" başka bir tarih olarak verilebilir
 const kayma = process.env.BUGUN ? Math.round((Date.parse(process.env.BUGUN + 'T12:00:00Z') - Date.parse(gunSonra(0) + 'T12:00:00Z')) / 864e5) : 0;
 const yarin = gunSonra(1 + kayma), haftaya = gunSonra(7 + kayma);
+// Cuma günü, Pazartesi'nin hatırlatması da gönderilir (hafta sonu görev çalışmaz)
+const cuma = new Date(gunSonra(kayma) + 'T12:00:00Z').getUTCDay() === 5;
+const yakin = cuma ? [gunSonra(1 + kayma), gunSonra(2 + kayma), gunSonra(3 + kayma)] : [yarin];
 console.log(`Bugün: ${gunSonra(kayma)} · yarın: ${yarin} · 1 hafta sonra: ${haftaya}${test ? ' (test: mesajlar yöneticilere gider)' : ''}`);
 
 const users = (await db.collection('users').get()).docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.onayli);
 const adi = uid => users.find(u => u.id === uid)?.ad || uid;
 const yoneticiler = users.filter(u => u.rol === 'yonetici').map(u => u.id);
 const tokens = (await db.collection('tokens').get()).docs.map(d => ({ id: d.id, uid: d.data().uid }));
-const events = (await db.collection('events').where('date', 'in', [yarin, haftaya]).get()).docs.map(d => ({ id: d.id, ...d.data() }));
+const events = (await db.collection('events').where('date', 'in', [...yakin, haftaya]).get()).docs.map(d => ({ id: d.id, ...d.data() }));
 
 let gonderilen = 0;
 async function gonder(uid, m, tag) {
@@ -45,6 +48,15 @@ async function gonder(uid, m, tag) {
 for (const e of events.filter(x => x.k === 'M' && x.uid)) {
   const kac = e.date === yarin ? 1 : 7;
   await gonder(e.uid, seminerMesaj(e, kac), `seminer-${e.date}-${kac}`);
+}
+
+// Uygulama sınavı gözetmenleri: 1 hafta önce ve bir önceki iş günü
+const gozetmenli = e => e.k === 'S' && /uygulama sınav/i.test(e.topic || '');
+for (const e of events.filter(x => gozetmenli(x) && (x.date === haftaya || yakin.includes(x.date)))) {
+  const kac = e.date === haftaya ? 7 : 1;
+  const gruplar = (await db.collection('sinavGruplari').doc(e.id).get()).data()?.gruplar || [];
+  const atanan = (await db.collection('gozetmenler').where('ev', '==', e.id).get()).docs.map(d => d.data());
+  for (const a of atanan) await gonder(a.uid, gozetmenMesaj(e, a.grup, gruplar[a.grup]?.hoca || '', kac, e.date === yarin), `gozetmen-${e.id}-${kac}`);
 }
 
 // Anlatıcılar: 1 hafta sonraki uygulamalar

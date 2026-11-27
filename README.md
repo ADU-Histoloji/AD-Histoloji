@@ -33,6 +33,14 @@ Yöneticiler her seminerin **Düzenle** menüsünden:
 
 Programa sonradan bir Salı günü histoloji sınavı eklenirse o Salıdaki seminer uyarıyla gösterilir (Yönetim → Yapılacak'ta da çıkar); **Sonrakileri kaydır** ile düzeltilir. "Seminer yok" Salıları `config/seminer` belgesinde tutulur.
 
+## Sınav gözetmenleri
+
+Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir hocası, her hocanın (varsayılan) 2 gözetmeni olur.
+- Takvimdeki sınav kartında "Gözetmen: 3/8" gibi doluluk görünür. **📝 Gözetmen ol** ile açılan pencerede asistan boş bir gruba yazılır, istersen başka gruba geçer ya da kendini çıkarır (×).
+- Yönetici aynı pencerede her grubun **Düzenle** kısmından hoca adını yazar, gözetmen sayısını −/+ ile değiştirir ve **Kişi ekle** ile atama yapar. Listede herkesin bu yıl aldığı gözetmenlik sayısı yazar, en az görev alan en üstte durur.
+- Önümüzdeki 3 haftada gözetmeni eksik sınavlar Yönetim → Yapılacak'ta görünür.
+- Kişi Profil → Görevlerim'de kendi gözetmenliklerini görür; **1 hafta önce** ve **bir önceki iş günü** hatırlatma bildirimi gelir (Pazartesi sınavları için Cuma).
+
 ## Yönetim ekranı
 
 **Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masasını seçmemiş kişiler ya da 2'den fazla kişi olan masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi) seçildiği anda kaydedilir.
