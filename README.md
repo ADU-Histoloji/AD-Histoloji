@@ -35,7 +35,7 @@ Programa sonradan bir Salı günü histoloji sınavı eklenirse o Salıdaki semi
 
 ## Sınav gözetmenleri
 
-Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir hocası, her hocanın (varsayılan) 2 gözetmeni olur.
+Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir hocası, her hocanın (varsayılan) 2 gözetmeni olur. Gruplar ve hocaları sabittir: 1. Alpaslan Gökçimen ve Gökçen Gökçe Tepeli, 2. Kemal Ergin, 3. Erkan Gümüş, 4. Esra Gökmen Yılmaz (`js/gozetmen.js` → `VARSAYILAN_HOCALAR`; bir sınav için farklıysa Düzenle'den değiştirilir).
 - Takvimdeki sınav kartında "Gözetmen: 3/8" gibi doluluk görünür. **📝 Gözetmen ol** ile açılan pencerede asistan boş bir gruba yazılır, istersen başka gruba geçer ya da kendini çıkarır (×).
 - Yönetici aynı pencerede her grubun **Düzenle** kısmından hoca adını yazar, gözetmen sayısını −/+ ile değiştirir ve **Kişi ekle** ile atama yapar. Listede herkesin bu yıl aldığı gözetmenlik sayısı yazar, en az görev alan en üstte durur.
 - Önümüzdeki 3 haftada gözetmeni eksik sınavlar Yönetim → Yapılacak'ta görünür.

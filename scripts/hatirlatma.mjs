@@ -51,12 +51,13 @@ for (const e of events.filter(x => x.k === 'M' && x.uid)) {
 }
 
 // Uygulama sınavı gözetmenleri: 1 hafta önce ve bir önceki iş günü
+const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Kemal Ergin', 'Erkan Gümüş', 'Esra Gökmen Yılmaz']; // js/gozetmen.js ile aynı
 const gozetmenli = e => e.k === 'S' && /uygulama sınav/i.test(e.topic || '');
 for (const e of events.filter(x => gozetmenli(x) && (x.date === haftaya || yakin.includes(x.date)))) {
   const kac = e.date === haftaya ? 7 : 1;
   const gruplar = (await db.collection('sinavGruplari').doc(e.id).get()).data()?.gruplar || [];
   const atanan = (await db.collection('gozetmenler').where('ev', '==', e.id).get()).docs.map(d => d.data());
-  for (const a of atanan) await gonder(a.uid, gozetmenMesaj(e, a.grup, gruplar[a.grup]?.hoca || '', kac, e.date === yarin), `gozetmen-${e.id}-${kac}`);
+  for (const a of atanan) await gonder(a.uid, gozetmenMesaj(e, a.grup, gruplar[a.grup]?.hoca ?? VARSAYILAN_HOCALAR[a.grup] ?? '', kac, e.date === yarin), `gozetmen-${e.id}-${kac}`);
 }
 
 // Anlatıcılar: 1 hafta sonraki uygulamalar
