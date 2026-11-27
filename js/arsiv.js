@@ -1,13 +1,10 @@
-import { $, $$, esc, state, onState, sheet, closeSheet, shrink, toast, trLower } from './util.js';
+import { $, $$, esc, state, onState, sheet, closeSheet, shrink, toast, trLower, konuId } from './util.js';
+import { onEvents } from './takvim.js';
 import { ready, db, F } from './fb.js';
 
-export const DERS = [
-  { k: 'tip1-hucre-organel', l: 'Tıp D1 · Hücre sitoplazması ve organelleri' },
-  { k: 'tip2-solunum', l: 'Tıp D2 · Solunum sistemi histolojisi' },
-  { k: 'dis1-bag', l: 'Diş D1 · Bağ dokusu histolojisi' },
-  { k: 'dis2-urogenital', l: 'Diş D2 · Ürogenital sistem histolojisi' },
-  { k: 'dis3-oral', l: 'Diş D3 · Oral kavite histolojisi' }
-];
+// Preparatların bağlanabileceği uygulama konuları takvimden gelir (sınıf · konu)
+export let DERS = [];
+const SINIF_SIRA = ['Tıp D1', 'Tıp D2', 'Diş D1', 'Diş D2', 'Diş D3'];
 // Boya önerileri: sık kullanılanlar + arşivde geçen bütün boyalar (serbest yazılabilir)
 const BOYA_ONERI = ['H&E', 'Masson trikrom', 'PAS', 'Gümüşleme', 'Mallory', 'Verhoeff', 'Orsein', 'Giemsa', 'Wright', 'LFB', 'Von Gieson', 'Osmiyum'];
 const boyalar = () => [...new Set([...BOYA_ONERI, ...PREPS.map(p => p.boya).filter(Boolean)])].sort((a, b) => a === 'H&E' ? -1 : b === 'H&E' ? 1 : a.localeCompare(b, 'tr'));
@@ -25,8 +22,12 @@ export const onPrepsChange = fn => { onChange = fn; };
 // Takvimde bir uygulamanın altında o derse bağlı preparatları gösterir
 export function linkedHtml(k) {
   const ps = PREPS.filter(p => (p.dersler || []).includes(k));
-  if (!ps.length) return ready ? '<div class="note">Arşivde bu derse bağlı preparat yok.</div>' : '';
-  return `<div class="linked">${ps.map(p => `<button class="lk" data-open="${esc(p.id)}">${esc(kodSeri(p))} ${esc(p.organ)}${bad(p) ? ' ⚠' : ''}</button>`).join('')}</div>`;
+  if (!ps.length) return '';
+  // Kod kod özet: "28 Böbrek · 14"; dokununca arşiv o kodla açılır
+  const g = new Map();
+  ps.forEach(p => { const x = g.get(p.kutu) || { kod: p.kutu, organ: p.organ, n: 0, bad: 0 }; x.n++; if (bad(p)) x.bad++; g.set(p.kutu, x); });
+  const liste = [...g.values()].sort((a, b) => (a.kod === '?') - (b.kod === '?') || String(a.kod).localeCompare(String(b.kod), 'tr', { numeric: true }));
+  return `<div class="linked"><span class="note">Preparatlar:</span>${liste.map(x => `<button class="lk" data-arsivkod="${esc(x.kod === '?' ? x.organ : x.kod)}">${x.kod === '?' ? '' : esc(x.kod) + ' '}${esc(x.organ)} · ${x.n}</button>`).join('')}</div>`;
 }
 
 function boyaFiltresi() {
@@ -99,7 +100,7 @@ async function openForm(p) {
    <div><label for="p-kirik">Kırık</label><input id="p-kirik" type="number" min="0" value="${esc(p.kirik || 0)}"></div></div>
    <label for="p-yap">Görülecek yapılar (her satıra bir tane)</label><textarea id="p-yap">${esc(p.yapilar)}</textarea>
    <label style="margin-top:10px">Kullanıldığı uygulamalar</label>
-   <div class="cks">${DERS.map(d => `<label><input type="checkbox" value="${d.k}"${(p.dersler || []).includes(d.k) ? ' checked' : ''}> ${d.l}</label>`).join('')}</div>
+   <div class="cks ders-cks">${SINIF_SIRA.map(sn => { const d = DERS.filter(x => x.s === sn); return d.length ? `<div class="ders-g">${esc(sn)}</div>` + d.map(x => `<label><input type="checkbox" value="${esc(x.k)}"${(p.dersler || []).includes(x.k) ? ' checked' : ''}> ${esc(x.topic)}</label>`).join('') : ''; }).join('')}</div>
    <label for="p-not">Not</label><input id="p-not" value="${esc(p.notlar)}" placeholder="Lamel kenarı çatlak">
    <label style="margin-top:10px">Fotoğraflar</label>
    <div class="photos" id="pp"></div>
@@ -166,11 +167,26 @@ function thumb(dataUrl) {
   });
 }
 
+function dersFiltresi() {
+  const el = $('#fd'), sec = el.value;
+  el.innerHTML = '<option value="">Tüm dersler</option>' + SINIF_SIRA.map(sn => {
+    const d = DERS.filter(x => x.s === sn); return d.length ? `<optgroup label="${esc(sn)}">${d.map(x => `<option value="${esc(x.k)}"${x.k === sec ? ' selected' : ''}>${esc(x.topic)}</option>`).join('')}</optgroup>` : '';
+  }).join('');
+}
+
 export function initArsiv() {
-  $('#fd').insertAdjacentHTML('beforeend', DERS.map(d => `<option value="${d.k}">${d.l}</option>`).join(''));
+  onEvents(ev => {
+    const m = new Map();
+    ev.filter(e => e.k === 'U').sort((a, b) => a.date.localeCompare(b.date)).forEach(e => { const k = konuId(e.s, e.topic); if (!m.has(k)) m.set(k, { k, s: e.s, topic: e.topic, l: `${e.s} · ${e.topic}` }); });
+    DERS = [...m.values()].sort((a, b) => SINIF_SIRA.indexOf(a.s) - SINIF_SIRA.indexOf(b.s));
+    dersFiltresi(); render();
+  });
 
   ['#q', '#fd', '#fb', '#fs'].forEach(s => $(s).addEventListener('input', render));
-  document.addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) openDetail(b.dataset.open); });
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-open]'); if (b) return openDetail(b.dataset.open);
+    const a = e.target.closest('[data-arsivkod]'); if (a) { $('#q').value = a.dataset.arsivkod; $('#fd').value = ''; $('#fb').value = ''; $('#fs').value = ''; location.hash = 'arsiv'; render(); }
+  });
   $('#add').addEventListener('click', () => {
     if (state.approved) openForm(null);
     else { location.hash = 'profil'; toast(state.user ? 'Hesabınız onay bekliyor.' : 'Preparat eklemek için giriş yapın.'); }

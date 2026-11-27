@@ -246,3 +246,4 @@ div.kura-son{padding-left:0}
 .kura-yeni{border:2px solid var(--d2)}
 .kura-kisi input[type=checkbox]{width:22px;height:22px;min-height:0;flex:0 0 22px;margin:0;padding:0;accent-color:var(--d1)}
 .st.mid{color:var(--mute)}
+.ders-cks .ders-g{font-weight:700;margin:10px 0 2px;color:var(--mute);font-size:13px;text-transform:uppercase;letter-spacing:.04em}

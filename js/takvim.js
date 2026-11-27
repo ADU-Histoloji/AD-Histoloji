@@ -1,6 +1,7 @@
 import { $, $$, esc, state, onState, sheet, closeSheet, toast } from './util.js';
 import { gozetmenKarti, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
 import { anlaticiDugmeleri, anlaticiTikla, onAnlaticiDegis, anlaticiKaydi } from './anlatici.js';
+import { konuId } from './util.js';
 import { ready, db, F } from './fb.js';
 
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
@@ -67,7 +68,8 @@ function renderWeek() {
     return `<div class="day${today ? ' is-today' : ''}">
       <div class="dh"><h2>${d.g}</h2><span class="date">${d.d.getDate()} ${AY[d.d.getMonth()]}</span>${today ? '<span class="tag">Bugün</span>' : ''}${nU >= 4 ? '<span class="tag" style="background:var(--d1)">Yoğun gün</span>' : ''}${duzenle() ? `<button class="linkbtn" data-ekle="${d.di}" style="margin-left:auto">+ Ders</button>` : ''}</div>
       ${ev.length ? ev.map(e => {
-        const first = e.ders && !seen.has(e.ders); if (e.ders) seen.add(e.ders);
+        // Arşivdeki preparatlar uygulama konusuna bağlanır; bir haftada her konu için bir kez gösterilir
+        const lk = e.k === 'U' && fromDb ? konuId(e.s, e.topic) : null, first = lk && !seen.has(lk); if (lk) seen.add(lk);
         return `<div class="ev ${kcls(e)}">
         <div class="time">${esc(e.t)}${e.e ? `<small>${esc(e.e)}</small>` : ''}</div>
         <div>
@@ -79,7 +81,7 @@ function renderWeek() {
           ${e.k === 'S' && fromDb ? gozetmenKarti(e) : ''}
           ${e.prep ? `<div class="prep">${esc(e.prep)}</div>` : ''}
           ${e.warn ? `<div class="warn">${esc(e.warn)}</div>` : ''}
-          ${first ? linkedFn(e.ders) : ''}
+          ${first ? linkedFn(lk) : ''}
           ${duzenle() && e.id ? `<button class="linkbtn" data-duzenle="${esc(e.id)}">Düzenle</button>` : ''}
           ${!state.admin && fromDb && e.k === 'M' && e.id && e.uid && e.uid === state.user?.uid ? `<button class="linkbtn" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>` : ''}
         </div></div>`;

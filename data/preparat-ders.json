@@ -1,0 +1,244 @@
+[
+ {
+  "s": "Diş D1",
+  "topic": "Epitel Dokusu: Örtü ve Bez Epiteli",
+  "kodlar": [
+   "9",
+   "8",
+   "26",
+   "34",
+   "15",
+   "28",
+   "10",
+   "23",
+   "24",
+   "25"
+  ]
+ },
+ {
+  "s": "Diş D1",
+  "topic": "Bağ Dokusu Histolojisi",
+  "kodlar": [
+   "1",
+   "3",
+   "21"
+  ]
+ },
+ {
+  "s": "Diş D1",
+  "topic": "Kan, Kıkırdak ve Kemik Dokuları",
+  "kodlar": [
+   "4",
+   "9",
+   "Larinks"
+  ]
+ },
+ {
+  "s": "Diş D1",
+  "topic": "Kas Dokusu Histolojisi",
+  "kodlar": [
+   "30",
+   "31",
+   "32",
+   "43"
+  ]
+ },
+ {
+  "s": "Diş D1",
+  "topic": "Sinir Dokusu ve Deri Histolojisi",
+  "kodlar": [
+   "45",
+   "46",
+   "47",
+   "48",
+   "47-48",
+   "49",
+   "34"
+  ]
+ },
+ {
+  "s": "Diş D2",
+  "topic": "Dolaşım, solunum ve lenfoid sistem",
+  "kodlar": [
+   "32",
+   "33",
+   "40",
+   "9",
+   "8-9",
+   "29",
+   "Larinks",
+   "5",
+   "6",
+   "7"
+  ]
+ },
+ {
+  "s": "Diş D2",
+  "topic": "Sindirim Sistemi Histolojisi",
+  "kodlar": [
+   "8",
+   "13",
+   "12",
+   "14",
+   "15",
+   "11",
+   "Appendiks",
+   "2",
+   "22"
+  ]
+ },
+ {
+  "s": "Diş D2",
+  "topic": "Ürogenital Sistem Histolojisi",
+  "kodlar": [
+   "28",
+   "27",
+   "26",
+   "54",
+   "55",
+   "55-56",
+   "50",
+   "51",
+   "50-51",
+   "52",
+   "53"
+  ]
+ },
+ {
+  "s": "Diş D2",
+  "topic": "Sinir ve Endokrin Sistem Histolojisi",
+  "kodlar": [
+   "45",
+   "46",
+   "47",
+   "48",
+   "47-48",
+   "49",
+   "35",
+   "36",
+   "38",
+   "22"
+  ]
+ },
+ {
+  "s": "Diş D3",
+  "topic": "Oral kavite histolojisi",
+  "kodlar": [
+   "41",
+   "43",
+   "23",
+   "24",
+   "25",
+   "5"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Mikrovillus, silya, stereosilya ve flagella",
+  "kodlar": [
+   "12",
+   "15",
+   "9",
+   "54",
+   "55-56",
+   "51",
+   "55"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Örtü epiteli",
+  "kodlar": [
+   "9",
+   "8",
+   "26",
+   "34",
+   "15",
+   "28",
+   "36"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Bez (salgı) epiteli",
+  "kodlar": [
+   "10",
+   "23",
+   "24",
+   "25",
+   "22",
+   "36",
+   "13"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Bağ dokusu hücre ve tipleri",
+  "kodlar": [
+   "1",
+   "3",
+   "21",
+   "33"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Kemik ve kıkırdak dokusu",
+  "kodlar": [
+   "9",
+   "Larinks"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Kas dokusu",
+  "kodlar": [
+   "30",
+   "31",
+   "32",
+   "43"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Sinir dokusu",
+  "kodlar": [
+   "45",
+   "46",
+   "47",
+   "48",
+   "47-48",
+   "49"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Kadın Genital Sistem",
+  "kodlar": [
+   "50",
+   "51",
+   "50-51",
+   "52",
+   "53"
+  ]
+ },
+ {
+  "s": "Tıp D1",
+  "topic": "Erkek Genital Sistemi",
+  "kodlar": [
+   "55",
+   "55-56",
+   "54"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Solunum Sistemi Histolojisi",
+  "kodlar": [
+   "9",
+   "8-9",
+   "29",
+   "Larinks"
+  ]
+ }
+]
