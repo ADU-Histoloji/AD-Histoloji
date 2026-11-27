@@ -197,3 +197,21 @@ details.card>summary{cursor:pointer;min-height:44px;display:flex;align-items:cen
 .masa-b span{color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .masa-b.sec{border-color:var(--d1);background:var(--soft)}
 .masa-b:disabled{opacity:.4;cursor:not-allowed}
+/* Seminer sırası */
+.sem-liste{display:flex;flex-direction:column;gap:8px}
+.sem-k{display:grid;grid-template-columns:52px 1fr;gap:4px 12px;align-items:start;background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--sem);border-radius:12px;padding:12px}
+.sem-k.ben{background:color-mix(in srgb,var(--sem) 8%,var(--bg))}
+.sem-k.gecti{opacity:.6}
+.sem-k.secili{outline:3px solid var(--sem)}
+.sem-k.bosluk{border-left-color:var(--line);padding:8px 12px;color:var(--mute);align-items:center}
+.sem-t{display:flex;flex-direction:column;font-variant-numeric:tabular-nums;line-height:1.2}
+.sem-t b{font-size:15px}.sem-t span{font-size:12px;color:var(--mute)}
+.sem-ic{min-width:0;overflow-wrap:anywhere}
+.sem-a{grid-column:2;display:flex;justify-content:flex-start}
+.sem-a:empty{display:none}
+.sem-k .warn{color:var(--uyg);font-size:14px;margin-top:4px}
+a.btn{display:inline-flex;align-items:center;text-decoration:none}
+.sem-k{grid-template-columns:60px 1fr auto}
+.sem-a{grid-column:auto}
+.sem-a .diger summary{min-height:36px;font-size:13px;padding:0 8px}
+.sem-t b{white-space:nowrap}

@@ -6,7 +6,7 @@ import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 const trAd = a => String(a || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ').trim();
 const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
 let users = [], unsub = null, eventCount = null;
-let anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
+let sinavG = new Set(), anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
 
 const bugunISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const gunEkle = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
@@ -33,6 +33,7 @@ function yapilacaklar() {
   const yeniDeg = degisiklik.filter(d => d.durum !== 'bakildi');
   const anlEksik = konular.filter(k => k.sonraki && k.sonraki <= sinir && !(anl[k.id] || {}).uid);
   const semEksik = seminerler.filter(e => e.date >= bugun && !e.uid);
+  const semCak = seminerler.filter(e => e.date >= bugun && sinavG.has(e.date));
   const say = {}; users.filter(u => u.onayli && u.masa).forEach(u => { say[u.masa] = (say[u.masa] || 0) + 1; });
   const tasan = Object.entries(say).filter(([m, n]) => n > MASA_KAP).map(([m]) => m);
   const masasiz = users.filter(u => u.onayli && !u.masa);
@@ -40,9 +41,10 @@ function yapilacaklar() {
   if (wait.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Onay bekleyenler</h3><div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div></div>`);
   if (yeniDeg.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Program değişikliği</h3><p>Fakülte programında ${yeniDeg.length} değişiklik bulundu.</p><button class="btn" data-git="prog">Değişikliklere bak</button></div>`);
   if (anlEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Anlatıcısı olmayan uygulamalar</h3><p class="note">Önümüzdeki 3 hafta. Seçtiğin anda kaydedilir.</p><div class="list">${anlEksik.map(anlSatir).join('')}</div></div>`);
+  if (semCak.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Seminer çakışması</h3><p>${semCak.map(e => esc(trTarih(e.date)) + ' · ' + esc(e.who || '')).join(', ')} günü histoloji sınavı var.</p><a class="btn" href="#seminer">Seminer sırasını aç</a></div>`);
   if (semEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Eşleşmemiş seminerler</h3><p class="note">Sunan kişiyi seç; kendi konusunu yazabilsin ve hatırlatma alsın.</p><div class="list">${semEksik.map(semSatir).join('')}</div></div>`);
   if (tasan.length || masasiz.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Masalar</h3>${tasan.length ? `<p>2'den fazla kişi olan masa: <b>${tasan.join(', ')}</b></p>` : ''}${masasiz.length ? `<p>Masasını henüz seçmemiş: ${masasiz.map(u => esc(u.ad)).join(', ')}</p>` : ''}<button class="btn sec" data-git="kisi">Kişilere git</button></div>`);
-  return { html: parcalar.join('') || '<div class="card" style="max-width:none"><h3>Her şey yolunda ✓</h3><p class="note">Bekleyen onay, program değişikliği, anlatıcısız uygulama ya da eşleşmemiş seminer yok.</p></div>', sayi: wait.length + yeniDeg.length + anlEksik.length + semEksik.length + tasan.length + masasiz.length };
+  return { html: parcalar.join('') || '<div class="card" style="max-width:none"><h3>Her şey yolunda ✓</h3><p class="note">Bekleyen onay, program değişikliği, anlatıcısız uygulama ya da eşleşmemiş seminer yok.</p></div>', sayi: wait.length + yeniDeg.length + anlEksik.length + semEksik.length + semCak.length + tasan.length + masasiz.length };
 }
 
 function kisilerHtml() {
@@ -89,6 +91,7 @@ function programHtml() {
     <div class="card" style="max-width:none"><h3>Seminerler</h3>
       <p class="note">Sunan kişiyi uygulamadaki hesabıyla eşleştir; seçtiğin anda kaydedilir. Adı kayıtla birebir aynı olanlar kendiliğinden eşleşir.</p>
       <div class="list">${semListe.map(semSatir).join('') || '<p class="note">Yaklaşan seminer yok.</p>'}</div>
+      <a class="btn sec" href="#seminer" style="margin-top:8px">Seminer sırasını aç (kaydır, yer değiştir, ekle)</a>
       <button class="linkbtn" data-gecmis="sem">${gecmisSem ? 'Geçmiş seminerleri gizle' : 'Geçmiş seminerleri de göster'}</button></div>
     <details class="card" style="max-width:none"><summary><b>Ders programını yükle</b> <span class="note">· veritabanında ${eventCount ?? '…'} ders</span></summary>
       <p class="note"><b>Yeni dersleri ekle:</b> Uygulamayla gelen programda olup takvimde olmayan dersleri ekler; elle yaptığın düzeltmelere dokunmaz.<br><b>Tümünü değiştir:</b> Takvimi silip baştan yazar; sadece yeni öğretim yılı başında kullan.</p>
@@ -206,6 +209,7 @@ export function initYonetim() {
       if (!k.sonraki && e.date >= bugun) k.sonraki = e.date;
     });
     const yeni = [...m.values()].sort((a, b) => (a.sonraki || a.son).localeCompare(b.sonraki || b.son));
+    sinavG = new Set(ev.filter(e => e.k === 'S').map(e => e.date));
     const sem = ev.filter(e => e.k === 'M' && e.id).sort((a, b) => a.date.localeCompare(b.date));
     const degisti = JSON.stringify(yeni) !== JSON.stringify(konular) || JSON.stringify(sem.map(e => [e.id, e.uid, e.topic, e.who])) !== JSON.stringify(seminerler.map(e => [e.id, e.uid, e.topic, e.who]));
     konular = yeni; seminerler = sem;

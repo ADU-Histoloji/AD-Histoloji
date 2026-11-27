@@ -83,6 +83,12 @@ service cloud.firestore {
       allow write: if admin();
     }
 
+    // Seminer sırası ayarları: seminer yapılmayacak Salılar
+    match /config/seminer {
+      allow read: if approved();
+      allow write: if admin();
+    }
+
     // Her uygulama konusunun anlatıcısı
     match /anlaticilar/{id} {
       allow read: if true;

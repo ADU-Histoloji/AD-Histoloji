@@ -6,9 +6,10 @@ import { initHesap } from './hesap.js';
 import { initYonetim } from './yonetim.js';
 import { initUygulamalar } from './uygulamalar.js';
 import { initDuyurular } from './duyurular.js';
+import { initSeminer } from './seminer.js';
 
-const VIEWS = ['takvim', 'uygulama', 'arsiv', 'profil', 'yonetim'];
-const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', profil: 'Hesabım', yonetim: 'Yönetim' };
+const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim'];
+const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
@@ -27,6 +28,7 @@ onPrepsChange(rerenderTakvim);
 initHesap();
 initYonetim();
 initDuyurular();
+initSeminer();
 route();
 
 if (ready) {

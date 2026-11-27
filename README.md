@@ -20,6 +20,19 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 
 Her asistan Profil'deki **Görevlerim** kartında masasını görür; kayıt olunca masasını kendisi seçer, gerekirse **Değiştir** ile değiştirir (her masa en fazla 2 kişilik, dolu masalar seçilemez; yönetici Yönetim → Kişiler'den de değiştirebilir). Ayrıca yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
 
+## Seminer sırası
+
+Alt menüdeki **Seminer** ekranı herkese yaklaşan seminerleri Salı Salı gösterir; histoloji sınavı olan ve "seminer yok" denen Salılar da listede görünür. Sunan kişi kendi seminerine konusunu buradan da yazabilir.
+
+Yöneticiler her seminerin **Düzenle** menüsünden:
+- **Bu hafta seminer yok:** O Salı boş geçilir (neden yazılabilir: tatil, kongre…), o haftanın ve sonraki seminerlerin hepsi birer uygun Salı ileri kayar. Boş geçilen Salıdaki **Geri al** her şeyi bir hafta geri çeker.
+- **Yer değiştir:** İki seminerin sunucuları (konu ve danışmanıyla) yer değiştirir, tarihler aynı kalır.
+- **Sıradan çıkar:** Seminer silinir, sonrakiler öne kayar.
+- **+ Sıranın sonuna ekle:** Yeni kişi sıradaki ilk uygun Salıya eklenir.
+- Araya boş bir Salı düşmüşse **Sonrakileri buraya çek** boşluğu kapatır.
+
+Programa sonradan bir Salı günü histoloji sınavı eklenirse o Salıdaki seminer uyarıyla gösterilir (Yönetim → Yapılacak'ta da çıkar); **Sonrakileri kaydır** ile düzeltilir. "Seminer yok" Salıları `config/seminer` belgesinde tutulur.
+
 ## Yönetim ekranı
 
 **Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masasını seçmemiş kişiler ya da 2'den fazla kişi olan masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi) seçildiği anda kaydedilir.
@@ -161,5 +174,5 @@ Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, �
 - [x] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
 - [x] Seminerler takvimde ve pazartesi bildiriminde (2026-2027 güz listesi, sınav günleri atlanarak)
 - [x] Seminer sunan kişinin kendi konusunu yazması (Yönetim → Program → Seminerler; adı kayıtla aynı olanlar kendiliğinden eşleşir; pazartesi hatırlatması)
-- [ ] Seminer sırası ekranı (tatil/sınav haftalarında otomatik kayma, takas)
+- [x] Seminer sırası ekranı (tatil/sınav haftalarında kayma, yer değiştirme, ekleme/çıkarma)
 - [ ] Doğum günleri ve özel günler takvimde
