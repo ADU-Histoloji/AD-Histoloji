@@ -1,0 +1,25 @@
+name: Programı yükle
+
+on:
+  workflow_dispatch:
+    inputs:
+      sadece_rapor:
+        description: 'Sadece karşılaştır, hiçbir şeyi değiştirme'
+        type: boolean
+        default: false
+
+jobs:
+  yukle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Programı yükle
+        run: node scripts/program-yukle.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SADECE_RAPOR: ${{ inputs.sadece_rapor }}
