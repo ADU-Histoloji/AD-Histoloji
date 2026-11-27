@@ -148,3 +148,7 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:15px;z-index:30;max-width:90vw}
 .banner{background:var(--soft);border-left:4px solid var(--d1);border-radius:0 10px 10px 0;padding:10px 14px;margin:10px 0;font-size:15px}
 .linkbtn{appearance:none;background:none;border:0;color:var(--d1);font:600 15px Inter,sans-serif;cursor:pointer;padding:8px 0;min-height:44px;text-decoration:underline}
+/* metin butonları hiçbir zaman yuvarlak kapatma düğmesi boyutuna küçülmesin */
+.btn.x,.btn[data-close]{width:auto;height:auto;border-radius:10px;font-size:15px;line-height:1.2}
+.acts .btn{flex:0 0 auto}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
