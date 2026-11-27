@@ -1,0 +1,22 @@
+name: Geçici - program PDF metni
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dok:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y poppler-utils >/dev/null
+      - name: Metin
+        run: |
+          for u in \
+            https://fakulte.adu.edu.tr/med/webfolders/files/20261109095633-DJCKRFUTYCY7TYNO1L3G-KARADEVECI-29614237.pdf \
+            https://fakulte.adu.edu.tr/med/webfolders/files/20260930102834-OFKC0WTWSJ7X8X49E83Z-KARADEVECI-530084510.pdf \
+            https://fakulte.adu.edu.tr/med/webfolders/files/20260904154804-RP4HA32EG3YI3DPSX7IG-KARADEVECI-195843002.pdf \
+            https://fakulte.adu.edu.tr/med/webfolders/files/20260929140821-YSUIMSZVGQYO33HLXVIN-KARADEVECI-314866345.pdf \
+            https://fakulte.adu.edu.tr/med/webfolders/files/20260929140828-TKCEUIO3NL88BT6YSOYQ-KARADEVECI-314866345.pdf ; do
+            echo "##### DOSYA $u"
+            curl -sL "$u" -o d.pdf
+            pdftotext -layout d.pdf - | sed 's/^/L| /'
+          done
