@@ -163,5 +163,5 @@ export function initArsiv() {
   render();
   if (!ready) return;
   F.onSnapshot(F.collection(db, 'preps'), s => { PREPS = s.docs.map(d => ({ id: d.id, ...d.data() })); render(); onChange(); },
-    () => { $('#amsg').textContent = 'Arşiv yüklenemedi.'; });
+    () => { $('#amsg').innerHTML = state.approved ? 'Arşiv yüklenemedi.' : 'Preparat arşivi bölüm üyelerine açık. Görmek için <a href="#profil">giriş yap</a>.'; });
 }

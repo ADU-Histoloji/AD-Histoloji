@@ -155,6 +155,13 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun** alanına bir tarih yazılırsa o gün çalışmış gibi davranır (ör. 08.12 seminerinin bir gün öncesi için `2026-12-07`). **test** işaretliyse mesajlar asıl kişiye değil yöneticilere gider; **kuru** işaretliyse hiçbir şey gönderilmez, sadece kime ne gideceği görev kaydına yazılır.
 
+## Gizlilik ve erişim
+
+- Giriş ekranındaki isim listesi sadece **bölüm kodunu** girenlere görünür. Liste, kodun özetinden türetilen gizli bir adreste (`kodlar/{kimlik}/kisiler`) durur; kodu bilmeyen bu adresi bulamaz. Telefon kodu bir kere sorar ve hatırlar.
+- Takvim (veritabanındaki hali), seminerler, anlatıcılar, preparat arşivi, masalar, katılımlar ve doğum günleri sadece **onaylanmış üyelere** açıktır. Giriş yapmamış biri sadece fakültenin zaten yayımladığı ders programını (`data/events.json`) görür; seminer sunanların adları bu dosyada tutulmaz.
+- Bölüm kodu Yönetim → Kişiler → **Bölüm kodu**'ndan değiştirilir (en az 6 karakter, harf ve rakam karışık). Değişince isim listesi yeni adrese taşınır, eskisi silinir; kayıtlı kişilerin girişi bozulmaz, sadece yeni kodu bir kez girerler.
+- PIN'ler Google'ın giriş sisteminde şifreli tutulur; yöneticiler dahil kimse göremez. Çok sayıda hatalı denemede Google hesabı geçici olarak kilitler.
+
 ## Yedekleme
 
 **Veritabanı yedeği** görevi her pazar gece 04:30'da veritabanının tamamını (kişiler, takvim, preparat arşivi ve fotoğrafları, anlatıcılar, katılımlar, seminer ayarları; telefonların bildirim adresleri hariç) şifreleyip GitHub'da saklar. Her yedek 90 gün tutulur, yani geriye dönük yaklaşık 13 haftalık yedek hep vardır. Actions → Veritabanı yedeği → bir çalıştırma → en alttaki **Artifacts** kısmında görünür. Depo herkese açık olduğu için yedekler şifrelidir; şifresiz hali hiçbir yerde durmaz.

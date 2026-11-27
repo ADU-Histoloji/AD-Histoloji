@@ -1,4 +1,4 @@
-import { $, esc, state, onState, toast, sha256 } from './util.js';
+import { $, esc, state, onState, toast, sha256, listeKimligi, KOD_MIN } from './util.js';
 import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
 import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
@@ -6,7 +6,7 @@ import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 const trAd = a => String(a || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ').trim();
 const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
 let users = [], unsub = null, eventCount = null;
-let sinavG = new Set(), anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
+let uyeKid = undefined, sinavG = new Set(), anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
 
 const bugunISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const gunEkle = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
@@ -27,6 +27,11 @@ const semSatir = e => `<div class="li" data-sem="${esc(e.id)}">
   <span style="flex:1 1 16em"><span class="nm">${esc(trTarih(e.date))} · ${esc(e.who || '')}</span><br><span class="note">${esc(e.topic || 'Konu henüz yazılmadı')}</span></span>
   ${kisiSecici('sem', e.uid, 'Eşleştirilmedi')}</div>`;
 
+const kodFormu = (baslik, aciklama, dugme) => `<form class="card f-kod" style="max-width:none"><h3>${baslik}</h3>
+      <p class="note">${aciklama}</p>
+      <div class="field"><label>Bölüm kodu (en az ${KOD_MIN} karakter; harf ve rakam karışık olsun)</label><input class="y-kod" required autocomplete="off" autocapitalize="off"></div>
+      <button class="btn" type="submit">${dugme}</button></form>`;
+
 function yapilacaklar() {
   const bugun = bugunISO(), sinir = gunEkle(bugun, 21);
   const wait = users.filter(u => !u.onayli);
@@ -38,13 +43,14 @@ function yapilacaklar() {
   const tasan = Object.entries(say).filter(([m, n]) => n > MASA_KAP).map(([m]) => m);
   const masasiz = users.filter(u => u.onayli && !u.masa);
   const parcalar = [];
+  if (uyeKid === null) parcalar.push(kodFormu('🔒 Güvenlik güncellemesi', 'İsim listesi artık sadece bölüm kodunu bilenlere görünecek. Bunun için bölüm kodunu bir kez gir: şu anki kodu yazabilir ya da yeni bir kod belirleyebilirsin. Yeni kod belirlersen WhatsApp grubunda paylaş. Kayıtlı kişilerin girişi bozulmaz.', 'Güncellemeyi tamamla'));
   if (wait.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Onay bekleyenler</h3><div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div></div>`);
   if (yeniDeg.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Program değişikliği</h3><p>Fakülte programında ${yeniDeg.length} değişiklik bulundu.</p><button class="btn" data-git="prog">Değişikliklere bak</button></div>`);
   if (anlEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Anlatıcısı olmayan uygulamalar</h3><p class="note">Önümüzdeki 3 hafta. Seçtiğin anda kaydedilir.</p><div class="list">${anlEksik.map(anlSatir).join('')}</div></div>`);
   if (semCak.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Seminer çakışması</h3><p>${semCak.map(e => esc(trTarih(e.date)) + ' · ' + esc(e.who || '')).join(', ')} günü histoloji sınavı var.</p><a class="btn" href="#seminer">Seminer sırasını aç</a></div>`);
   if (semEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Eşleşmemiş seminerler</h3><p class="note">Sunan kişiyi seç; kendi konusunu yazabilsin ve hatırlatma alsın.</p><div class="list">${semEksik.map(semSatir).join('')}</div></div>`);
   if (tasan.length || masasiz.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Masalar</h3>${tasan.length ? `<p>2'den fazla kişi olan masa: <b>${tasan.join(', ')}</b></p>` : ''}${masasiz.length ? `<p>Masasını henüz seçmemiş: ${masasiz.map(u => esc(u.ad)).join(', ')}</p>` : ''}<button class="btn sec" data-git="kisi">Kişilere git</button></div>`);
-  return { html: parcalar.join('') || '<div class="card" style="max-width:none"><h3>Her şey yolunda ✓</h3><p class="note">Bekleyen onay, program değişikliği, anlatıcısız uygulama ya da eşleşmemiş seminer yok.</p></div>', sayi: wait.length + yeniDeg.length + anlEksik.length + semEksik.length + semCak.length + tasan.length + masasiz.length };
+  return { html: parcalar.join('') || '<div class="card" style="max-width:none"><h3>Her şey yolunda ✓</h3><p class="note">Bekleyen onay, program değişikliği, anlatıcısız uygulama ya da eşleşmemiş seminer yok.</p></div>', sayi: (uyeKid === null ? 1 : 0) + wait.length + yeniDeg.length + anlEksik.length + semEksik.length + semCak.length + tasan.length + masasiz.length };
 }
 
 function kisilerHtml() {
@@ -59,10 +65,7 @@ function kisilerHtml() {
           <button class="btn sec" data-rol="${u.rol === 'yonetici' ? 'asistan' : 'yonetici'}">${u.rol === 'yonetici' ? 'Yöneticilikten al' : 'Yönetici yap'}</button>
           <button class="btn del" data-sil="${esc(u.id)}">Kaydı sıfırla</button></div></details>`}
       </span></div>`).join('') || '<p class="note">Henüz onaylı kişi yok.</p>'}</div></div>
-    <form class="card" id="f-kod"><h3>Bölüm kodu</h3>
-      <p class="note">Yeni kayıtlar için gereken kod. Değiştirirsen yeni kodu WhatsApp grubunda paylaş.</p>
-      <div class="field"><label for="y-kod">Yeni bölüm kodu</label><input id="y-kod" required autocomplete="off"></div>
-      <button class="btn sec" type="submit">Kodu değiştir</button></form>`;
+    ${kodFormu('Bölüm kodu', 'Giriş ve kayıt için gereken kod. Değiştirirsen yeni kodu WhatsApp grubunda paylaş; kişiler bir sonraki girişte yeni kodu yazar. Kayıtlı kişilerin girişi bozulmaz.', 'Kodu değiştir')}`;
 }
 
 function uygulamalarHtml() {
@@ -142,10 +145,13 @@ async function onClick(e) {
     else if (b.dataset.gecmis) { if (b.dataset.gecmis === 'anl') gecmisAnl = !gecmisAnl; else gecmisSem = !gecmisSem; render(); }
     else if (b.dataset.onay) {
       await F.updateDoc(F.doc(db, 'users', b.dataset.onay), { onayli: true });
-      await F.updateDoc(F.doc(db, 'people', b.dataset.onay), { onayli: true }); toast('Onaylandı');
+      if (uyeKid) await F.updateDoc(F.doc(db, 'kodlar', uyeKid, 'kisiler', b.dataset.onay), { onayli: true }).catch(() => { });
+      toast('Onaylandı');
     } else if (b.dataset.sil) {
       if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Emin misin?'; return; }
-      await F.deleteDoc(F.doc(db, 'people', b.dataset.sil)); await F.deleteDoc(F.doc(db, 'users', b.dataset.sil)); toast('Kayıt silindi');
+      if (uyeKid) await F.deleteDoc(F.doc(db, 'kodlar', uyeKid, 'kisiler', b.dataset.sil));
+      await F.deleteDoc(F.doc(db, 'people', b.dataset.sil)).catch(() => { });
+      await F.deleteDoc(F.doc(db, 'users', b.dataset.sil)); toast('Kayıt silindi');
     } else if (b.dataset.rol) {
       await F.updateDoc(F.doc(db, 'users', b.closest('[data-u]').dataset.u), { rol: b.dataset.rol }); toast('Kaydedildi');
     } else if (b.dataset.bak) {
@@ -187,7 +193,9 @@ async function importProgram() {
   btn.disabled = true; msg.textContent = 'Yükleniyor…';
   const j = await (await fetch('data/events.json', { cache: 'no-store' })).json();
   const ops = [];
-  for (const c of ['events', 'notices']) (await F.getDocs(F.collection(db, c))).forEach(d => ops.push(['del', d.ref]));
+  // Seminerler dosyada tutulmaz (isimler herkese açık dosyada durmasın); silinmezler
+  (await F.getDocs(F.collection(db, 'events'))).forEach(d => { if (d.data().k !== 'M') ops.push(['del', d.ref]); });
+  (await F.getDocs(F.collection(db, 'notices'))).forEach(d => ops.push(['del', d.ref]));
   (j.events || []).forEach(ev => ops.push(['set', F.doc(F.collection(db, 'events')), ev]));
   (j.notices || []).forEach(n => ops.push(['set', F.doc(F.collection(db, 'notices')), n]));
   for (let i = 0; i < ops.length; i += 400) {
@@ -197,6 +205,26 @@ async function importProgram() {
   }
   msg.textContent = `${(j.events || []).length} ders ve ${(j.notices || []).length} not yüklendi.`;
   btn.disabled = false; btn.dataset.sure = ''; btn.textContent = 'Tümünü değiştir';
+}
+
+// İsim listesini yeni kodun gizli adresine taşır; eski adres ve eski açık liste silinir
+async function koduDegistir(kod) {
+  const yeni = await listeKimligi(kod), eski = uyeKid; // uyeKid aşağıdaki yazımla değişir, eskisini sakla
+  if (yeni === eski) return;
+  const kaynak = eski
+    ? (await F.getDocs(F.collection(db, 'kodlar', eski, 'kisiler'))).docs
+    : (await F.getDocs(F.collection(db, 'people'))).docs;
+  await F.setDoc(F.doc(db, 'kodlar', yeni), { t: F.serverTimestamp() });
+  const b = F.writeBatch(db);
+  kaynak.forEach(d => b.set(F.doc(db, 'kodlar', yeni, 'kisiler', d.id), { ad: d.data().ad, email: d.data().email, onayli: !!d.data().onayli }));
+  await b.commit();
+  await F.setDoc(F.doc(db, 'config', 'uye'), { kid: yeni });
+  const sil = F.writeBatch(db);
+  kaynak.forEach(d => sil.delete(d.ref));
+  if (eski) sil.delete(F.doc(db, 'kodlar', eski));
+  await sil.commit();
+  await F.updateDoc(F.doc(db, 'config', 'public'), { kodHash: F.deleteField() }).catch(() => { });
+  try { localStorage.setItem('hp-liste', yeni); } catch (e) { }
 }
 
 export function initYonetim() {
@@ -219,10 +247,13 @@ export function initYonetim() {
   $('#v-yonetim').addEventListener('click', onClick);
   $('#v-yonetim').addEventListener('change', onChange);
   $('#v-yonetim').addEventListener('submit', async e => {
-    if (e.target.id !== 'f-kod') return; e.preventDefault();
-    const k = $('#y-kod').value.trim(); if (k.length < 4) { toast('Kod en az 4 karakter olmalı'); return; }
-    try { await F.updateDoc(F.doc(db, 'config', 'public'), { kodHash: await sha256(k) }); e.target.reset(); toast('Bölüm kodu değişti'); }
-    catch (x) { toast('Kod değiştirilemedi'); }
+    if (!e.target.classList.contains('f-kod')) return; e.preventDefault();
+    const k = e.target.querySelector('.y-kod').value.trim();
+    if (k.length < KOD_MIN) { toast(`Kod en az ${KOD_MIN} karakter olmalı`); return; }
+    const btn = e.target.querySelector('button'); btn.disabled = true;
+    try { await koduDegistir(k); e.target.reset(); toast('Bölüm kodu kaydedildi'); }
+    catch (x) { console.error(x); toast('Kod değiştirilemedi'); }
+    btn.disabled = false;
   });
   if (!ready) return;
   const yeniden = () => { if (!yaziyor()) render(); };
@@ -231,6 +262,7 @@ export function initYonetim() {
       unsub = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(d => ({ id: d.id, ...d.data() })); otoEslestir(); yeniden(); });
       F.onSnapshot(F.collection(db, 'events'), q => { eventCount = q.size; yeniden(); });
       F.onSnapshot(F.query(F.collection(db, 'degisiklikler'), F.orderBy('t', 'desc'), F.limit(60)), q => { degisiklik = q.docs.map(d => ({ id: d.id, ...d.data() })); yeniden(); }, () => { });
+      F.onSnapshot(F.doc(db, 'config', 'uye'), q => { uyeKid = q.exists() ? q.data().kid : null; yeniden(); }, () => { uyeKid = null; yeniden(); });
       F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anl = {}; q.docs.forEach(d => { anl[d.id] = d.data(); }); yeniden(); }, () => { });
     }
     if (!s.admin && unsub) { unsub(); unsub = null; }

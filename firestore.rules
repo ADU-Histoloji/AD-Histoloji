@@ -14,24 +14,41 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/config/public).data.kurucu == request.auth.uid;
     }
 
-    // Bölüm kodunun özeti ve kurucu bilgisi
+    // Kurucu bilgisi (ilk kurulumda bir kere yazılır)
     match /config/public {
       allow read: if true;
       allow create: if signedIn()
         && request.resource.data.kurucu == request.auth.uid
-        && request.resource.data.keys().hasOnly(['kurucu', 'kodHash']);
+        && request.resource.data.keys().hasOnly(['kurucu']);
       allow update: if admin() && request.resource.data.kurucu == resource.data.kurucu;
       allow delete: if false;
     }
 
-    // Giriş ekranındaki isim listesi (sadece ad ve giriş için gereken teknik adres)
+    // Bölüm kodu: isim listesi, kodun özetinden türetilen gizli bir adreste durur (kodlar/{kid}).
+    // Kodu bilmeyen bu adresi bulamaz; koleksiyon listelenemez.
+    match /config/uye {
+      allow read: if approved();
+      allow write: if admin() || isKurucu();
+    }
+    match /kodlar/{kid} {
+      allow get: if true;
+      allow list: if false;
+      allow create, delete: if admin() || isKurucu();
+      // Giriş ekranındaki isim listesi (sadece ad ve giriş için gereken teknik adres)
+      match /kisiler/{uid} {
+        allow read: if exists(/databases/$(database)/documents/kodlar/$(kid));
+        allow create: if signedIn() && request.auth.uid == uid
+          && exists(/databases/$(database)/documents/kodlar/$(kid))
+          && request.resource.data.keys().hasOnly(['ad', 'email', 'onayli'])
+          && request.resource.data.email == request.auth.token.email
+          && (request.resource.data.onayli == false || isKurucu());
+        allow update, delete: if admin();
+      }
+    }
+
+    // Eski, herkese açık isim listesi: sadece taşıma için yöneticiler okuyup silebilir
     match /people/{uid} {
-      allow read: if true;
-      allow create: if signedIn() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['ad', 'email', 'onayli'])
-        && request.resource.data.email == request.auth.token.email
-        && (request.resource.data.onayli == false || isKurucu());
-      allow update, delete: if admin();
+      allow read, delete: if admin();
     }
 
     // Kişi bilgileri: rol, onay, masa, seminer sırası, doğum günü
@@ -55,9 +72,9 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
-    // Ders programı: herkes görür, yöneticiler değiştirir
+    // Ders programı: onaylı üyeler görür, yöneticiler değiştirir
     match /events/{id} {
-      allow read: if true;
+      allow read: if approved();
       allow write: if admin();
       // Seminer sunan kişi sadece kendi seminerinin konusunu değiştirebilir
       allow update: if approved() && resource.data.k == 'M' && resource.data.uid == request.auth.uid
@@ -65,7 +82,7 @@ service cloud.firestore {
         && request.resource.data.topic is string && request.resource.data.topic.size() <= 200;
     }
     match /notices/{id} {
-      allow read: if true;
+      allow read: if approved();
       allow write: if admin();
     }
 
@@ -91,7 +108,7 @@ service cloud.firestore {
 
     // Her uygulama konusunun anlatıcısı
     match /anlaticilar/{id} {
-      allow read: if true;
+      allow read: if approved();
       allow write: if admin();
       // Asistan anlatıcısı olmayan bir konuyu kendi adına alabilir, kendi aldığını bırakabilir
       allow create: if approved()
@@ -127,13 +144,13 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Preparat arşivi: herkes görür, onaylı kişiler ekler ve düzenler
+    // Preparat arşivi: onaylı kişiler görür, ekler ve düzenler
     match /preps/{id} {
-      allow read: if true;
+      allow read: if approved();
       allow create, update: if approved() && request.resource.data.organ is string && request.resource.data.organ.size() > 0;
       allow delete: if approved();
       match /photos/{pid} {
-        allow read: if true;
+        allow read: if approved();
         allow create: if approved() && request.resource.data.data is string && request.resource.data.data.size() < 1000000;
         allow delete: if approved();
       }

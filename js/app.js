@@ -42,6 +42,8 @@ if (ready) {
     unsubMe = F.onSnapshot(F.doc(db, 'users', user.uid), s => {
       const p = s.exists() ? s.data() : null;
       const approved = !!p?.onayli, admin = approved && p.rol === 'yonetici';
+      // Onay bekleyen kişi onaylanınca, üye verilerini okuyabilmesi için sayfa yenilenir
+      if (approved && state.profileLoaded && state.profile && !state.approved) { location.reload(); return; }
       setState({ profile: p, profileLoaded: true, approved, admin });
       $('#nav-yonetim').classList.toggle('hide', !admin);
       route();

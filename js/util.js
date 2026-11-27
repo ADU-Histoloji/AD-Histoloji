@@ -42,3 +42,7 @@ export const trLower = s => String(s || '').toLocaleLowerCase('tr');
 export const konuId = (s, topic) => (s + '-' + topic).toLocaleLowerCase('tr')
   .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 120);
+
+// Bölüm kodundan isim listesinin gizli adresi türetilir. Kodu bilmeyen liste adresini bulamaz.
+export const listeKimligi = async kod => sha256('histoloji-liste:' + String(kod).trim().toLocaleLowerCase('tr'));
+export const KOD_MIN = 6;

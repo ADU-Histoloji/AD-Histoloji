@@ -1,4 +1,4 @@
-import { $, esc, state, onState, toast, sha256 } from './util.js';
+import { $, esc, state, onState, toast, sha256, listeKimligi, KOD_MIN } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
@@ -8,7 +8,8 @@ import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
-let people = [];
+let people = [], kid = null, kidDurum = 'yok', unsubP = null; // kidDurum: yok | bakiliyor | tamam | yanlis
+try { kid = localStorage.getItem('hp-liste') || null; } catch (e) { }
 let config = null, configLoaded = false;
 let anlaticilar = {}, kisiler = [], unsubK = null, masaDegis = false;
 const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
@@ -25,6 +26,7 @@ function renderGuest() {
   const el = $('#v-profil');
   if (!configLoaded) { el.innerHTML = '<p class="note">Yükleniyor…</p>'; return; }
   const kurulum = !config;
+  if (!kurulum && kidDurum !== 'tamam') return renderKod();
   const names = people.slice().sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
   el.innerHTML = `
     <div class="chips" role="tablist">
@@ -44,7 +46,7 @@ function renderGuest() {
     <form class="card" id="f-kayit">
       <h3>${kurulum ? 'İlk kurulum' : 'Kayıt ol'}</h3>
       ${kurulum ? '<p class="banner">Uygulamaya ilk kaydolan sensin. Hesabın yönetici olarak açılacak. Aşağıda belirlediğin bölüm kodunu diğer asistanlarla paylaşacaksın.</p>' : ''}
-      <div class="field"><label for="k-kod">${kurulum ? 'Bölüm kodunu belirle' : 'Bölüm kodu'}</label><input id="k-kod" required autocomplete="off" placeholder="${kurulum ? 'histo2027' : 'WhatsApp grubunda paylaşılan kod'}"></div>
+      ${kurulum ? `<div class="field"><label for="k-kod">Bölüm kodunu belirle (en az ${KOD_MIN} karakter)</label><input id="k-kod" required autocomplete="off" placeholder="histo2027"></div>` : ''}
       <div class="field"><label for="k-ad">Ad soyad</label><input id="k-ad" required autocomplete="name" placeholder="Ayşe Kaya"></div>
       <div class="row2">
         <div class="field"><label for="k-pin">6 haneli PIN</label><input id="k-pin" class="pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" required></div>
@@ -53,10 +55,41 @@ function renderGuest() {
       ${dogumFields()}
       <button class="btn" type="submit">${kurulum ? 'Kurulumu tamamla' : 'Kayıt ol'}</button>
       <p class="err" id="k-err"></p>
-    </form>`}`;
+    </form>`}
+    ${kurulum ? '' : '<button class="linkbtn" id="kod-degis">Bölüm kodunu yeniden gir</button>'}`;
+  $('#kod-degis')?.addEventListener('click', () => kodAyarla(null));
   el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; renderGuest(); }));
   if (mode === 'giris') $('#f-giris').addEventListener('submit', giris);
   else $('#f-kayit').addEventListener('submit', kayit);
+}
+
+// Giriş ve kayıt ekranından önce bölüm kodu sorulur; isim listesi sadece kodu bilenlere görünür
+function renderKod() {
+  const el = $('#v-profil');
+  if (kidDurum === 'bakiliyor') { el.innerHTML = '<p class="note">Bölüm kodu kontrol ediliyor…</p>'; return; }
+  el.innerHTML = `<form class="card" id="f-kod-gir">
+    <h3>Bölüm kodu</h3>
+    <p class="note">Giriş yapmak ya da kayıt olmak için bölümün WhatsApp grubunda paylaşılan kodu gir. Bu telefonda bir kere girmen yeterli.</p>
+    <div class="field"><label for="kg-kod">Bölüm kodu</label><input id="kg-kod" required autocomplete="off" autocapitalize="off"></div>
+    <button class="btn" type="submit">Devam</button>
+    <p class="err" id="kg-err">${kidDurum === 'yanlis' ? 'Bölüm kodu yanlış.' : ''}</p>
+  </form>`;
+  $('#f-kod-gir').addEventListener('submit', async e => { e.preventDefault(); await kodAyarla(await listeKimligi($('#kg-kod').value)); });
+}
+
+async function kodAyarla(yeni) {
+  if (unsubP) { unsubP(); unsubP = null; }
+  people = []; kid = yeni;
+  try { yeni ? localStorage.setItem('hp-liste', yeni) : localStorage.removeItem('hp-liste'); } catch (e) { }
+  if (!yeni) { kidDurum = 'yok'; render(); return; }
+  kidDurum = 'bakiliyor'; render();
+  let var_ = false;
+  try { var_ = (await F.getDoc(F.doc(db, 'kodlar', yeni))).exists(); } catch (x) { console.error(x); }
+  if (kid !== yeni) return;
+  if (!var_) { kidDurum = 'yanlis'; try { localStorage.removeItem('hp-liste'); } catch (e) { } render(); return; }
+  kidDurum = 'tamam';
+  unsubP = F.onSnapshot(F.collection(db, 'kodlar', yeni, 'kisiler'), q => { people = q.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); }, () => { });
+  render();
 }
 
 async function giris(e) {
@@ -65,13 +98,13 @@ async function giris(e) {
   if (!p) { err.textContent = 'Listeden adını seç.'; return; }
   if (!pinOk(pin)) { err.textContent = 'PIN 6 rakamdan oluşmalı.'; return; }
   err.textContent = 'Giriş yapılıyor…';
-  try { await A.signInWithEmailAndPassword(auth, p.email, pin); err.textContent = ''; toast('Hoş geldin'); location.hash = 'takvim'; }
+  try { await A.signInWithEmailAndPassword(auth, p.email, pin); err.textContent = ''; location.hash = 'takvim'; location.reload(); }
   catch (x) { err.textContent = x?.code === 'auth/too-many-requests' ? 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.' : 'PIN hatalı.'; }
 }
 
 async function kayit(e) {
   e.preventDefault();
-  const err = $('#k-err'), kod = $('#k-kod').value.trim(), ad = $('#k-ad').value.trim().replace(/\s+/g, ' '),
+  const err = $('#k-err'), kod = ($('#k-kod')?.value || '').trim(), ad = $('#k-ad').value.trim().replace(/\s+/g, ' '),
     pin = $('#k-pin').value.trim(), pin2 = $('#k-pin2').value.trim();
   const dg = +$('#dg').value || null, da = +$('#da').value || null, dgos = $('#dgos').checked;
   if (ad.length < 3) { err.textContent = 'Adını ve soyadını yaz.'; return; }
@@ -80,8 +113,9 @@ async function kayit(e) {
   if ((dg && !da) || (!dg && da)) { err.textContent = 'Doğum gününü gün ve ay olarak birlikte seç ya da ikisini de boş bırak.'; return; }
   if (people.some(p => p.ad.toLocaleLowerCase('tr') === ad.toLocaleLowerCase('tr'))) { err.textContent = 'Bu adla bir kayıt zaten var. Giriş yapmayı dene.'; return; }
   const kurulum = !config;
-  const hash = await sha256(kod);
-  if (!kurulum && hash !== config.kodHash) { err.textContent = 'Bölüm kodu yanlış.'; return; }
+  if (kurulum && kod.length < KOD_MIN) { err.textContent = `Bölüm kodu en az ${KOD_MIN} karakter olmalı.`; return; }
+  const liste = kurulum ? await listeKimligi(kod) : kid;
+  if (!liste) { err.textContent = 'Önce bölüm kodunu gir.'; return; }
   err.textContent = 'Hesap oluşturuluyor…';
   const email = 'u' + crypto.getRandomValues(new Uint32Array(2)).join('') + '@' + EMAIL_DOMAIN;
   let cred;
@@ -93,18 +127,23 @@ async function kayit(e) {
       : 'Hesap oluşturulamadı. İnternet bağlantını kontrol edip tekrar dene.';
     return;
   }
-  await writeProfile(cred.user.uid, email, { ad, dg, da, dgos, kurulum, hash }, err);
+  await writeProfile(cred.user.uid, email, { ad, dg, da, dgos, kurulum, liste }, err);
 }
 
 // Veritabanı kayıtlarını yazar. Yarım kalmış bir kaydı tamamlamak için de kullanılır.
-async function writeProfile(uid, email, { ad, dg, da, dgos, kurulum, hash }, err) {
+async function writeProfile(uid, email, { ad, dg, da, dgos, kurulum, liste }, err) {
   try {
-    if (kurulum) await F.setDoc(F.doc(db, 'config', 'public'), { kurucu: uid, kodHash: hash });
+    if (kurulum) await F.setDoc(F.doc(db, 'config', 'public'), { kurucu: uid });
     await F.setDoc(F.doc(db, 'users', uid), {
       ad, rol: kurulum ? 'yonetici' : 'asistan', onayli: kurulum, dogumGun: dg, dogumAy: da, dogumGoster: dgos,
       masa: null, seminerSira: null, kayit: F.serverTimestamp()
     });
-    await F.setDoc(F.doc(db, 'people', uid), { ad, email, onayli: kurulum });
+    if (kurulum) {
+      await F.setDoc(F.doc(db, 'kodlar', liste), { t: F.serverTimestamp() });
+      await F.setDoc(F.doc(db, 'config', 'uye'), { kid: liste });
+    }
+    await F.setDoc(F.doc(db, 'kodlar', liste, 'kisiler', uid), { ad, email, onayli: kurulum });
+    try { localStorage.setItem('hp-liste', liste); } catch (e) { }
     err.textContent = '';
     toast(kurulum ? 'Kurulum tamam, yönetici hesabın açıldı' : 'Kaydın alındı, yönetici onayı bekleniyor');
     return true;
@@ -124,24 +163,25 @@ function renderComplete() {
     <form class="card" id="f-tamam">
       <h3>Kaydını tamamla</h3>
       <p class="banner">Hesabın oluşturuldu ama kaydın yarım kaldı. Bilgilerini tekrar girip tamamla.${kurulum ? ' İlk kaydolan sen olduğun için hesabın yönetici olarak açılacak.' : ''}</p>
-      <div class="field"><label for="k-kod">${kurulum ? 'Bölüm kodunu belirle' : 'Bölüm kodu'}</label><input id="k-kod" required autocomplete="off"></div>
+      <div class="field"><label for="k-kod">${kurulum ? `Bölüm kodunu belirle (en az ${KOD_MIN} karakter)` : 'Bölüm kodu'}</label><input id="k-kod" required autocomplete="off"></div>
       <div class="field"><label for="k-ad">Ad soyad</label><input id="k-ad" required autocomplete="name" placeholder="Ayşe Kaya"></div>
       ${dogumFields()}
       <button class="btn" type="submit">Kaydı tamamla</button>
       <p class="err" id="k-err"></p>
     </form>
     <button class="btn del" id="cikis">Çıkış yap</button>`;
-  $('#cikis').addEventListener('click', () => A.signOut(auth));
+  $('#cikis').addEventListener('click', () => A.signOut(auth).then(() => location.reload()));
   $('#f-tamam').addEventListener('submit', async e => {
     e.preventDefault();
     const err = $('#k-err'), kod = $('#k-kod').value.trim(), ad = $('#k-ad').value.trim().replace(/\s+/g, ' ');
     const dg = +$('#dg').value || null, da = +$('#da').value || null, dgos = $('#dgos').checked;
     if (ad.length < 3) { err.textContent = 'Adını ve soyadını yaz.'; return; }
     if ((dg && !da) || (!dg && da)) { err.textContent = 'Doğum gününü gün ve ay olarak birlikte seç.'; return; }
-    const hash = await sha256(kod), k = !config;
-    if (!k && hash !== config.kodHash) { err.textContent = 'Bölüm kodu yanlış.'; return; }
+    const k = !config, liste = await listeKimligi(kod);
+    if (k && kod.length < KOD_MIN) { err.textContent = `Bölüm kodu en az ${KOD_MIN} karakter olmalı.`; return; }
+    if (!k) { let var_ = false; try { var_ = (await F.getDoc(F.doc(db, 'kodlar', liste))).exists(); } catch (x) { } if (!var_) { err.textContent = 'Bölüm kodu yanlış.'; return; } }
     err.textContent = 'Kaydediliyor…';
-    await writeProfile(state.user.uid, state.user.email, { ad, dg, da, dgos, kurulum: k, hash }, err);
+    await writeProfile(state.user.uid, state.user.email, { ad, dg, da, dgos, kurulum: k, liste }, err);
   });
 }
 
@@ -227,7 +267,7 @@ function renderMe() {
       await A.updatePassword(state.user, n); er.textContent = ''; e.target.reset(); toast('PIN değişti');
     } catch (x) { er.textContent = 'Şu anki PIN hatalı.'; }
   });
-  $('#cikis').addEventListener('click', () => A.signOut(auth));
+  $('#cikis').addEventListener('click', () => A.signOut(auth).then(() => location.reload()));
   $('#v-profil').querySelectorAll('[data-konu]').forEach(b => b.addEventListener('click', () => konuFormu(etkinlikler().find(x => x.id === b.dataset.konu))));
   const bd = d => {
     $('#b-durum').textContent = DURUM_METNI[d] || '';
@@ -266,6 +306,6 @@ export function initHesap() {
     if (!st.approved && unsubK) { unsubK(); unsubK = null; }
   });
   F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anlaticilar = {}; q.docs.forEach(d => { anlaticilar[d.id] = d.data(); }); if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); }, () => { });
-  F.onSnapshot(F.collection(db, 'people'), s => { people = s.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); });
+  if (kid) kodAyarla(kid);
   F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });
 }
