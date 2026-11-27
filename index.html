@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Histoloji Bölümü</title>
+<meta name="theme-color" content="#3a2c86">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Histoloji">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap topbar">
+    <div>
+      <h1 id="title">Histoloji bölümü</h1>
+      <p class="sub">2026–2027 · ADÜ Tıp ve Diş Hekimliği</p>
+    </div>
+    <button class="who-btn" id="who">Giriş yap</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <!-- TAKVİM -->
+    <section id="v-takvim">
+      <div class="calwrap">
+        <div class="mcal">
+          <div class="mhead">
+            <button class="nav" id="mprev" aria-label="Önceki ay">‹</button>
+            <h2 id="mtitle"></h2>
+            <button class="nav" id="mnext" aria-label="Sonraki ay">›</button>
+          </div>
+          <div class="mgrid" id="mgrid"></div>
+          <div class="legend"><span><i style="background:var(--teo)"></i>Teorik</span><span><i style="background:var(--uyg)"></i>Uygulama</span><span><i style="background:var(--dis)"></i>Diş teorik</span><span><i style="background:var(--disu)"></i>Diş uygulama</span><span><i style="background:var(--sin)"></i>Sınav</span></div>
+        </div>
+        <div class="wside">
+          <div class="whead">
+            <button class="nav" id="wprev" aria-label="Önceki hafta">‹</button>
+            <div><h2 id="wtitle"></h2><div class="date" id="wsub"></div></div>
+            <button class="nav" id="wnext" aria-label="Sonraki hafta">›</button>
+            <button class="btn sec" id="today">Bu hafta</button>
+          </div>
+          <div class="stats" id="stats"></div>
+          <div class="chips" role="group" aria-label="Filtre">
+            <button class="chip" data-f="all" aria-pressed="true">Tümü</button>
+            <button class="chip" data-f="d1" aria-pressed="false">Tıp D1</button>
+            <button class="chip" data-f="d2" aria-pressed="false">Tıp D2</button>
+            <button class="chip" data-f="dis" aria-pressed="false">Diş</button>
+            <button class="chip" data-f="u" aria-pressed="false">Sadece uygulama</button>
+          </div>
+        </div>
+      </div>
+      <div id="notices"></div>
+      <div id="week" class="week"><p class="note">Program yükleniyor…</p></div>
+    </section>
+
+    <!-- ARŞİV -->
+    <section id="v-arsiv" class="hide">
+      <div class="bar">
+        <input id="q" type="search" placeholder="Ara: organ, boya, yapı, kutu no…" aria-label="Arama">
+        <button class="btn" id="add">+ Preparat ekle</button>
+      </div>
+      <div class="filters">
+        <select id="fd" aria-label="Derse göre"><option value="">Tüm dersler</option></select>
+        <select id="fb" aria-label="Boyaya göre"><option value="">Tüm boyalar</option></select>
+        <select id="fs" aria-label="Duruma göre"><option value="">Tüm durumlar</option><option value="sorun">Sorunlu (kırık, solmuş, kayıp)</option></select>
+      </div>
+      <div class="stats" id="astats"></div>
+      <p class="note" id="amsg">Arşiv yükleniyor…</p>
+      <div id="boxes"></div>
+    </section>
+
+    <!-- PROFİL / GİRİŞ -->
+    <section id="v-profil" class="hide"></section>
+
+    <!-- YÖNETİM -->
+    <section id="v-yonetim" class="hide"></section>
+  </div>
+</main>
+
+<nav class="bnav" aria-label="Ana menü">
+  <a href="#takvim" data-v="takvim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Takvim</a>
+  <a href="#arsiv" data-v="arsiv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg>Arşiv</a>
+  <a href="#profil" data-v="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profil</a>
+  <a href="#yonetim" data-v="yonetim" id="nav-yonetim" class="hide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Yönetim</a>
+</nav>
+<div id="ovl"></div>
+<div id="toast"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
