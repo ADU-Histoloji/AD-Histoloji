@@ -1,8 +1,8 @@
 // Uygulamanın internet zayıfken de açılması için dosyaları önbellekte tutar.
 // Her zaman önce ağdan güncel sürümü dener (tarayıcı önbelleğini atlayarak), olmazsa önbellektekini gösterir.
-const CACHE = 'histoloji-v4';
+const CACHE = 'histoloji-v5';
 const FILES = ['./', 'index.html', 'style.css', 'manifest.webmanifest', 'data/events.json',
-  'js/app.js', 'js/config.js', 'js/fb.js', 'js/util.js', 'js/takvim.js', 'js/arsiv.js', 'js/hesap.js', 'js/yonetim.js', 'js/bildirim.js',
+  'js/app.js', 'js/config.js', 'js/fb.js', 'js/util.js', 'js/takvim.js', 'js/arsiv.js', 'js/hesap.js', 'js/yonetim.js', 'js/bildirim.js', 'js/uygulamalar.js',
   'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

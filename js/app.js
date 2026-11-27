@@ -4,9 +4,10 @@ import { initTakvim, setLinked, rerenderTakvim } from './takvim.js';
 import { initArsiv, linkedHtml, onPrepsChange } from './arsiv.js';
 import { initHesap } from './hesap.js';
 import { initYonetim } from './yonetim.js';
+import { initUygulamalar } from './uygulamalar.js';
 
-const VIEWS = ['takvim', 'arsiv', 'profil', 'yonetim'];
-const TITLES = { takvim: 'Histoloji bölümü', arsiv: 'Preparat arşivi', profil: 'Hesabım', yonetim: 'Yönetim' };
+const VIEWS = ['takvim', 'uygulama', 'arsiv', 'profil', 'yonetim'];
+const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
@@ -19,6 +20,7 @@ addEventListener('hashchange', route);
 
 initTakvim();
 initArsiv();
+initUygulamalar();
 setLinked(linkedHtml);
 onPrepsChange(rerenderTakvim);
 initHesap();

@@ -1,0 +1,36 @@
+name: Uygulama katılım sorusu
+
+on:
+  schedule:
+    # Pazar–Perşembe 05:50 UTC = 08:50 Türkiye: ertesi gün uygulama varsa soru gider.
+    - cron: '50 5 * * 0-4'
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Test: sadece yöneticilere gönder (tarih boşsa ilk uygulama günü kullanılır)'
+        type: boolean
+        default: true
+      tarih:
+        description: 'İsteğe bağlı: uygulama tarihi (YYYY-AA-GG)'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  gonder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Katılım sorusunu gönder
+        run: node scripts/gunluk.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SADECE_YONETICI: ${{ github.event_name == 'workflow_dispatch' && inputs.test }}
+          TARIH: ${{ github.event_name == 'workflow_dispatch' && inputs.tarih || '' }}

@@ -18,6 +18,9 @@ let f = 'all';
 try { f = localStorage.getItem('hp-filter') || 'all'; } catch (e) { }
 
 let linkedFn = () => '';
+const evSubs = new Set();
+export const onEvents = fn => { evSubs.add(fn); if (loaded) fn(EV); };
+const emit = () => { if (loaded) evSubs.forEach(fn => fn(EV)); };
 export const setLinked = fn => { linkedFn = fn; render(); };
 
 const show = e => f === 'all' || (f === 'u' ? e.k === 'U' : f === 'dis' ? e.c === 'dis' : e.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'));
@@ -74,7 +77,7 @@ function renderWeek() {
   }).join('');
 }
 
-function render() { if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); }
+function render() { emit(); if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); }
 function goWeek(d) { wk = monday(d); const m = addD(wk, 2); mon = new Date(m.getFullYear(), m.getMonth(), 1); render(); }
 
 export function initTakvim() {
@@ -94,10 +97,12 @@ export function initTakvim() {
 
   if (ready) {
     let gotE = false, gotN = false;
-    F.onSnapshot(F.collection(db, 'events'), s => { EV = s.docs.map(d => ({ id: d.id, ...d.data() })); gotE = true; loaded = gotE && gotN; if (loaded && !EV.length) loadStatic(); else render(); },
+    // Veritabanında program yoksa uygulamayla gelen dosyadaki program gösterilir
+    const done = () => { if (!(gotE && gotN)) return; if (!EV.length) loadStatic(); else { loaded = true; render(); } };
+    F.onSnapshot(F.collection(db, 'events'), s => { EV = s.docs.map(d => ({ id: d.id, ...d.data() })); gotE = true; done(); },
       () => loadStatic());
-    F.onSnapshot(F.collection(db, 'notices'), s => { NO = s.docs.map(d => ({ id: d.id, ...d.data() })); gotN = true; loaded = gotE && gotN; render(); },
-      () => { gotN = true; });
+    F.onSnapshot(F.collection(db, 'notices'), s => { NO = s.docs.map(d => ({ id: d.id, ...d.data() })); gotN = true; done(); },
+      () => { gotN = true; done(); });
   } else loadStatic();
 }
 

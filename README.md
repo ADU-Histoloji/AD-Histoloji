@@ -99,6 +99,17 @@ Her pazartesi 08:50 civarında (GitHub birkaç dakika geç başlatabilir) haftan
 
 ---
 
+## Uygulama masaları
+
+Alttaki **Masalar** sekmesi her uygulama gününü gösterir: günün oturumları, anlatıcı, 8 masalık kroki ve kimin katılıp katılmadığı.
+
+- Herkesin sabit masası **Yönetim → Kişiler**'den, masaların 1 veya 2 kişilik olduğu **Yönetim → Masa kapasiteleri**'nden girilir.
+- Asistan "Katılıyorum / Katılamıyorum" der. Gelemeyen birinin masası boş görünür; katılan başka biri o günlüğüne **Bu masaya geç** ile alabilir.
+- Anlatıcılar **Yönetim → Anlatıcılar**'dan her uygulama konusu için bir kere girilir. Boş bırakılırsa programdaki öğretim üyesi gösterilir.
+- **Bildirim:** Uygulamadan bir gün önce 08:50 civarında herkese "Yarın uygulama var, katılıyor musun?" gider; anlatıcı uygulamaya kayıtlıysa ona "Yarın anlatıcısın" gider. Görev: `.github/workflows/gunluk.yml`, betik: `scripts/gunluk.mjs`. Elle test: Actions → *Uygulama katılım sorusu* → Run workflow.
+
+---
+
 ## Sorun çıkarsa
 
 - **Sayfa açılıyor ama giriş/arşiv çalışmıyor:** `js/config.js` doğru dolduruldu mu, adres Firebase'de *Authorized domains* listesinde mi, kurallar yayınlandı mı?
@@ -110,6 +121,6 @@ Her pazartesi 08:50 civarında (GitHub birkaç dakika geç başlatabilir) haftan
 - [x] Takvim, preparat arşivi, kayıt/giriş, yönetim
 - [x] Pazartesi bildirimi (haftalık program)
 - [ ] Bildirime seminer bilgisinin eklenmesi
-- [ ] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
+- [x] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
 - [ ] Seminer sırası (tatil/sınav haftalarında kayma, takas)
 - [ ] Doğum günleri ve özel günler takvimde
