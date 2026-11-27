@@ -53,7 +53,7 @@ Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir
 ## Uygulama sınavı kâğıdı
 
 Takvimdeki uygulama sınavı kartında **📄 Sınav kâğıdı** (ya da Yönetim → Program → Sınav kâğıtlarını aç) sınavın kâğıt ekranını açar. Her oturum (ör. 09.30 ve 13.30) için ayrı sorular girilir: soru metni (hazır kalıplardan seçilebilir; daha önce kaydedilmiş kâğıtlardaki sorular da listeye eklenir), puan, cevap ve mikroskoba konacak preparat (arşivden kodla, ör. 9-1). Başlık (dönem, yıl, kurul) ve notlar sınavdan otomatik doldurulur, düzenlenebilir; `__iki alt çizgi__` arasındaki metin altı çizili basılır.
-- **Öğrenci kâğıdı (Word)** ve **Cevap anahtarı (Word)** bölümün kâğıt düzeninde iner (her oturum ayrı sayfa, cevaplar kırmızı). **Yazdır** ile doğrudan yazdırılabilir.
+- **Öğrenci kâğıdı (Word)** ve **Cevap anahtarı (Word)** bölümün kâğıt düzeninde iner (her oturum ayrı sayfa, cevaplar kırmızı). **Öğrenci kâğıdını yazdır** ve **Cevap anahtarını yazdır** kâğıdı ayrı sayfada açar; yazdırma menüsü kapatılırsa sayfanın üstündeki **Yazdır** ile yeniden açılır.
 - Altta oturum oturum **mikroskoplara konacak preparatlar** listesi çıkar.
 - Kâğıtlar `sinavKagitlari` koleksiyonunda tutulur, sadece onaylı üyeler görür; haftalık yedeğe girer.
 

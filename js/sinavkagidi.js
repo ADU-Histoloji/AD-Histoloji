@@ -103,7 +103,8 @@ function render() {
         <button class="btn" data-is="kaydet">${degisti ? 'Kaydet •' : 'Kaydedildi'}</button>
         <button class="btn sec" data-is="ogrenci">📄 Öğrenci kâğıdı (Word)</button>
         <button class="btn sec" data-is="anahtar">🔑 Cevap anahtarı (Word)</button>
-        <button class="btn sec" data-is="yazdir">🖨️ Yazdır</button>
+        <button class="btn sec" data-is="yazdir-ogrenci">🖨️ Öğrenci kâğıdını yazdır</button>
+        <button class="btn sec" data-is="yazdir-anahtar">🖨️ Cevap anahtarını yazdır</button>
       </div>
       <h3 style="margin-top:14px">Mikroskoplara konacak preparatlar</h3>
       <div id="kg-preplist">${prepListesi()}</div>
@@ -143,7 +144,14 @@ function belge(anahtar) {
 function yazdir(anahtar) {
   const w = window.open('', '_blank'); if (!w) { toast('Açılır pencereye izin ver'); return; }
   const html = belge(anahtar).map(x => x.sayfaSonu ? '<div style="page-break-after:always"></div>' : `<p style="margin:0 0 ${x.bosluk ?? 4}pt;text-align:${x.hiza || 'left'}">${x.parcalar.map(r => `<span style="${r.b ? 'font-weight:700;' : ''}${r.u ? 'text-decoration:underline;' : ''}${r.renk ? 'color:#' + r.renk : ''}">${esc(r.t)}</span>`).join('')}</p>`).join('');
-  w.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Sınav kâğıdı</title><style>body{font:11pt Calibri,Arial,sans-serif;margin:2cm}@page{size:A4;margin:2cm}</style></head><body>${html}<script>onload=()=>print()<\/script></body></html>`);
+  // Üstteki düğmeler kâğıda basılmaz; yazdırma menüsü kapatılsa da "Yazdır" ile yeniden açılır
+  w.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${anahtar ? 'Cevap anahtarı' : 'Sınav kâğıdı'}</title><style>
+    body{font:11pt Calibri,Arial,sans-serif;margin:16px;max-width:17cm}@page{size:A4;margin:2cm}
+    .arac{position:sticky;top:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#f4f2fb;border:1px solid #ddd;border-radius:10px;padding:8px;margin:0 0 20px;z-index:1}
+    .arac button{font:600 16px system-ui,sans-serif;min-height:44px;padding:0 18px;border-radius:10px;border:0;cursor:pointer}
+    .arac .y{background:#c2185b;color:#fff}.arac .k{background:#fff;border:1px solid #ccc;color:#222}.arac span{font:13px system-ui,sans-serif;color:#555}
+    @media print{.arac{display:none}body{margin:0}}
+  </style></head><body><div class="arac"><button class="y" onclick="print()">🖨️ Yazdır</button><button class="k" onclick="kapat()">Kapat</button><span>${anahtar ? 'Cevap anahtarı' : 'Öğrenci kâğıdı'} · kapanmazsa sol üstteki “Bitti”ye bas</span></div>${html}<script>function kapat(){close();setTimeout(function(){history.length>1?history.back():0},300)}onload=function(){setTimeout(print,300)}<\/script></body></html>`);
   w.document.close();
 }
 
@@ -186,7 +194,7 @@ async function onClick(e) {
     else if (is === 'kopyala') { const oi = +b.dataset.o, diger = taslak.oturumlar.find((_, j) => j !== oi); taslak.oturumlar[oi].sorular = structuredClone(diger.sorular); degisti = true; render(); toast('Sorular kopyalandı; cevapları ve preparatları değiştirmeyi unutma'); }
     else if (is === 'kaydet') await kaydet();
     else if (is === 'ogrenci' || is === 'anahtar') { if (degisti) await kaydet(); await indir(docx(belge(is === 'anahtar')), dosyaAdi(is === 'anahtar' ? 'cevap_anahtari' : 'sinav_kagidi')); }
-    else if (is === 'yazdir') yazdir(confirm('Cevap anahtarı mı yazdırılsın?\nTamam: cevap anahtarı · İptal: öğrenci kâğıdı'));
+    else if (is === 'yazdir-ogrenci' || is === 'yazdir-anahtar') yazdir(is === 'yazdir-anahtar');
   } catch (x) { console.error(x); toast('İşlem yapılamadı'); }
 }
 
