@@ -59,7 +59,7 @@ async function openDetail(id) {
    ${p.yapilar ? `<h4 style="margin:10px 0 4px">Görülecek yapılar</h4><ul class="plain">${String(p.yapilar).split(/\n|;/).filter(s => s.trim()).map(s => `<li>${esc(s.trim())}</li>`).join('')}</ul>` : ''}
    <dl class="kv"><dt>Boya</dt><dd>${esc(p.boya)}</dd><dt>Adet</dt><dd>${esc(p.adet ?? 1)}</dd><dt>Durum</dt><dd>${esc(p.durum || 'Sağlam')}</dd>${p.notlar ? `<dt>Not</dt><dd>${esc(p.notlar)}</dd>` : ''}</dl>
    <div class="dtags">${(p.dersler || []).map(d => `<span class="dt">${esc(dersL(d))}</span>`).join('')}</div>
-   <div class="acts">${state.approved ? '<button class="btn" id="ed">Düzenle</button>' : ''}<button class="btn sec x">Kapat</button></div>`);
+   <div class="acts">${state.approved ? '<button class="btn" id="ed">Düzenle</button>' : ''}<button class="btn sec" data-close>Kapat</button></div>`);
   if (state.approved) $('#ed').addEventListener('click', () => openForm(p));
   try {
     const ph = await loadPhotos(id);
@@ -89,7 +89,7 @@ async function openForm(p) {
    <div class="photos" id="pp"></div>
    <input type="file" id="p-file" accept="image/*" multiple aria-label="Fotoğraf ekle">
    <p class="err" id="pmsg"></p>
-   <div class="acts"><button class="btn" id="psave">Kaydet</button><button class="btn sec x" type="button">Vazgeç</button>${isNew ? '' : '<button class="btn del" type="button" id="pdel">Sil</button>'}</div>
+   <div class="acts"><button class="btn" id="psave">Kaydet</button><button class="btn sec" data-close type="button">Vazgeç</button>${isNew ? '' : '<button class="btn del" type="button" id="pdel">Sil</button>'}</div>
   </form>`);
   const draw = () => {
     const all = [...photos.filter(x => !removed.includes(x.id)).map(x => ({ key: x.id, data: x.data })), ...added.map((d, i) => ({ key: 'n' + i, data: d }))];

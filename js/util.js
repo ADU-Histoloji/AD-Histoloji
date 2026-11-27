@@ -17,7 +17,7 @@ export function toast(msg) {
 
 export function sheet(html) {
   $('#ovl').innerHTML = `<div class="ov" id="ov"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
-  $('#ov').addEventListener('click', e => { if (e.target.id === 'ov' || e.target.closest('.x')) closeSheet(); });
+  $('#ov').addEventListener('click', e => { if (e.target.id === 'ov' || e.target.closest('.x, [data-close]')) closeSheet(); });
 }
 export function closeSheet() { $('#ovl').innerHTML = ''; }
 addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
