@@ -149,7 +149,8 @@ function yazdir(anahtar) {
 
 const dosyaAdi = ek => {
   const e = oturumlar(secili)[0];
-  return `${e.s.replace(' ', '_')}_${e.topic.match(/^(.*?)\s+kurulu/i)?.[1]?.replace(/[^\p{L}\d]+/gu, '_') || 'sinav'}_${ek}.docx`;
+  const tr = x => x.replace(/[çÇ]/g, 'c').replace(/[ğĞ]/g, 'g').replace(/[ıİ]/g, 'i').replace(/[öÖ]/g, 'o').replace(/[şŞ]/g, 's').replace(/[üÜ]/g, 'u');
+  return tr(`${e.s}_${e.topic.match(/^(.*?)\s+kurulu/i)?.[1] || 'sinav'}_${ek}`).replace(/[^A-Za-z0-9]+/g, '_') + '.docx';
 };
 
 async function kaydet() {
@@ -184,7 +185,7 @@ async function onClick(e) {
     if (is === 'ekle') { taslak.oturumlar[+b.dataset.o].sorular.push(yeniSoru()); degisti = true; render(); document.querySelectorAll(`[data-o="${b.dataset.o}"][data-s]`).item(taslak.oturumlar[+b.dataset.o].sorular.length - 1)?.querySelector('input')?.focus(); }
     else if (is === 'kopyala') { const oi = +b.dataset.o, diger = taslak.oturumlar.find((_, j) => j !== oi); taslak.oturumlar[oi].sorular = structuredClone(diger.sorular); degisti = true; render(); toast('Sorular kopyalandı; cevapları ve preparatları değiştirmeyi unutma'); }
     else if (is === 'kaydet') await kaydet();
-    else if (is === 'ogrenci' || is === 'anahtar') { if (degisti) await kaydet(); indir(docx(belge(is === 'anahtar')), dosyaAdi(is === 'anahtar' ? 'cevap_anahtari' : 'sinav_kagidi')); }
+    else if (is === 'ogrenci' || is === 'anahtar') { if (degisti) await kaydet(); await indir(docx(belge(is === 'anahtar')), dosyaAdi(is === 'anahtar' ? 'cevap_anahtari' : 'sinav_kagidi')); }
     else if (is === 'yazdir') yazdir(confirm('Cevap anahtarı mı yazdırılsın?\nTamam: cevap anahtarı · İptal: öğrenci kâğıdı'));
   } catch (x) { console.error(x); toast('İşlem yapılamadı'); }
 }
