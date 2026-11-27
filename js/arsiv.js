@@ -18,6 +18,7 @@ const kodSeri = p => p.sira ? `${p.kutu}-${p.sira}` : String(p.kutu);
 let PREPS = [];
 let onChange = () => { };
 export const onPrepsChange = fn => { onChange = fn; };
+export const preparatlar = () => PREPS;
 
 // Takvimde bir uygulamanın altında o derse bağlı preparatları gösterir
 export function linkedHtml(k) {

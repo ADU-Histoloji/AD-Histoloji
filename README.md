@@ -50,6 +50,13 @@ Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir
 - Önümüzdeki 3 haftada gözetmeni eksik sınavlar Yönetim → Yapılacak'ta görünür.
 - Kişi Profil → Görevlerim'de kendi gözetmenliklerini görür; **1 hafta önce** ve **bir önceki iş günü** hatırlatma bildirimi gelir (Pazartesi sınavları için Cuma).
 
+## Uygulama sınavı kâğıdı
+
+Takvimdeki uygulama sınavı kartında **📄 Sınav kâğıdı** (ya da Yönetim → Program → Sınav kâğıtlarını aç) sınavın kâğıt ekranını açar. Her oturum (ör. 09.30 ve 13.30) için ayrı sorular girilir: soru metni (hazır kalıplardan seçilebilir; daha önce kaydedilmiş kâğıtlardaki sorular da listeye eklenir), puan, cevap ve mikroskoba konacak preparat (arşivden kodla, ör. 9-1). Başlık (dönem, yıl, kurul) ve notlar sınavdan otomatik doldurulur, düzenlenebilir; `__iki alt çizgi__` arasındaki metin altı çizili basılır.
+- **Öğrenci kâğıdı (Word)** ve **Cevap anahtarı (Word)** bölümün kâğıt düzeninde iner (her oturum ayrı sayfa, cevaplar kırmızı). **Yazdır** ile doğrudan yazdırılabilir.
+- Altta oturum oturum **mikroskoplara konacak preparatlar** listesi çıkar.
+- Kâğıtlar `sinavKagitlari` koleksiyonunda tutulur, sadece onaylı üyeler görür; haftalık yedeğe girer.
+
 ## Kura
 
 Üst banttaki 🎲 düğmesi (onaylı üyelere görünür) kura ekranını açar. Üç tür kura var:

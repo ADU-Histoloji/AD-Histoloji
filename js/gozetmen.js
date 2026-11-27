@@ -50,6 +50,7 @@ export function gozetmenKarti(e) {
   if (!ready || !state.approved || !e.id || !gozetmenliSinav(e)) return '';
   const at = atananlar(e.id), kap = gruplar(e.id).reduce((t, g) => t + g.kap, 0), ben = at.some(a => a.uid === state.user.uid);
   return `<div class="anl-b"><span class="who">Gözetmen: <b>${at.length}/${kap}</b>${ben ? ' · <span class="pill">Sen de varsın</span>' : ''}</span>
+    <button class="linkbtn" data-kagit="${esc(e.id)}" style="min-height:0">📄 Sınav kâğıdı</button>
     <button class="btn sec kucuk" data-gozetmen="${esc(e.id)}">${ben || e.date < bugun() ? 'Gözetmenler' : at.length < kap ? '📝 Gözetmen ol' : 'Gözetmenler'}</button></div>`;
 }
 

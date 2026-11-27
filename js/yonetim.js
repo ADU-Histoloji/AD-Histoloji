@@ -99,6 +99,7 @@ function programHtml() {
       <div class="list">${semListe.map(semSatir).join('') || '<p class="note">Yaklaşan seminer yok.</p>'}</div>
       <a class="btn sec" href="#seminer" style="margin-top:8px">Seminer sırasını aç (kaydır, yer değiştir, ekle)</a>
       <button class="linkbtn" data-gecmis="sem">${gecmisSem ? 'Geçmiş seminerleri gizle' : 'Geçmiş seminerleri de göster'}</button></div>
+    <div class="card" style="max-width:none"><h3>Uygulama sınavı kâğıtları</h3><p class="note">Soru, puan, cevap ve mikroskoba konacak preparatlar; öğrenci kâğıdı ve cevap anahtarı Word olarak iner.</p><a class="btn sec" href="#kagit">Sınav kâğıtlarını aç</a></div>
     <details class="card" style="max-width:none"><summary><b>Ders programını yükle</b> <span class="note">· veritabanında ${eventCount ?? '…'} ders</span></summary>
       <p class="note"><b>Yeni dersleri ekle:</b> Uygulamayla gelen programda olup takvimde olmayan dersleri ekler; elle yaptığın düzeltmelere dokunmaz.<br><b>Tümünü değiştir:</b> Takvimi silip baştan yazar; sadece yeni öğretim yılı başında kullan.</p>
       <div class="acts"><button class="btn" id="y-ekle">Yeni dersleri ekle</button><button class="btn del" id="y-import">Tümünü değiştir</button></div>

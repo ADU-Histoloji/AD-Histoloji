@@ -138,6 +138,11 @@ service cloud.firestore {
       allow write: if admin();
     }
 
+    // Uygulama sınavı kâğıtları (sorular ve cevap anahtarı): sadece onaylı üyeler
+    match /sinavKagitlari/{id} {
+      allow read, write: if approved();
+    }
+
     // Kuralar: onaylı üyeler çeker ve görür; çekilen kura değiştirilemez, sadece yönetici silebilir
     match /kuralar/{id} {
       allow read: if approved();

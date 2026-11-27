@@ -1,5 +1,6 @@
 import { $, $$, esc, state, onState, sheet, closeSheet, toast } from './util.js';
 import { gozetmenKarti, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
+import { sinavKagidiAc } from './sinavkagidi.js';
 import { anlaticiDugmeleri, anlaticiTikla, onAnlaticiDegis, anlaticiKaydi } from './anlatici.js';
 import { konuId } from './util.js';
 import { ready, db, F } from './fb.js';
@@ -174,6 +175,7 @@ export function initTakvim() {
   $('#week').addEventListener('click', async e => {
     if (await anlaticiTikla(e.target)) return;
     const gz = e.target.closest('[data-gozetmen]'); if (gz) return gozetmenFormu(gz.dataset.gozetmen);
+    const kg = e.target.closest('[data-kagit]'); if (kg) return sinavKagidiAc(kg.dataset.kagit);
     const b = e.target.closest('[data-duzenle],[data-ekle],[data-konu]'); if (!b) return;
     if (b.dataset.konu) return konuFormu(EV.find(x => x.id === b.dataset.konu));
     if (b.dataset.ekle) dersFormu(null, b.dataset.ekle); else dersFormu(EV.find(x => x.id === b.dataset.duzenle));

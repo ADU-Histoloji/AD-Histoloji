@@ -10,9 +10,10 @@ import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
 import { initGozetmen } from './gozetmen.js';
 import { initKura } from './kura.js';
+import { initSinavKagidi } from './sinavkagidi.js';
 
-const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim', 'kura'];
-const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', kura: 'Kura', profil: 'Hesabım', yonetim: 'Yönetim' };
+const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim', 'kura', 'kagit'];
+const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', kura: 'Kura', kagit: 'Sınav kâğıdı', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
@@ -35,6 +36,7 @@ initYonetim();
 initDuyurular();
 initSeminer();
 initKura();
+initSinavKagidi(onEvents);
 route();
 
 if (ready) {

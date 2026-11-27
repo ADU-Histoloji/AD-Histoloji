@@ -247,3 +247,14 @@ div.kura-son{padding-left:0}
 .kura-kisi input[type=checkbox]{width:22px;height:22px;min-height:0;flex:0 0 22px;margin:0;padding:0;accent-color:var(--d1)}
 .st.mid{color:var(--mute)}
 .ders-cks .ders-g{font-weight:700;margin:10px 0 2px;color:var(--mute);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+/* Sınav kâğıdı */
+.kg-bas{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.kg-bas h3{margin:0}
+.kg-soru{display:grid;grid-template-columns:28px 1fr auto;gap:8px;border-top:1px solid var(--line);padding:10px 0}
+.kg-no{font-weight:700;padding-top:10px}
+.kg-alan{display:flex;flex-direction:column;gap:6px;min-width:0}
+.kg-alan label{margin:0;font-size:13px;color:var(--mute)}
+.kg-alan input{width:100%}
+.kg-satir{display:grid;grid-template-columns:5em 1fr;gap:8px}
+.kg-dugme{display:flex;flex-direction:column}.kg-dugme .linkbtn{min-height:32px;padding:0 6px;text-decoration:none;font-size:18px}
+.kg-prep ol{margin:4px 0 10px;padding-left:1.4em}
+.kg-alan textarea{width:100%;min-height:0;font:inherit;font-size:14px}.kg-kalip{font-size:13px;min-height:36px}
