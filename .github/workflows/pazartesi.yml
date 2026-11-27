@@ -1,0 +1,40 @@
+name: Pazartesi bildirimi
+
+on:
+  schedule:
+    # Her pazartesi 05:50 UTC = 08:50 Türkiye. GitHub görevi birkaç dakika geç başlatabilir.
+    - cron: '50 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Test: sadece yöneticilere gönder'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  gonder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Bildirimi gönder
+        run: node scripts/pazartesi.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SADECE_YONETICI: ${{ github.event_name == 'workflow_dispatch' && inputs.test }}
+      # GitHub, 60 gün boyunca değişiklik olmayan depolarda zamanlanmış görevleri kapatır.
+      # Her gönderimde küçük bir kayıt dosyası güncellenerek görevin açık kalması sağlanır.
+      - name: Gönderim kaydını yaz
+        run: |
+          git config user.name "histoloji-bildirim"
+          git config user.email "histoloji-bildirim@users.noreply.github.com"
+          git add data/son-bildirim.json
+          git commit -m "Bildirim gönderildi" || exit 0
+          git push
