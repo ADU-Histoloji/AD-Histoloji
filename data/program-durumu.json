@@ -1,19 +1,20 @@
 {
- "kontrol": "2026-11-27T12:09:06.639Z",
+ "kontrol": "2026-11-27T12:28:02.489Z",
  "hata": "",
  "dosyalar": {
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260916110744-9ZTVQTOAPO8K3001MZR6-KARADEVECI-182956725.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I Oryantasyon Programı",
-   "link": "D&ouml;nem I Oryantasyon Programı",
+   "etiket": "Dönem I Oryantasyon Programı",
+   "link": "Dönem I Oryantasyon Programı",
    "kurul": "",
    "hash": "896394a6a370cae49584",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260831133816-3W0I4UAEFDKBNWI07I3F-KARADEVECI-643747961.pdf": {
    "sayfa": "Tıp Dönem I",
    "etiket": "DÖNEM I DERS KURULLARI",
-   "link": "D&ouml;nem I Ders Kurulları Başkanları & AKTS Listesi & Not Payları",
+   "link": "Dönem I Ders Kurulları Başkanları & AKTS Listesi & Not Payları",
    "kurul": "DÖNEM I DERS KURULLARI",
    "hash": "e85623fcbfe447d8cc8a",
    "satirlar": [
@@ -21,12 +22,24 @@
     "TIP108 Histoloji ve Embriyoloji 16 12 28 13 10 23",
     "TIP108 Histoloji ve Embriyoloji 22 6 28 16 4 20",
     "TIP108 Histoloji ve Embriyoloji 14"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Dönem I Yılsonu Sınavı ve Bütünleme Sınavı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik Sınav Puan 92,0",
+     "once": "",
+     "sonra": ""
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260818134926-CDN9UOMUS23X9NOG35AJ-KARADEVECI-507850912.pdf": {
    "sayfa": "Tıp Dönem I",
    "etiket": "Sizler için hazırladığımız 2026-2027 akademik öğretim yılına ait programda tüm kurullar için amaç,",
-   "link": "D&ouml;nem I Eğitim Rehberi",
+   "link": "Dönem I Eğitim Rehberi",
    "kurul": "Sizler için hazırladığımız 2026-2027 akademik öğretim yılına ait programda tüm kurullar için amaç,",
    "hash": "b1431ee679eb27d0052b",
    "satirlar": [
@@ -84,65 +97,560 @@
     "Pawlina (Ross Histoloji)",
     "4. The Developing Human Keith. L. Moore (Moore Embriyoloji)",
     "5. Langman Medikal Embriyoloji T. W. Sadler"
+   ],
+   "sinavlar": [
+    {
+     "metin": "tümünden devamsızlıktan kalan öğrenciler kurul sınavına alınmaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "4. Her ders kurulu için ayrı ayrı olmak şartıyla, herhangi bir dersin uygulama sınavında başarısız olan öğrenci,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ders kurulu kuramsal sınavında o dersin kuramsal sınav sorularını yanıtlayamaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "DÖNEM I DERS KURULLARI TANITIMLARI ve KURUL SINAV TARİHLERİ",
+     "once": "",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "Ders Kurulu Kurul Tanıtımı Uygulama Sınavları Kuramsal Sınav & Geri",
+     "once": "",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "Bildirim & Sınav",
+     "once": "",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "başarıları uygulama sınavları ve sonrasında kuramsal sınav ile değerlendirilir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Uygulama sınavları: Ders kurulu sonunda ilgili anabilim dalınca gerçekleştirilmektedir. Uygulama sınavları",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Sınavlar genel olarak; deney uygulamaları, makroskobik ve/veya mikroskobik olarak, manken maket veya",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "kadavra üzerinde performans gerçekleştirilebilmesi şeklinde yapılabilmektedir. Sınav yeri olarak Öğrenci",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul sınavı: Her ders kurulunun sonunda o ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "“Ders Kurulu Sınavı” yapılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Klinik beceri sınavı: Klinik beceri uygulamalarında tam öğrenme yaklaşımı benimsenmektedir. Bu yaklaşım",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Yılsonu (Final) sınavı: Her dönemin sonunda son ders kurulu sınavının bitiminden en erken 10 iş günü sonra",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "bütün ders kurullarını kapsayan “Yılsonu (final) Sınavı” yapılmaktadır. Bu sınav çoktan seçmeli sınav şeklinde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Bütünleme sınavı: Her dönemin sonunda yılsonu sınavının bitiminden en erken 10 iş günü sonra yıl sonu",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınavında geçer not alamayanların katılımı için bütün ders kurullarını kapsayan “Bütünleme Sınavı” yapılır. Bu",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınav çoktan seçmeli yazılı sınav ve/veya pratik uygulama sınavı şeklinde olabilir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ödevlendirme/proje veya bir arasınav ve bir yarıyılsonu sınavı göz önüne alınarak gerçekleştirilir. Geçer not",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "alamayan öğrenciler için yarıyıl sonu sınavından 15 gün sonra bütünleme sınavı yapılır ve öğrencinin",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "bütünlemeden aldığı not yarıyıl sınavı puanı yerine değerlendirilir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem I, II, III’ de eğitim programında yer alan her bir ders kurulu sonunda son hafta uygulama sınavları ve",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "kuramsal ders kurulu sınavı yapılır. Dönem sonunda tüm yıl boyunca verilen ders kurullarını kapsayan bir",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "yılsonu sınavı yapılır. Dönem I, II, III’ de “Sınıf Geçme” sistemi vardır. Tıp fakültesi eğitim programında bir",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "final veya bütünleme sınavından alınan başarı notunun %60’ı toplanarak hesaplanır ve harf notu biçiminde ilan",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "2. Ders kurulu içinde yer alan bir anabilim dalına ait uygulama sınavı var ise, teorik sınavda o anabilim dalına",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "öğrenci, teorik sınavda o anabilim dalına ait soruları cevaplamış olsa dahi o anabilim dalı için 0 alır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "4. Teorik sınav sonucu, doğru cevaplanmış soru sayısı ile bu sorulara ait not değeri çarpılarak elde edilir.",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "6. Sınavlar ve değerlendirme esaslarında Aydın Adnan Menderes Üniversitesi Ön Lisans ve Lisans Eğitimi",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "b) Ders kurulu içinde yer alan bir anabilim dalına ait uygulama sınavı var ise, teorik sınavda o anabilim dalına",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "teorik sınavda o anabilim dalına ait soruları cevaplamış olsa dahi o anabilim dalı için sıfır alır.",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "ç) Teorik sınav sonucu, doğru cevaplanmış soru sayısı ile bu sorulara ait not değeri çarpılarak elde edilir.",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "Sınavlar ve değerlendirme esaslarında Aydın Adnan Menderes Üniversitesi Ön Lisans ve Lisans Eğitimi",
+     "once": "",
+     "sonra": "2026-09-21"
+    },
+    {
+     "metin": "Uygulama Sınavı Dekanlık Binası Beceri Laboratuvarında uygulama dersi içinde manken üzerinde hava",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "gözlenerek değerlendirilecek. 1. Sınıf 1. Ders Kurulu Kurumsal Sınavında ders sayısına göre ayrılacak sayı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1.Sınıf 1. Ders Kurulu Sınavı (uygulama ve sınav): A. Aköz, M. Avcil, A. Duman, YE. Özlüer, SE Çanakçı.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1.Sınıf Final ve Bütünleme Sınavı (uygulama ve sınav): A. Aköz, M. Avcil, A. Duman, YE. Özlüer, SE Çanakçı.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "materyalleri üzerinde uygulama sınavları, dönem sonunda kuramsal final sınavı ve bütünleme sınavı aracılığı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Soru/Sınav *Çoktan seçmeli - *Manken-maket, -",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "derslerinde öğrencilerin ders başarıları hem teorik hem de uygulama sınavlarından aldıkları puanlar ile",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "kurulunda verilen tüm dersleri içeren bir sınav yapılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ders kurulu sınavlarında çoktan seçmeli",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem 1 Programda belirlenecek uygulama sınavı Öğrencilerin ders kurulunda",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "veya sözlü sınav ile öğrencilerin bilgi uygulama sırasında",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem 1 Programda belirlenecek uygulama sınavı Öğrencilerin ders kurulunda",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "soruları ile uygulanan yazılı sınavla değerlendirilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Her kurul/blok için teorik sınavlarda görev alacak öğretim üyeleri akademik yılın başında belirlenir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul / Blok Teorik Sınav Tarihi Salon Başkanı/Gözetmen",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kl n k Eğ t m sonunda öğrenc ler teor k sınav le değerlend r lecekt r. Teor k sınav: Kl n k eğ t m süres",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "boyunca anlatılan ders konularından hazırlanan çoktan seçmel sınav şekl nde dekanlık tarafınca bel rlenen",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem I öğrencilerinin kuramsal ders sınavları diğer derslerle ortak bir sınavda, çoktan seçmeli sorularla,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınavlar amfilerde yapılır. Yılsonunda final ve bütünleme sınavları tüm kurulları kapsayacak şekilde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem I öğrencilerinin Histoloji ve Embriyoloji uygulama dersi sınavları ise mikroskop başında yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "çizim defterleri değerlendirilir. Uygulama dersi sınav soru sayıları da kuramsal dersler gibi ilgili kuruldaki",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ders sayısına bağlıdır. Histoloji ve Embriyoloji uygulama sınavının başarı puanın %50 si ve üstünde not",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "alamayan (örn. 6 puanlık bir sınavdan 3 puan ve üstü not alamayan bir öğrenci) öğrenci uygulama sınavında",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "başarısız sayılır ve kuramsal sınavda Histoloji ve Embriyoloji teorik sorularına verilen cevaplar",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Öğrencilerin ders başarıları teorik sınavlarından aldıkları puanlar ile değerlendirilmektedir. Teorik derslerin",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "genel bir sınav yapılmaktadır. Her ders kurulu için Anabilim Dallarına ait Uygulama sınavı katkı payı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Öğrencilerin ders başarıları hem teorik hem de uygulama sınavlarından aldıkları puanlar ile",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "dersleri içeren çoktan seçmeli genel bir sınav yapılmaktadır. Her sınav döneminde biyokimya soruları,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Her ders kurulu için Anabilim Dallarına ait Uygulama sınavı katkı payı koordinatörlük tarafından ilan",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Biyokimya uygulama sınavları hem laboratuvarda uygulama esnasında hem de online olarak yapılmaktadır. Not",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "payları yarı yarıyadır. Uygulama sırasında yapılan sınavda öğrencinin konu ile ilgili olan bilgisi, laboratuvar",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "gibi özellikleri değerlendirilerek bir puan verilecek ve bu puanın ağırlığı %50 olacaktır. Online sınavlar her",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "uygulama sonrasında yapılacaktır. Sınav saati, classroom ve öğrenci temsilcisi aracılığı ile öğrencilere",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "bildirilecektir. Her sınav, o gün yapılacak olan uygulama ve ilgili teorik dersin uygulama ile olan bağlantısını",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "da kapsayacak şekilde 5 sorudan oluşan çoktan seçmeli test şeklindedir. Süre 30 dk olacaktır. Online sınavlarla",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "oluşturması ve araştırma yapması hedeflenmektedir. Kurul sonunda her uygulama için yapılan sınavların",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "toplam puanın yarısından az olması durumunda öğrenci, uygulama sınavından başarısız olur ve kurul sınavında",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Öğrencilerin ders başarıları hem teorik hem de uygulama sınavlarından aldıkları puanlar ile",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "dersleri içeren çoktan seçmeli genel bir sınav yapılmaktadır. Her sınav döneminde biyokimya soruları,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Her ders kurulu için Anabilim Dallarına ait Uygulama sınavı katkı payı koordinatörlük tarafından ilan",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Biyokimya uygulama sınavları: Dönem I ve II’de biyokimya uygulamaları yapılmakta ve uygulama notları,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "verilecektir. Buradan alınan puan toplam puanın yarısından az olması durumunda öğrenci, uygulama sınavından",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "başarısız olur ve kurul sınavında bulunan biyokimya sorularını cevaplayamaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "2025 -2026 Eğitim öğretim yılında yapılacak olan sınavlarda görevlendirilmek üzere;",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Ders kurulu sonunda ilgili anabilim dalınca gerçekleştirilmektedir. Uygulama sınavları dönem başında",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "anabilim dalınca ayrıntılı olarak tanımlanacak ve kurumsal web sitesinde duyurulacaktır. Sınavlar genel",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "şeklinde yapılabilmektedir. Sınav yeri olarak Öğrenci Laboratuvarları kullanılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul bitişlerinde ve dönem sonunda öğrenciler teorik sınav ve uygulama sınavı ile değerlendirilecektir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik sınav: Eğitim süresi boyunca anlatılan ders konularından hazırlanan çoktan seçmeli sınav şeklinde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Uygulama Sınavı: Uygulamalarda anlatılan ders konularından ve mikroskopta gösterilen görsellerden",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "hazırlanan çoktan seçmeli sınav şeklinde dekanlık tarafınca belirlenen derslikte yapılacaktır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Her kurul/blok için teorik sınavlarda görev alacak öğretim üyeleri akademik yılın başında belirlenir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul / Blok Teorik Sınav Salon Başkanı/Gözetmen",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "seçmeli (En doğru yanıtlı, kapsamlı eşleştirme) sınavlar ile gerçekleştirilmektedir.",
+     "once": "",
+     "sonra": ""
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260930080423-SZZNFW7JDAMSF1NZ8NX1-KARADEVECI-530084479.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I &Uuml;niversiteye Uyum Kitap&ccedil;ığı",
-   "link": "D&ouml;nem I &Uuml;niversiteye Uyum Kitap&ccedil;ığı",
+   "etiket": "Dönem I Üniversiteye Uyum Kitapçığı",
+   "link": "Dönem I Üniversiteye Uyum Kitapçığı",
    "kurul": "",
    "hash": "014b9ed8faf40e08513a",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": [
+    {
+     "metin": "nceleyerek ders çer kler , öğret m üyeler , sınav s stem ,ders programı ve",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "\"Merhaba\" demek, asansörde gülümsemek, \"bu hocanın sınavı nasıl olur",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Akadem k konularda (ders, sınav, bölüm geç ş ) yol göster r. K me, ne zaman,",
+     "once": "",
+     "sonra": ""
+    }
+   ]
   },
   "https://fakulte.adu.edu.tr/med//webfolders/files/20250926095817-LCODY2GK2YD9QWU4LDI0-P.KAYA-725308692.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I Klinik G&ouml;zlem Değerlendirme Formu Temel Yaşam Bulguları",
-   "link": "D&ouml;nem I Klinik G&ouml;zlem Değerlendirme Formu Temel Yaşam Bulguları",
+   "etiket": "Dönem I Klinik Gözlem Değerlendirme Formu Temel Yaşam Bulguları",
+   "link": "Dönem I Klinik Gözlem Değerlendirme Formu Temel Yaşam Bulguları",
    "kurul": "",
    "hash": "8a264919ad2921372d8e",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261023083130-NKXY239I39BS0G1YYOID-KARADEVECI-256606388.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I Klinik G&ouml;zlem &Ouml;ğrenci Grupları Listesi",
-   "link": "D&ouml;nem I Klinik G&ouml;zlem &Ouml;ğrenci Grupları Listesi",
+   "etiket": "Dönem I Klinik Gözlem Öğrenci Grupları Listesi",
+   "link": "Dönem I Klinik Gözlem Öğrenci Grupları Listesi",
    "kurul": "",
    "hash": "92e6934859076ebc2d0e",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261023083140-ANPIVE3L1WXC8ZRVT1FI-KARADEVECI-256606388.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I Uygulama &Ouml;ğrenci Grupları Listesi",
-   "link": "D&ouml;nem I Uygulama &Ouml;ğrenci Grupları Listesi",
+   "etiket": "Dönem I Uygulama Öğrenci Grupları Listesi",
+   "link": "Dönem I Uygulama Öğrenci Grupları Listesi",
    "kurul": "",
    "hash": "3ef8397bafb11133a0b4",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261002145620-EEZXS0422EIB1HLDBQZ3-KARADEVECI-956350451.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "D&ouml;nem I Hastane Gezisi &Ouml;ğrenci Grupları Listesi",
-   "link": "D&ouml;nem I Hastane Gezisi &Ouml;ğrenci Grupları Listesi",
+   "etiket": "Dönem I Hastane Gezisi Öğrenci Grupları Listesi",
+   "link": "Dönem I Hastane Gezisi Öğrenci Grupları Listesi",
    "kurul": "",
    "hash": "7649db08dd4310e72c25",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261119142219-5UJLTXGMOTNT4PJMBEVS-KARADEVECI-879254614.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "&Ouml;&Ccedil;M Adı ve Derslik Bilgileri",
-   "link": "&Ouml;&Ccedil;M Adı ve Derslik Bilgileri",
+   "etiket": "ÖÇM Adı ve Derslik Bilgileri",
+   "link": "ÖÇM Adı ve Derslik Bilgileri",
    "kurul": "",
    "hash": "195bc704190800d56859",
    "satirlar": [
     "18 Yaşam Tarzının Histolojik Etkileri Gökçen GÖKÇETEPELİ Dönem II Seminer 8 15:30 - 16:15"
-   ]
+   ],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261118085619-6DC2LVS9QPUNCTUV3MHT-KARADEVECI-665221659.pdf": {
    "sayfa": "Tıp Dönem I",
-   "etiket": "&Ouml;&Ccedil;M Tarihleri",
-   "link": "&Ouml;&Ccedil;M Tarihleri",
+   "etiket": "ÖÇM Tarihleri",
+   "link": "ÖÇM Tarihleri",
    "kurul": "",
    "hash": "658c6e61874c052b4cac",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261014165032-ERTOVV5XJVKZWJLX8C22-KARADEVECI-995653985.pdf": {
    "sayfa": "Tıp Dönem I",
@@ -150,12 +658,69 @@
    "link": "Tıp Bilimlerine Giriş Ders Programı",
    "kurul": "TIP BİLİMLERİNE GİRİŞ DERS KURULU",
    "hash": "0b2a86bb0c74dbcd8585",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": [
+    {
+     "metin": "06.10.2026 Salı 11:30 - 12:15 GELİŞİM SINAVI SAAT: 13:30",
+     "once": "2026-10-06",
+     "sonra": "2026-10-06"
+    },
+    {
+     "metin": "06.10.2026 Salı 13:30 - 14:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2026-10-06",
+     "sonra": "2026-10-06"
+    },
+    {
+     "metin": "15.10.2026 Perşembe 09:30 - 10:15 Bağımsız Öğrenme Saati Sınavı Amfi",
+     "once": "2026-10-15",
+     "sonra": "2026-10-15"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-10-16",
+     "sonra": "2026-10-16"
+    },
+    {
+     "metin": "Tıbbi Biyoloji Uygulama Sınavı, Saat: 9:30",
+     "once": "2026-11-09",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "Biyofizik Uygulama Sınavı, Saat: 13:30",
+     "once": "2026-11-09",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "10.11.2026 Salı 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-10",
+     "sonra": "2026-11-10"
+    },
+    {
+     "metin": "11.11.2026 Çarşamba 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-11",
+     "sonra": "2026-11-11"
+    },
+    {
+     "metin": "12.11.2026 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-12",
+     "sonra": "2026-11-12"
+    },
+    {
+     "metin": "13.11.2026 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    },
+    {
+     "metin": "13.11.2026 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    }
+   ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261120154804-O2F8Z69I3DKCL21FYBNR-KARADEVECI-19119011.pdf": {
    "sayfa": "Tıp Dönem I",
    "etiket": "HÜCRE DERS KURULU",
-   "link": "H&uuml;cre Ders Programı",
+   "link": "Hücre Ders Programı",
    "kurul": "HÜCRE DERS KURULU",
    "hash": "85da6cb0487bbbf055d0",
    "satirlar": [
@@ -189,6 +754,93 @@
     "C Grubu: Histoloji, Mikrovillus, silya,",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 9:30 (A ve B Grubu)",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (C ve D Grubu)"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-11-26",
+     "sonra": "2026-11-26"
+    },
+    {
+     "metin": "09:30 5i Ortak Dersler Sınavı",
+     "once": "2026-11-27",
+     "sonra": "2026-11-27"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    },
+    {
+     "metin": "Sınava Hazırlık Çalışması",
+     "once": "2027-01-05",
+     "sonra": "2027-01-05"
+    },
+    {
+     "metin": "Klinik Beceriler OSCE Sınavı, Saat: 09:00",
+     "once": "2027-01-06",
+     "sonra": "2027-01-06"
+    },
+    {
+     "metin": "Klinik Beceriler OSCE Sınavı, Saat:13:30",
+     "once": "2027-01-06",
+     "sonra": "2027-01-06"
+    },
+    {
+     "metin": "Kurul Demostrasyon Uygulamaları - I Sınavı Amfi",
+     "once": "2027-01-07",
+     "sonra": "2027-01-07"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-01-08",
+     "sonra": "2027-01-08"
+    },
+    {
+     "metin": "Biyofizik Uygulama Sınavı, Saat: 9:30",
+     "once": "2027-01-11",
+     "sonra": "2027-01-11"
+    },
+    {
+     "metin": "Tıbbi Genetik Uygulama Sınavı, Saat: 13:30",
+     "once": "2027-01-11",
+     "sonra": "2027-01-11"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 9:30 (A ve B Grubu)",
+     "once": "2027-01-12",
+     "sonra": "2027-01-12"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (C ve D Grubu)",
+     "once": "2027-01-12",
+     "sonra": "2027-01-12"
+    },
+    {
+     "metin": "Tıbbi Biyoloji Uygulama Sınavı, Saat 09:30",
+     "once": "2027-01-13",
+     "sonra": "2027-01-13"
+    },
+    {
+     "metin": "Sınava Hazırlık Çalışması",
+     "once": "2027-01-13",
+     "sonra": "2027-01-13"
+    },
+    {
+     "metin": "Sınava Hazırlık Çalışması",
+     "once": "2027-01-14",
+     "sonra": "2027-01-14"
+    },
+    {
+     "metin": "15.01.2027 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-01-15",
+     "sonra": "2027-01-15"
+    },
+    {
+     "metin": "15.01.2027 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-01-15",
+     "sonra": "2027-01-15"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261001145313-I5QSRD84P11EXLXAU3ST-KARADEVECI-744668349.pdf": {
@@ -197,12 +849,69 @@
    "link": "Tıp Bilimlerine Giriş Ders Programı",
    "kurul": "TIP BİLİMLERİNE GİRİŞ DERS KURULU",
    "hash": "dd8d7033ff9490ed6ce9",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": [
+    {
+     "metin": "6.10.2026 Salı 11:30 - 12:15 GELİŞİM SINAVI SAAT: 13:30",
+     "once": "2026-10-06",
+     "sonra": "2026-10-06"
+    },
+    {
+     "metin": "6.10.2026 Salı 13:30 - 14:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2026-10-06",
+     "sonra": "2026-10-06"
+    },
+    {
+     "metin": "15.10.2026 Perşembe 09:30 - 10:15 Bağımsız Öğrenme Saati Sınavı Amfi",
+     "once": "2026-10-15",
+     "sonra": "2026-10-15"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-10-16",
+     "sonra": "2026-10-16"
+    },
+    {
+     "metin": "Tıbbi Biyoloji Uygulama Sınavı, Saat: 9:30",
+     "once": "2026-11-09",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "Biyofizik Uygulama Sınavı, Saat: 13:30",
+     "once": "2026-11-09",
+     "sonra": "2026-11-09"
+    },
+    {
+     "metin": "10.11.2026 Salı 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-10",
+     "sonra": "2026-11-10"
+    },
+    {
+     "metin": "11.11.2026 Çarşamba 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-11",
+     "sonra": "2026-11-11"
+    },
+    {
+     "metin": "12.11.2026 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-11-12",
+     "sonra": "2026-11-12"
+    },
+    {
+     "metin": "13.11.2026 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    },
+    {
+     "metin": "13.11.2026 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    }
+   ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260826115226-8WJ4N5HKO14VBXKLBP4K-KARADEVECI-714232232.pdf": {
    "sayfa": "Tıp Dönem I",
    "etiket": "HÜCRE DERS KURULU",
-   "link": "H&uuml;cre Ders Programı",
+   "link": "Hücre Ders Programı",
    "kurul": "HÜCRE DERS KURULU",
    "hash": "17357372384c5445f29e",
    "satirlar": [
@@ -235,6 +944,88 @@
     "C Grubu: Histoloji, Mikrovillus, silya,",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 9:30 (A ve B Grubu)",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (C ve D Grubu)"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-11-26",
+     "sonra": "2026-11-26"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    },
+    {
+     "metin": "05.01.2027 Salı 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-01-05",
+     "sonra": "2027-01-05"
+    },
+    {
+     "metin": "06.01.2027 Çarşamba 09:30 - 10:15 Klinik Beceriler OSCE Sınavı, Saat: 09:00",
+     "once": "2027-01-06",
+     "sonra": "2027-01-06"
+    },
+    {
+     "metin": "06.01.2027 Çarşamba 14:30 - 15:15 Klinik Beceriler OSCE Sınavı, Saat:13:30",
+     "once": "2027-01-06",
+     "sonra": "2027-01-06"
+    },
+    {
+     "metin": "Kurul Demostrasyon Uygulamaları - I Sınavı Amfi",
+     "once": "2027-01-07",
+     "sonra": "2027-01-07"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-01-08",
+     "sonra": "2027-01-08"
+    },
+    {
+     "metin": "Biyofizik Uygulama Sınavı, Saat: 9:30",
+     "once": "2027-01-11",
+     "sonra": "2027-01-11"
+    },
+    {
+     "metin": "Tıbbi Genetik Uygulama Sınavı, Saat: 13:30",
+     "once": "2027-01-11",
+     "sonra": "2027-01-11"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 9:30 (A ve B Grubu)",
+     "once": "2027-01-12",
+     "sonra": "2027-01-12"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (C ve D Grubu)",
+     "once": "2027-01-12",
+     "sonra": "2027-01-12"
+    },
+    {
+     "metin": "Tıbbi Biyoloji Uygulama Sınavı, Saat 09:30",
+     "once": "2027-01-13",
+     "sonra": "2027-01-13"
+    },
+    {
+     "metin": "13.01.2027 Çarşamba 14:30 - 15:15 Sınava Hazırlık Çalışması",
+     "once": "2027-01-13",
+     "sonra": "2027-01-13"
+    },
+    {
+     "metin": "14.01.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-01-14",
+     "sonra": "2027-01-14"
+    },
+    {
+     "metin": "15.01.2027 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-01-15",
+     "sonra": "2027-01-15"
+    },
+    {
+     "metin": "15.01.2027 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-01-15",
+     "sonra": "2027-01-15"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260811131644-YDAILZ2G8278DDBZAD60-KARADEVECI-297156513.pdf": {
@@ -312,6 +1103,63 @@
     "B Grubu: Histoloji, Sinir Dokusu",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 09:30 (C ve D Grubu)",
     "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (A ve B Grubu)"
+   ],
+   "sinavlar": [
+    {
+     "metin": "04.03.2027 Perşembe 09:30 - 10:15 Bağımsız Öğrenme Saati Sınavı",
+     "once": "2027-03-04",
+     "sonra": "2027-03-04"
+    },
+    {
+     "metin": "Sınavı",
+     "once": "2027-03-19",
+     "sonra": "2027-03-19"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, Saat: 09:30 (A ve B Grubu)",
+     "once": "2027-03-29",
+     "sonra": "2027-03-29"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, Saat 13:30 (C ve D Grubu)",
+     "once": "2027-03-29",
+     "sonra": "2027-03-29"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 09:30 (C ve D Grubu)",
+     "once": "2027-03-30",
+     "sonra": "2027-03-30"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, Saat: 13:30 (A ve B Grubu)",
+     "once": "2027-03-30",
+     "sonra": "2027-03-30"
+    },
+    {
+     "metin": "Tıbbi Biyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-03-31",
+     "sonra": "2027-03-31"
+    },
+    {
+     "metin": "Tıbbi Genetik Uygulama Sınavı, Saat: 13:30",
+     "once": "2027-03-31",
+     "sonra": "2027-03-31"
+    },
+    {
+     "metin": "01.04.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-04-01",
+     "sonra": "2027-04-01"
+    },
+    {
+     "metin": "02.04.2027 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-04-02",
+     "sonra": "2027-04-02"
+    },
+    {
+     "metin": "02.04.2027 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-04-02",
+     "sonra": "2027-04-02"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260910101052-U22DCV3BNORBX9UU7YCP-KARADEVECI-201759139.pdf": {
@@ -356,12 +1204,79 @@
     "Teorik Embriyoloji",
     "Histoloji Embriyoloji Uygulama Sınavı, Saat: 9:30 - 13:00 (A ve B Grupları)",
     "Histoloji Embriyoloji Uygulama Sınavı, Saat: 13:30 - 17:00 (C ve D Grupları)"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-04-15",
+     "sonra": "2027-04-15"
+    },
+    {
+     "metin": "tablolaştırılması Sınavı Amfi",
+     "once": "2027-04-30",
+     "sonra": "2027-04-30"
+    },
+    {
+     "metin": "GELİŞİM SINAVI SAAT: 09:30",
+     "once": "2027-05-26",
+     "sonra": "2027-05-26"
+    },
+    {
+     "metin": "SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-05-26",
+     "sonra": "2027-05-26"
+    },
+    {
+     "metin": "Histoloji Embriyoloji Uygulama Sınavı, Saat: 9:30 - 13:00 (A ve B Grupları)",
+     "once": "2027-05-31",
+     "sonra": "2027-05-31"
+    },
+    {
+     "metin": "Histoloji Embriyoloji Uygulama Sınavı, Saat: 13:30 - 17:00 (C ve D Grupları)",
+     "once": "2027-05-31",
+     "sonra": "2027-05-31"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, Saat: 9:30 - 13:00 (C ve D Grupları)",
+     "once": "2027-06-01",
+     "sonra": "2027-06-01"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, Saat: 13:30 - 17:00 ( A ve B Grupları)",
+     "once": "2027-06-01",
+     "sonra": "2027-06-01"
+    },
+    {
+     "metin": "Tıbbi Biyokimya Uygulama Sınavı, Saat: 9:30 - 12:30",
+     "once": "2027-06-02",
+     "sonra": "2027-06-02"
+    },
+    {
+     "metin": "Biyoistatistik Uygulama Sınavı, Saat: 13:30 - 17:00",
+     "once": "2027-06-02",
+     "sonra": "2027-06-02"
+    },
+    {
+     "metin": "3.06.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-06-03",
+     "sonra": "2027-06-03"
+    },
+    {
+     "metin": "4.06.2027 Cuma DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-06-04",
+     "sonra": "2027-06-04"
+    },
+    {
+     "metin": "4.06.2027 Cuma SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-06-04",
+     "sonra": "2027-06-04"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261102112741-72PLA31O829XO6PF4CUD-KARADEVECI-33257268.pdf": {
    "sayfa": "Tıp Dönem II",
    "etiket": "DÖNEM II DERS KURULLARI",
-   "link": "D&ouml;nem II Ders Kurulları Başkanları & AKTS Listesi & Not Payları",
+   "link": "Dönem II Ders Kurulları Başkanları & AKTS Listesi & Not Payları",
    "kurul": "DÖNEM II DERS KURULLARI",
    "hash": "77388d161d933c212cbf",
    "satirlar": [
@@ -371,12 +1286,29 @@
     "TIP207 Histoloji ve Embriyoloji 15 4 19 12 3 15",
     "TIP207 Histoloji ve Embriyoloji 10 6 16 12 7 19",
     "TIP207 Histoloji ve Embriyoloji 14"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Yılsonu Sınavı ve Bütünleme Sınavı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "YILSONU VE BÜTÜNLEME SINAVI",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik Sınav Puan 92",
+     "once": "",
+     "sonra": ""
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260818134943-Q30NC8Q7K3Y9GNWZYE0T-KARADEVECI-507850912.pdf": {
    "sayfa": "Tıp Dönem II",
    "etiket": "Sizler için hazırladığımız 2026-2027 akademik öğretim yılına ait programda tüm kurullar için",
-   "link": "D&ouml;nem II Eğitim Rehberi",
+   "link": "Dönem II Eğitim Rehberi",
    "kurul": "Sizler için hazırladığımız 2026-2027 akademik öğretim yılına ait programda tüm kurullar için",
    "hash": "1d5a0d0354fa28ecca04",
    "satirlar": [
@@ -553,47 +1485,449 @@
     "3. Histology a Text and Atlas with Correlated Cell And Molecular Biology Michael H. Ross Wojciech Pawlina (Ross Histoloji)",
     "4. The Developing Human Keith. L. Moore (Moore Embriyoloji)",
     "5. Langman Medikal Embriyoloji T. W. Sadler"
+   ],
+   "sinavlar": [
+    {
+     "metin": "ders kurulunun tümünden devamsızlıktan kalan öğrenciler kurul sınavına alınmaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "4. Her ders kurulu için ayrı ayrı olmak şartıyla, herhangi bir dersin uygulama sınavında başarısız olan",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "öğrenci, ders kurulu kuramsal sınavında o dersin kuramsal sınav sorularını yanıtlayamaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "5. Seçmeli derslerde öğrencilerin ara sınav puanının %40’ı ve yarıyıl sonu sınav puanının %60’ını",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "olarak OSCE (Nesnel Yapılandırılmış Klinik Sınav) değerlendirilmesi ile",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "başarıları uygulama sınavları ve sonrasında kuramsal sınav ile değerlendirilir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Uygulama sınavları: Ders kurulu sonunda ilgili anabilim dalınca gerçekleştirilmektedir. Uygulama",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınavları dönem başında anabilim dalınca ayrıntılı olarak tanımlanacak ve kurumsal web sitesinde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "duyurulacaktır. Sınavlar genel olarak; deney uygulamaları, makroskobik ve/veya mikroskobik olarak,",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Sınav yeri olarak Öğrenci Laboratuvarları kullanılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul sınavı: Her ders kurulunun sonunda o ders kurulunu kapsayan çoktan seçmeli sınav sorularını",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "içeren “Ders Kurulu Sınavı” yapılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Klinik beceri sınavı: Klinik beceri uygulamalarında tam öğrenme yaklaşımı benimsenmektedir. Bu",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Yılsonu (Final) sınavı: Her dönemin sonunda son ders kurulu sınavının bitiminden en erken 10 iş günü",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sonra bütün ders kurullarını kapsayan “Yılsonu (final) Sınavı” yapılmaktadır. Bu sınav çoktan seçmeli",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınav şeklinde yapılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Bütünleme sınavı: Her dönemin sonunda yılsonu sınavının bitiminden en erken 10 iş günü sonra yıl",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sonu sınavında geçer not alamayanların katılımı için bütün ders kurullarını kapsayan “Bütünleme",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Sınavı” yapılır. Bu sınav çoktan seçmeli yazılı sınav ve/veya pratik uygulama sınavı şeklinde olabilir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınavları ve kuramsal ders kurulu sınavı yapılır. Dönem sonunda tüm yıl boyunca verilen ders kurullarını",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "kapsayan bir yılsonu sınavı yapılır. Dönem I, II, III’ de “Sınıf Geçme” sistemi vardır. Tıp fakültesi",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "notunun %40’ı ile, final veya bütünleme sınavından alınan başarı notunun %60’ı toplanarak hesaplanır",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "B. Ders kurulu içinde yer alan bir anabilim dalına ait uygulama sınavı var ise, teorik sınavda o anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "geçemeyen öğrenci, teorik sınavda o anabilim dalına ait soruları cevaplamış olsa dahi o anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "D. Teorik sınav sonucu, doğru cevaplanmış soru sayısı ile bu sorulara ait not değeri çarpılarak elde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "F. Sınavlar ve değerlendirme esaslarında Aydın Adnan Menderes Üniversitesi Ön Lisans ve Lisans",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "b. Ders kurulu içinde yer alan bir anabilim dalına ait uygulama sınavı var ise, teorik sınavda o anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "geçemeyen öğrenci, teorik sınavda o anabilim dalına ait soruları cevaplamış olsa dahi o anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "d. Teorik sınav sonucu, doğru cevaplanmış soru sayısı ile bu sorulara ait not değeri çarpılarak elde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Uygulama Sınavı Dekanlık Binası Beceri Laboratuvarında manken üzerinde hava yolu açma, kalp",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "değerlendirilecek. Kurumsal Sınavında ders sayısına göre ayrılacak sayı kadar çoktan seçmeli en",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "materyalleri üzerinde uygulama sınavları, dönem sonunda kuramsal final sınavı ve bütünleme sınavı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "derslerinde öğrencilerin ders başarıları teorik sınavlarından aldıkları puanlar ile değerlendirilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "dersleri içeren genel bir sınav yapılmaktadır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Öğrencilerin ders başarıları hem teorik hem de uygulama sınavlarından aldıkları puanlar ile",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik derslerin değerlendirmesi için çoktan seçmeli genel bir sınav yapılmaktadır. Dönem II’de",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kurul / Blok Teorik Sınav Tarihi Salon Başkanı/Gözetmen",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Öğrencilerin ders başarıları hem teorik hem de uygulama sınavlarından aldıkları puanlar ile değerlendirilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik derslerin değerlendirmesi için koordinatörlük tarafından ders kurulu için o ders kurulunda verilen tüm dersleri içeren çoktan seçmeli genel bir sınav",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "yapılmaktadır. Her sınav döneminde biyokimya soruları, dekanlığın yönetimindeki soru bankası sistemine not payı ölçüsünde girilmektedir. Her ders kurulu",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "için Anabilim Dallarına ait Uygulama sınavı katkı payı koordinatörlük tarafından ilan edilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Biyokimya uygulama sınavları: Dönem II’de biyokimya uygulamaları yapılmakta ve uygulama notları, laboratuvarda uygulama sırasında verilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "verilecektir. Buradan alınan puan toplam puanın yarısından az olması durumunda öğrenci, uygulama sınavından başarısız olur ve kurul sınavında bulunan",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1. Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "2. Uygulama sınavları, uygulama laboratuvarında öğrencilerin her masa üzerinde yerleştirilmiş olan sorulara ellerindeki cevap kağıtlarına belirli sürelerde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "cevap verme prensibi doğrultusunda zilli sistem diye tabir edilen biçimde gerçekleştirilir. Sınavların dengeli, uygulamaları yansıtan ve sürece uygun",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1. Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "2. Uygulama sınavları, uygulama laboratuvarında öğrencilerin her masa üzerinde yerleştirilmiş olan sorulara ellerindeki cevap kağıtlarına belirli sürelerde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "cevap verme prensibi doğrultusunda zilli sistem diye tabir edilen biçimde gerçekleştirilir. Sınavların dengeli, uygulamaları yansıtan ve sürece uygun",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1. Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1. Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "2. Uygulama sınavları, uygulama laboratuvarında öğrencilerin her masa üzerinde yerleştirilmiş olan sorulara ellerindeki cevap kağıtlarına belirli sürelerde",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "cevap verme prensibi doğrultusunda zilli sistem diye tabir edilen biçimde gerçekleştirilir. Sınavların dengeli, uygulamaları yansıtan ve sürece uygun",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "1. Teorik sınavlar ders kurulunu kapsayan çoktan seçmeli sınav sorularını içeren “Ders Kurulu Sınavı” şeklinde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem I ve Dönem II öğrencilerinin kuramsal ders sınavları diğer derslerle ortak bir sınavda, çoktan seçmeli sorularla, kurul sonlarında yapılır. Her anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Kuramsal sınavlar amfilerde yapılır. Yıl sonunda final ve bütünleme sınavları tüm kurulları kapsayacak şekilde yapılır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Dönem I ve Dönem II öğrencilerinin Histoloji ve Embriyoloji uygulama dersi sınavları ise mikroskop başında yapılır. Öğrencilerin mikroskop kullanabilme",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sonrası yaptıkları çizim defterleri değerlendirilir. Uygulama dersi sınav soru sayıları da kuramsal dersler gibi ilgili kuruldaki ders sayısına bağlıdır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji uygulama sınavının başarı puanın %50 si ve üstünde not alamayan (örn. 6 puanlık bir sınavdan 3 puan ve üstü not alamayan bir öğrenci)",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "öğrenci uygulama sınavında başarısız sayılır ve kuramsal sınavda Histoloji ve Embriyoloji teorik sorularına verilen cevaplar değerlendirilmeye alınmaz.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik derslerin değerlendirmesi için koordinatörlük tarafından yıl sonu ve bütünleme sınavında yıl boyunca verilen tüm dersleri içeren genel çoktan seçmeli",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "bir sınav yapılacaktır",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Tıbbi Mikrobiyoloji uygulama derslerinde değerlendirme yapılabilmesi için Tıbbi Mikrobiyoloji Anabilim Dalı tarafından yıl sonu ve bütünleme sınavı",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "sınav yapılacaktır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "seçmeli bir sınav yapılacaktır. Ayrıca Tıbbi Mikrobiyoloji uygulama derslerinde değerlendirme yapılabilmesi için Tıbbi Mikrobiyoloji Anabilim",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "uygulama konuları sorularak sınav yapılacaktır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Tıbbi Parazitoloji Eğitimi sonunda öğrenciler hem sözlü/uygulama hem de kurul sınavındaki çoktan seçmeli teorik sınav ile değerlendirilecektir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Uygulama sınavı: Teorik sınavının öncesinde olacak ve öğrencilere bildirilen zaman dilimi içerisinde gerçekleştirilecektir. Uygulama sınavı laboratuvar",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Teorik sınav: Teorik eğitim süresi boyunca anlatılan ders konularından hazırlanan çoktan seçmeli sorular kurul sınavında Parazitoloji soruları olarak yer alacak",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ve sınav dekanlık tarafınca belirlenen dersliklerde yapılacaktır.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "Soru/Sınav *Eşleştirme Soruları *",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "koordinatörlük tarafından ders kurulu için o ders kurulunda verilen tüm dersleri içeren genel bir sınav yapılmaktadır. Her ders kurulu için Anabilim Dallarına",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "ait Uygulama sınavı katkı payı koordinatörlük tarafından ilan edilmektedir.",
+     "once": "",
+     "sonra": ""
+    },
+    {
+     "metin": "SINAV GÖREVLENDİRMELERİ",
+     "once": "",
+     "sonra": ""
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260904154726-0A5VJYKOCBKOK5WF6SLP-KARADEVECI-195843002.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "D&ouml;nem II Uygulama &Ouml;ğrenci Grupları Listesi",
-   "link": "D&ouml;nem II Uygulama &Ouml;ğrenci Grupları Listesi",
+   "etiket": "Dönem II Uygulama Öğrenci Grupları Listesi",
+   "link": "Dönem II Uygulama Öğrenci Grupları Listesi",
    "kurul": "",
    "hash": "ab62007ca89be9d223ee",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260921152557-TM0XKDV3ZMYMEKOY10RU-KARADEVECI-1039586945.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "D&ouml;nem II Klinik G&ouml;zlem &Ouml;ğrenci Grupları Listesi",
-   "link": "D&ouml;nem II Klinik G&ouml;zlem &Ouml;ğrenci Grupları Listesi",
+   "etiket": "Dönem II Klinik Gözlem Öğrenci Grupları Listesi",
+   "link": "Dönem II Klinik Gözlem Öğrenci Grupları Listesi",
    "kurul": "",
    "hash": "a0e33c30b777e579c3c1",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med//webfolders/files/20250909143630-E92WER7QBX0IFCT4R67N-P.KAYA-953137467.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "D&ouml;nem II Klinik G&ouml;zlem Değerlendirme Formu Acil Servis",
-   "link": "D&ouml;nem II Klinik G&ouml;zlem Değerlendirme Formu Acil Servis",
+   "etiket": "Dönem II Klinik Gözlem Değerlendirme Formu Acil Servis",
+   "link": "Dönem II Klinik Gözlem Değerlendirme Formu Acil Servis",
    "kurul": "",
    "hash": "7848c3a43d6f70febc3f",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med//webfolders/files/20250909143713-6CK59DTDPRSGP78X936I-P.KAYA-953137467.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "D&ouml;nem II Klinik G&ouml;zlem Değerlendirme Formu Kan Alma",
-   "link": "D&ouml;nem II Klinik G&ouml;zlem Değerlendirme Formu Kan Alma",
+   "etiket": "Dönem II Klinik Gözlem Değerlendirme Formu Kan Alma",
+   "link": "Dönem II Klinik Gözlem Değerlendirme Formu Kan Alma",
    "kurul": "",
    "hash": "9692f426a3fbf5dce420",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261118085634-U7ATL6TC7281C4UYI86D-KARADEVECI-665221659.pdf": {
    "sayfa": "Tıp Dönem II",
-   "etiket": "&Ouml;&Ccedil;M Tarihleri",
-   "link": "&Ouml;&Ccedil;M Tarihleri",
+   "etiket": "ÖÇM Tarihleri",
+   "link": "ÖÇM Tarihleri",
    "kurul": "",
    "hash": "658c6e61874c052b4cac",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": []
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261109095633-DJCKRFUTYCY7TYNO1L3G-KARADEVECI-29614237.pdf": {
    "sayfa": "Tıp Dönem II",
@@ -638,6 +1972,63 @@
     "25.11.2026 Çarşamba 11:30 - 12:15 ve Embriyoloji C",
     "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
     "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "13.11.2026 Cuma 09:30 - 10:15 Bağımsız Öğrenme Saati Sınavı",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    },
+    {
+     "metin": "26.11.2026 Perşembe 09:30 - 10:15 Sınavı",
+     "once": "2026-11-26",
+     "sonra": "2026-11-26"
+    },
+    {
+     "metin": "5i Ortak Dersler Sınavı",
+     "once": "2026-11-27",
+     "sonra": "2026-11-27"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
+     "once": "2026-11-30",
+     "sonra": "2026-11-30"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, A ve B Grubu, Saat: 13:30",
+     "once": "2026-11-30",
+     "sonra": "2026-11-30"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
+     "once": "2026-12-01",
+     "sonra": "2026-12-01"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 13:30",
+     "once": "2026-12-01",
+     "sonra": "2026-12-01"
+    },
+    {
+     "metin": "Fizyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2026-12-02",
+     "sonra": "2026-12-02"
+    },
+    {
+     "metin": "03.12.2026 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-12-03",
+     "sonra": "2026-12-03"
+    },
+    {
+     "metin": "04.12.2026 Cuma 10:30 - 11:15 DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    },
+    {
+     "metin": "04.12.2026 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260930102834-OFKC0WTWSJ7X8X49E83Z-KARADEVECI-530084510.pdf": {
@@ -665,6 +2056,58 @@
     "7.10.2026 Çarşamba 10:30 - 11:15 Anatomi C / Histoloji D / Fizyoloji Dokusu Histolojisi / Sedimentasyon Hızı Ölçümü, Kan Grubu Tayini Gökçe TEPELİ / Gökhan CESUR",
     "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 09:30",
     "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "GELİŞİM SINAVI SAAT: 09:30",
+     "once": "2026-09-14",
+     "sonra": "2026-09-14"
+    },
+    {
+     "metin": "SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2026-09-14",
+     "sonra": "2026-09-14"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, A ve B Grubu, Saat: 09:30",
+     "once": "2026-10-12",
+     "sonra": "2026-10-12"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, C ve D Grubu, Saat: 13:30",
+     "once": "2026-10-12",
+     "sonra": "2026-10-12"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 09:30",
+     "once": "2026-10-13",
+     "sonra": "2026-10-13"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 13:30",
+     "once": "2026-10-13",
+     "sonra": "2026-10-13"
+    },
+    {
+     "metin": "Fizyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2026-10-14",
+     "sonra": "2026-10-14"
+    },
+    {
+     "metin": "15.10.2026 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-10-15",
+     "sonra": "2026-10-15"
+    },
+    {
+     "metin": "DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2026-10-16",
+     "sonra": "2026-10-16"
+    },
+    {
+     "metin": "SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE GERÇEKLEŞTİRİLECEKTİR",
+     "once": "2026-10-16",
+     "sonra": "2026-10-16"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261103112913-RDY9Y37JCNM9C28A9X9K-KARADEVECI-33258173.pdf": {
@@ -710,6 +2153,63 @@
     "25.11.2026 Çarşamba 11:30 - 12:15 ve Embriyoloji C",
     "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
     "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "13.11.2026 Cuma 09:30 - 10:15 Bağımsız Öğrenme Saati Sınavı",
+     "once": "2026-11-13",
+     "sonra": "2026-11-13"
+    },
+    {
+     "metin": "26.11.2026 Perşembe 09:30 - 10:15 Sınavı",
+     "once": "2026-11-26",
+     "sonra": "2026-11-26"
+    },
+    {
+     "metin": "5i Ortak Dersler Sınavı",
+     "once": "2026-11-27",
+     "sonra": "2026-11-27"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
+     "once": "2026-11-30",
+     "sonra": "2026-11-30"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, A ve B Grubu, Saat: 13:30",
+     "once": "2026-11-30",
+     "sonra": "2026-11-30"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, C ve D Grubu, Saat: 09:30",
+     "once": "2026-12-01",
+     "sonra": "2026-12-01"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, A ve B Grubu, Saat: 13:30",
+     "once": "2026-12-01",
+     "sonra": "2026-12-01"
+    },
+    {
+     "metin": "Fizyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2026-12-02",
+     "sonra": "2026-12-02"
+    },
+    {
+     "metin": "03.12.2026 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2026-12-03",
+     "sonra": "2026-12-03"
+    },
+    {
+     "metin": "04.12.2026 Cuma 10:30 - 11:15 DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    },
+    {
+     "metin": "04.12.2026 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2026-12-04",
+     "sonra": "2026-12-04"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260904154804-RP4HA32EG3YI3DPSX7IG-KARADEVECI-195843002.pdf": {
@@ -748,6 +2248,48 @@
     "30.12.2026 Çarşamba 10:30 - 11:15 Anatomi B / Histoloji ve Embriyoloji Kesesinin ve Pankreas Histolojisi / Kanda bilirubin ölçümü YIMAZ",
     "Histoloji Uygulama Sınavı, A ve B Grubu, Saat: 9:30",
     "Histoloji Uygulama Sınavı, C ve D Grubu, Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Anatomi Uygulama Sınavı, A ve B Grubu, Saat: 9:30",
+     "once": "2027-01-04",
+     "sonra": "2027-01-04"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, C ve D Grubu, Saat: 13:30",
+     "once": "2027-01-04",
+     "sonra": "2027-01-04"
+    },
+    {
+     "metin": "Histoloji Uygulama Sınavı, A ve B Grubu, Saat: 9:30",
+     "once": "2027-01-05",
+     "sonra": "2027-01-05"
+    },
+    {
+     "metin": "Histoloji Uygulama Sınavı, C ve D Grubu, Saat: 13:30",
+     "once": "2027-01-05",
+     "sonra": "2027-01-05"
+    },
+    {
+     "metin": "Sınava Hazırlık Çalışması (Klinik Beceriler Salonu 1-4)",
+     "once": "2027-01-06",
+     "sonra": "2027-01-06"
+    },
+    {
+     "metin": "07.01.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-01-07",
+     "sonra": "2027-01-07"
+    },
+    {
+     "metin": "08.01.2027 Cuma 10:30 - 11:15 DERS KURULU TEORİK Sınavı SAAT: 09:30",
+     "once": "2027-01-08",
+     "sonra": "2027-01-08"
+    },
+    {
+     "metin": "08.01.2027 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2027-01-08",
+     "sonra": "2027-01-08"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260929140821-YSUIMSZVGQYO33HLXVIN-KARADEVECI-314866345.pdf": {
@@ -784,12 +2326,64 @@
     "3.03.2027 Çarşamba 10:30 - 11:15 Anatomi C / Fizyoloji D / Histoloji Göz, Kulak Histolojisi GÖKMEN YILMAZ, Gökçen Gökçe TEPELİ",
     "Histoloji ve Embriyoloji Uygulama Sınavı, (C ve D Grubu) Saat: 09:30",
     "Histoloji ve Embriyoloji Uygulama Sınavı, (A ve B Grubu) Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-03-04",
+     "sonra": "2027-03-04"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, (C ve D Grubu) Saat: 09:30",
+     "once": "2027-03-15",
+     "sonra": "2027-03-15"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, (A ve B Grubu) Saat: 13:30",
+     "once": "2027-03-15",
+     "sonra": "2027-03-15"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, (C ve D Grubu) Saat: 09:30",
+     "once": "2027-03-16",
+     "sonra": "2027-03-16"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, (A ve B Grubu) Saat: 13:30",
+     "once": "2027-03-16",
+     "sonra": "2027-03-16"
+    },
+    {
+     "metin": "Fizyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-03-17",
+     "sonra": "2027-03-17"
+    },
+    {
+     "metin": "Fizyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-03-17",
+     "sonra": "2027-03-17"
+    },
+    {
+     "metin": "18.03.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-03-18",
+     "sonra": "2027-03-18"
+    },
+    {
+     "metin": "19.03.2027 Cuma 10:30 - 11:15 DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-03-19",
+     "sonra": "2027-03-19"
+    },
+    {
+     "metin": "19.03.2027 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2027-03-19",
+     "sonra": "2027-03-19"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20260929140828-TKCEUIO3NL88BT6YSOYQ-KARADEVECI-314866345.pdf": {
    "sayfa": "Tıp Dönem II",
    "etiket": "BOŞALTIM VE ÜREME SİSTEMLERİ DERS KURULU",
-   "link": "Boşaltım ve &Uuml;reme Sistemleri Ders Programı",
+   "link": "Boşaltım ve Üreme Sistemleri Ders Programı",
    "kurul": "BOŞALTIM VE ÜREME SİSTEMLERİ DERS KURULU",
    "hash": "fd9e23006c8a353e43f7",
    "satirlar": [
@@ -821,6 +2415,68 @@
     "13.04.2027 Salı 15:30 - 16:15 Histoloji A / Anatomi B / anatomisi /Korelasyon ve regresyon",
     "Histoloji ve Embriyoloji Uygulama Sınavı, (A ve B Grubu) Saat: 09:30",
     "Histoloji ve Embriyoloji Uygulama Sınavı, (C ve D Grubu) Saat: 13:30"
+   ],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-04-02",
+     "sonra": "2027-04-02"
+    },
+    {
+     "metin": "Uygulama TÜRE, İmran KURT ÖMÜRLÜ, Hakan Sınavı Amfi",
+     "once": "2027-04-15",
+     "sonra": "2027-04-15"
+    },
+    {
+     "metin": "19.04.2027 Pazartesi 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-04-19",
+     "sonra": "2027-04-19"
+    },
+    {
+     "metin": "20.04.2027 Salı 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-04-20",
+     "sonra": "2027-04-20"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, (C ve D Grubu) Saat: 09:30",
+     "once": "2027-04-26",
+     "sonra": "2027-04-26"
+    },
+    {
+     "metin": "Anatomi Uygulama Sınavı, (A ve B Grubu) Saat: 13:30",
+     "once": "2027-04-26",
+     "sonra": "2027-04-26"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, (A ve B Grubu) Saat: 09:30",
+     "once": "2027-04-27",
+     "sonra": "2027-04-27"
+    },
+    {
+     "metin": "Histoloji ve Embriyoloji Uygulama Sınavı, (C ve D Grubu) Saat: 13:30",
+     "once": "2027-04-27",
+     "sonra": "2027-04-27"
+    },
+    {
+     "metin": "Biyoistatistik Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-04-28",
+     "sonra": "2027-04-28"
+    },
+    {
+     "metin": "29.04.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-04-29",
+     "sonra": "2027-04-29"
+    },
+    {
+     "metin": "30.04.2027 Cuma 10:30 - 11:15 DERS KURULU TEORİK SINAVI SAAT: 09:30",
+     "once": "2027-04-30",
+     "sonra": "2027-04-30"
+    },
+    {
+     "metin": "30.04.2027 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2027-04-30",
+     "sonra": "2027-04-30"
+    }
    ]
   },
   "https://fakulte.adu.edu.tr/med/webfolders/files/20261124143712-136PF93ZRY23QHC0VNG1-GULCIN.GUDER-578958157.pdf": {
@@ -829,7 +2485,64 @@
    "link": "Hastalıkların Biyolojik Temeli Ders Programı",
    "kurul": "HASTALIKLARIN BİYOLOJİK TEMELİ DERS KURULU",
    "hash": "e31689785a9fabe86edf",
-   "satirlar": []
+   "satirlar": [],
+   "sinavlar": [
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-06-03",
+     "sonra": "2027-06-03"
+    },
+    {
+     "metin": "4.6.2027 Cuma 09:30 - 10:15 Klinik Beceriler OSCE Sınavı, Saat: 09:00",
+     "once": "2027-06-04",
+     "sonra": "2027-06-04"
+    },
+    {
+     "metin": "Sınavı Amfi",
+     "once": "2027-06-04",
+     "sonra": "2027-06-04"
+    },
+    {
+     "metin": "Klinik Beceriler OSCE Sınavı, Saat: 14:00",
+     "once": "2027-06-04",
+     "sonra": "2027-06-04"
+    },
+    {
+     "metin": "Parazitoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-06-07",
+     "sonra": "2027-06-07"
+    },
+    {
+     "metin": "Mikrobiyoloji Uygulama Sınavı, Saat: 09:30",
+     "once": "2027-06-08",
+     "sonra": "2027-06-08"
+    },
+    {
+     "metin": "GELİŞİM SINAVI SAAT: 09:30",
+     "once": "2027-06-09",
+     "sonra": "2027-06-09"
+    },
+    {
+     "metin": "SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-1'DE",
+     "once": "2027-06-09",
+     "sonra": "2027-06-09"
+    },
+    {
+     "metin": "10.6.2027 Perşembe 11:30 - 12:15 Sınava Hazırlık Çalışması",
+     "once": "2027-06-10",
+     "sonra": "2027-06-10"
+    },
+    {
+     "metin": "11.6.2027 Cuma 10:30 - 11:15 DERS KURULU TEORİK SINAVI SAAT: 14:30",
+     "once": "2027-06-11",
+     "sonra": "2027-06-11"
+    },
+    {
+     "metin": "11.6.2027 Cuma 11:30 - 12:15 SINAV DEĞERLENDİRME VE GERİ BİLDİRİM TOPLANTISI SINAV BİTİMİNDE AMFİ-2'DE",
+     "once": "2027-06-11",
+     "sonra": "2027-06-11"
+    }
+   ]
   }
  }
 }
