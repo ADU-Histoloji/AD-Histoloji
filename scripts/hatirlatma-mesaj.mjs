@@ -40,7 +40,7 @@ export function gozetmenMesaj(e, grup, hoca, kac, yarinMi) {
   const ne = kac === 1 ? (yarinMi ? 'Yarın' : gunUzun(e.date).split(' ')[0]) : 'Gelecek hafta';
   return {
     title: `📝 ${ne} sınav gözetmenliğin var · ${kac === 1 ? e.t : gunKisa(e.date)}`,
-    body: [`${gunUzun(e.date)} ${e.t}`, `${e.s} · ${kisalt(e.topic, 60)}${e.g ? ' (' + e.g + ')' : ''}`, `${grup + 1}. grup${hoca ? ' · ' + hoca : ''}`].join('\n'),
+    body: [`${gunUzun(e.date)} ${e.t}`, `${e.s} · ${kisalt(e.topic, 60)}${e.g ? ' (' + e.g + ')' : ''}`, hoca ? `${hoca} grubu` : `${grup + 1}. grup`].join('\n'),
     url: './#takvim'
   };
 }

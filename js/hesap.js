@@ -190,7 +190,7 @@ function gorevlerim(p) {
     ${(() => { const gz = benimGozetmenliklerim(); return gz.length ? `<h4 class="gorev-bas">📝 Sınav gözetmenliği</h4>${gz.map(({ a, e }) => { const h = gzGruplar(e.id)[a.grup]?.hoca; return `<div class="li" style="display:block">
       <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}</div>
       <div>${esc(e.topic)}</div>
-      <div class="note">${a.grup + 1}. grup${h ? ' · ' + esc(h) : ''}${e.g ? ' · ' + esc(e.g) + ' grupları' : ''} <button class="linkbtn" data-gzac="${esc(e.id)}" style="min-height:0;padding:0 0 0 6px">Ayrıntı</button></div>
+      <div class="note">${h ? esc(h) + ' grubu' : `${a.grup + 1}. grup`}${e.g ? ' · öğrenci grupları ' + esc(e.g) : ''} <button class="linkbtn" data-gzac="${esc(e.id)}" style="min-height:0;padding:0 0 0 6px">Ayrıntı</button></div>
     </div>`; }).join('')}` : ''; })()}
     <h4 class="gorev-bas">🔬 Anlatacağın uygulamalar</h4>
     ${anl.length ? anl.slice(0, GOSTER).map(e => `<div class="li" style="display:block">

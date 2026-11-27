@@ -57,7 +57,7 @@ function formuCiz(ilk = false) {
     ${g.map((x, i) => {
       const kisi = at.filter(a => a.grup === i), dolu = kisi.length >= x.kap;
       return `<div class="gz-grup">
-        <div class="gz-bas"><b>${i + 1}. grup</b>${x.hoca ? ` · ${esc(x.hoca)}` : ''} <span class="pill${kisi.length < x.kap ? ' wait' : ''}">${kisi.length}/${x.kap}</span></div>
+        <div class="gz-bas"><b>${x.hoca ? esc(x.hoca) : `${i + 1}. grup`}</b> <span class="pill${kisi.length < x.kap ? ' wait' : ''}">${kisi.length}/${x.kap}</span></div>
         <div class="gz-kisiler">${kisi.map(a => `<span class="gz-k${a.uid === ben ? ' ben' : ''}">${esc(adi(a.uid))}${(admin || a.uid === ben) && !gecmis ? ` <button class="gz-sil" data-gzsil="${esc(a.uid)}" aria-label="Çıkar">×</button>` : ''}</span>`).join('') || '<span class="mute">Henüz kimse yok</span>'}</div>
         ${!gecmis && !benimki && !dolu ? `<button class="btn sec kucuk" data-gzol="${i}">Bu gruba gözetmen ol</button>` : ''}
         ${!gecmis && benimki && benimki.grup !== i && !dolu ? `<button class="linkbtn" data-gzol="${i}">Bu gruba geç</button>` : ''}
