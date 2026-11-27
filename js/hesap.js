@@ -1,4 +1,4 @@
-import { $, esc, state, onState, toast, sha256, listeKimligi, KOD_MIN } from './util.js';
+import { $, esc, state, onState, toast, listeKimligi, girisKimligi, KOD_MIN } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
@@ -8,8 +8,7 @@ import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
-let people = [], kid = null, kidDurum = 'yok', unsubP = null; // kidDurum: yok | bakiliyor | tamam | yanlis
-try { kid = localStorage.getItem('hp-liste') || null; } catch (e) { }
+let girisKontrol = false;
 let config = null, configLoaded = false;
 let anlaticilar = {}, kisiler = [], unsubK = null, masaDegis = false;
 const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
@@ -26,8 +25,6 @@ function renderGuest() {
   const el = $('#v-profil');
   if (!configLoaded) { el.innerHTML = '<p class="note">Yükleniyor…</p>'; return; }
   const kurulum = !config;
-  if (!kurulum && kidDurum !== 'tamam') return renderKod();
-  const names = people.slice().sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
   el.innerHTML = `
     <div class="chips" role="tablist">
       <button class="chip" data-m="giris" aria-pressed="${mode === 'giris'}">Giriş yap</button>
@@ -36,17 +33,16 @@ function renderGuest() {
     ${mode === 'giris' ? `
     <form class="card" id="f-giris">
       <h3>Giriş yap</h3>
-      <div class="field"><label for="g-ad">Adın</label>
-        <select id="g-ad" required><option value="">Listeden seç</option>${names.map(p => `<option value="${esc(p.id)}">${esc(p.ad)}${p.onayli ? '' : ' (onay bekliyor)'}</option>`).join('')}</select></div>
+      <div class="field"><label for="g-ad">Ad soyad</label><input id="g-ad" required autocomplete="username" autocapitalize="words" placeholder="Kayıt olurken yazdığın gibi"></div>
       <div class="field"><label for="g-pin">PIN</label><input id="g-pin" class="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" required></div>
       <button class="btn" type="submit">Giriş yap</button>
       <p class="err" id="g-err"></p>
-      <p class="note">Listede adın yoksa önce "Kayıt ol". PIN'ini unuttuysan bir yöneticiye haber ver.</p>
+      <p class="note">Henüz hesabın yoksa önce "Kayıt ol". PIN'ini unuttuysan bir yöneticiye haber ver.</p>
     </form>` : `
     <form class="card" id="f-kayit">
       <h3>${kurulum ? 'İlk kurulum' : 'Kayıt ol'}</h3>
       ${kurulum ? '<p class="banner">Uygulamaya ilk kaydolan sensin. Hesabın yönetici olarak açılacak. Aşağıda belirlediğin bölüm kodunu diğer asistanlarla paylaşacaksın.</p>' : ''}
-      ${kurulum ? `<div class="field"><label for="k-kod">Bölüm kodunu belirle (en az ${KOD_MIN} karakter)</label><input id="k-kod" required autocomplete="off" placeholder="histo2027"></div>` : ''}
+      <div class="field"><label for="k-kod">${kurulum ? `Bölüm kodunu belirle (en az ${KOD_MIN} karakter)` : 'Bölüm kodu'}</label><input id="k-kod" required autocomplete="off" autocapitalize="off" placeholder="${kurulum ? 'histo2027' : 'WhatsApp grubunda paylaşılan kod'}"></div>
       <div class="field"><label for="k-ad">Ad soyad</label><input id="k-ad" required autocomplete="name" placeholder="Ayşe Kaya"></div>
       <div class="row2">
         <div class="field"><label for="k-pin">6 haneli PIN</label><input id="k-pin" class="pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" required></div>
@@ -55,51 +51,24 @@ function renderGuest() {
       ${dogumFields()}
       <button class="btn" type="submit">${kurulum ? 'Kurulumu tamamla' : 'Kayıt ol'}</button>
       <p class="err" id="k-err"></p>
-    </form>`}
-    ${kurulum ? '' : '<button class="linkbtn" id="kod-degis">Bölüm kodunu yeniden gir</button>'}`;
-  $('#kod-degis')?.addEventListener('click', () => kodAyarla(null));
+    </form>`}`;
   el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; renderGuest(); }));
   if (mode === 'giris') $('#f-giris').addEventListener('submit', giris);
   else $('#f-kayit').addEventListener('submit', kayit);
 }
 
-// Giriş ve kayıt ekranından önce bölüm kodu sorulur; isim listesi sadece kodu bilenlere görünür
-function renderKod() {
-  const el = $('#v-profil');
-  if (kidDurum === 'bakiliyor') { el.innerHTML = '<p class="note">Bölüm kodu kontrol ediliyor…</p>'; return; }
-  el.innerHTML = `<form class="card" id="f-kod-gir">
-    <h3>Bölüm kodu</h3>
-    <p class="note">Giriş yapmak ya da kayıt olmak için bölümün WhatsApp grubunda paylaşılan kodu gir. Bu telefonda bir kere girmen yeterli.</p>
-    <div class="field"><label for="kg-kod">Bölüm kodu</label><input id="kg-kod" required autocomplete="off" autocapitalize="off"></div>
-    <button class="btn" type="submit">Devam</button>
-    <p class="err" id="kg-err">${kidDurum === 'yanlis' ? 'Bölüm kodu yanlış.' : ''}</p>
-  </form>`;
-  $('#f-kod-gir').addEventListener('submit', async e => { e.preventDefault(); await kodAyarla(await listeKimligi($('#kg-kod').value)); });
-}
-
-async function kodAyarla(yeni) {
-  if (unsubP) { unsubP(); unsubP = null; }
-  people = []; kid = yeni;
-  try { yeni ? localStorage.setItem('hp-liste', yeni) : localStorage.removeItem('hp-liste'); } catch (e) { }
-  if (!yeni) { kidDurum = 'yok'; render(); return; }
-  kidDurum = 'bakiliyor'; render();
-  let var_ = false;
-  try { var_ = (await F.getDoc(F.doc(db, 'kodlar', yeni))).exists(); } catch (x) { console.error(x); }
-  if (kid !== yeni) return;
-  if (!var_) { kidDurum = 'yanlis'; try { localStorage.removeItem('hp-liste'); } catch (e) { } render(); return; }
-  kidDurum = 'tamam';
-  unsubP = F.onSnapshot(F.collection(db, 'kodlar', yeni, 'kisiler'), q => { people = q.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); }, () => { });
-  render();
-}
-
 async function giris(e) {
   e.preventDefault();
-  const p = people.find(x => x.id === $('#g-ad').value), pin = $('#g-pin').value.trim(), err = $('#g-err');
-  if (!p) { err.textContent = 'Listeden adını seç.'; return; }
+  const ad = $('#g-ad').value, pin = $('#g-pin').value.trim(), err = $('#g-err');
   if (!pinOk(pin)) { err.textContent = 'PIN 6 rakamdan oluşmalı.'; return; }
   err.textContent = 'Giriş yapılıyor…';
-  try { await A.signInWithEmailAndPassword(auth, p.email, pin); err.textContent = ''; location.hash = 'takvim'; location.reload(); }
-  catch (x) { err.textContent = x?.code === 'auth/too-many-requests' ? 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.' : 'PIN hatalı.'; }
+  try {
+    const g = await F.getDoc(F.doc(db, 'girisler', await girisKimligi(ad)));
+    if (!g.exists()) throw { code: 'ad' };
+    await A.signInWithEmailAndPassword(auth, g.data().email, pin);
+    err.textContent = ''; location.hash = 'takvim'; location.reload();
+  }
+  catch (x) { err.textContent = x?.code === 'auth/too-many-requests' ? 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.' : 'Ad ya da PIN hatalı. Adını kayıt olurken yazdığın gibi yaz.'; }
 }
 
 async function kayit(e) {
@@ -111,11 +80,14 @@ async function kayit(e) {
   if (!pinOk(pin)) { err.textContent = 'PIN 6 rakamdan oluşmalı.'; return; }
   if (pin !== pin2) { err.textContent = 'İki PIN aynı değil.'; return; }
   if ((dg && !da) || (!dg && da)) { err.textContent = 'Doğum gününü gün ve ay olarak birlikte seç ya da ikisini de boş bırak.'; return; }
-  if (people.some(p => p.ad.toLocaleLowerCase('tr') === ad.toLocaleLowerCase('tr'))) { err.textContent = 'Bu adla bir kayıt zaten var. Giriş yapmayı dene.'; return; }
   const kurulum = !config;
   if (kurulum && kod.length < KOD_MIN) { err.textContent = `Bölüm kodu en az ${KOD_MIN} karakter olmalı.`; return; }
-  const liste = kurulum ? await listeKimligi(kod) : kid;
-  if (!liste) { err.textContent = 'Önce bölüm kodunu gir.'; return; }
+  err.textContent = 'Kontrol ediliyor…';
+  const liste = await listeKimligi(kod);
+  try {
+    if (!kurulum && !(await F.getDoc(F.doc(db, 'kodlar', liste))).exists()) { err.textContent = 'Bölüm kodu yanlış.'; return; }
+    if ((await F.getDoc(F.doc(db, 'girisler', await girisKimligi(ad)))).exists()) { err.textContent = 'Bu adla bir kayıt zaten var. Giriş yapmayı dene.'; return; }
+  } catch (x) { console.error(x); err.textContent = 'Kontrol edilemedi. İnternet bağlantını kontrol et.'; return; }
   err.textContent = 'Hesap oluşturuluyor…';
   const email = 'u' + crypto.getRandomValues(new Uint32Array(2)).join('') + '@' + EMAIL_DOMAIN;
   let cred;
@@ -142,8 +114,8 @@ async function writeProfile(uid, email, { ad, dg, da, dgos, kurulum, liste }, er
       await F.setDoc(F.doc(db, 'kodlar', liste), { t: F.serverTimestamp() });
       await F.setDoc(F.doc(db, 'config', 'uye'), { kid: liste });
     }
-    await F.setDoc(F.doc(db, 'kodlar', liste, 'kisiler', uid), { ad, email, onayli: kurulum });
-    try { localStorage.setItem('hp-liste', liste); } catch (e) { }
+    const gRef = F.doc(db, 'girisler', await girisKimligi(ad));
+    if (!(await F.getDoc(gRef)).exists()) await F.setDoc(gRef, { email, uid });
     err.textContent = '';
     toast(kurulum ? 'Kurulum tamam, yönetici hesabın açıldı' : 'Kaydın alındı, yönetici onayı bekleniyor');
     return true;
@@ -180,6 +152,7 @@ function renderComplete() {
     const k = !config, liste = await listeKimligi(kod);
     if (k && kod.length < KOD_MIN) { err.textContent = `Bölüm kodu en az ${KOD_MIN} karakter olmalı.`; return; }
     if (!k) { let var_ = false; try { var_ = (await F.getDoc(F.doc(db, 'kodlar', liste))).exists(); } catch (x) { } if (!var_) { err.textContent = 'Bölüm kodu yanlış.'; return; } }
+    try { const g = await F.getDoc(F.doc(db, 'girisler', await girisKimligi(ad))); if (g.exists() && g.data().uid !== state.user.uid) { err.textContent = 'Bu adla bir kayıt zaten var.'; return; } } catch (x) { }
     err.textContent = 'Kaydediliyor…';
     await writeProfile(state.user.uid, state.user.email, { ad, dg, da, dgos, kurulum: k, liste }, err);
   });
@@ -306,6 +279,14 @@ export function initHesap() {
     if (!st.approved && unsubK) { unsubK(); unsubK = null; }
   });
   F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anlaticilar = {}; q.docs.forEach(d => { anlaticilar[d.id] = d.data(); }); if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); }, () => { });
-  if (kid) kodAyarla(kid);
+  // Giriş kaydı eksik olan (eski sürümde kaydolmuş) kişi için kendi giriş kaydını oluşturur
+  onState(async st => {
+    if (girisKontrol || !st.user || !st.profile?.ad) return;
+    girisKontrol = true;
+    try {
+      const ref = F.doc(db, 'girisler', await girisKimligi(st.profile.ad));
+      if (!(await F.getDoc(ref)).exists()) await F.setDoc(ref, { email: st.user.email, uid: st.user.uid });
+    } catch (x) { console.error(x); }
+  });
   F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });
 }

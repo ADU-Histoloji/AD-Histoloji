@@ -1,4 +1,4 @@
-import { $, esc, state, onState, toast, sha256, listeKimligi, KOD_MIN } from './util.js';
+import { $, esc, state, onState, toast, listeKimligi, girisKimligi, KOD_MIN } from './util.js';
 import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
 import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
@@ -43,7 +43,7 @@ function yapilacaklar() {
   const tasan = Object.entries(say).filter(([m, n]) => n > MASA_KAP).map(([m]) => m);
   const masasiz = users.filter(u => u.onayli && !u.masa);
   const parcalar = [];
-  if (uyeKid === null) parcalar.push(kodFormu('🔒 Güvenlik güncellemesi', 'İsim listesi artık sadece bölüm kodunu bilenlere görünecek. Bunun için bölüm kodunu bir kez gir: şu anki kodu yazabilir ya da yeni bir kod belirleyebilirsin. Yeni kod belirlersen WhatsApp grubunda paylaş. Kayıtlı kişilerin girişi bozulmaz.', 'Güncellemeyi tamamla'));
+  if (uyeKid === null) parcalar.push(kodFormu('🔒 Bölüm kodunu belirle', 'Yeni kayıtlar için bölüm kodunu bir kez gir: şu anki kodu yazabilir ya da yeni bir kod belirleyebilirsin. Yeni kod belirlersen WhatsApp grubunda paylaş. Kayıtlı kişilerin girişi bundan etkilenmez.', 'Kaydet'));
   if (wait.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Onay bekleyenler</h3><div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div></div>`);
   if (yeniDeg.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Program değişikliği</h3><p>Fakülte programında ${yeniDeg.length} değişiklik bulundu.</p><button class="btn" data-git="prog">Değişikliklere bak</button></div>`);
   if (anlEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Anlatıcısı olmayan uygulamalar</h3><p class="note">Önümüzdeki 3 hafta. Seçtiğin anda kaydedilir.</p><div class="list">${anlEksik.map(anlSatir).join('')}</div></div>`);
@@ -65,7 +65,7 @@ function kisilerHtml() {
           <button class="btn sec" data-rol="${u.rol === 'yonetici' ? 'asistan' : 'yonetici'}">${u.rol === 'yonetici' ? 'Yöneticilikten al' : 'Yönetici yap'}</button>
           <button class="btn del" data-sil="${esc(u.id)}">Kaydı sıfırla</button></div></details>`}
       </span></div>`).join('') || '<p class="note">Henüz onaylı kişi yok.</p>'}</div></div>
-    ${kodFormu('Bölüm kodu', 'Giriş ve kayıt için gereken kod. Değiştirirsen yeni kodu WhatsApp grubunda paylaş; kişiler bir sonraki girişte yeni kodu yazar. Kayıtlı kişilerin girişi bozulmaz.', 'Kodu değiştir')}`;
+    ${kodFormu('Bölüm kodu', 'Yeni kayıt için gereken kod. Değiştirirsen yeni kodu WhatsApp grubunda paylaş. Kayıtlı kişilerin girişi bundan etkilenmez.', 'Kodu değiştir')}`;
 }
 
 function uygulamalarHtml() {
@@ -145,12 +145,11 @@ async function onClick(e) {
     else if (b.dataset.gecmis) { if (b.dataset.gecmis === 'anl') gecmisAnl = !gecmisAnl; else gecmisSem = !gecmisSem; render(); }
     else if (b.dataset.onay) {
       await F.updateDoc(F.doc(db, 'users', b.dataset.onay), { onayli: true });
-      if (uyeKid) await F.updateDoc(F.doc(db, 'kodlar', uyeKid, 'kisiler', b.dataset.onay), { onayli: true }).catch(() => { });
       toast('Onaylandı');
     } else if (b.dataset.sil) {
       if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Emin misin?'; return; }
-      if (uyeKid) await F.deleteDoc(F.doc(db, 'kodlar', uyeKid, 'kisiler', b.dataset.sil));
-      await F.deleteDoc(F.doc(db, 'people', b.dataset.sil)).catch(() => { });
+      const u = users.find(x => x.id === b.dataset.sil);
+      if (u?.ad) await F.deleteDoc(F.doc(db, 'girisler', await girisKimligi(u.ad))).catch(() => { });
       await F.deleteDoc(F.doc(db, 'users', b.dataset.sil)); toast('Kayıt silindi');
     } else if (b.dataset.rol) {
       await F.updateDoc(F.doc(db, 'users', b.closest('[data-u]').dataset.u), { rol: b.dataset.rol }); toast('Kaydedildi');
@@ -207,24 +206,30 @@ async function importProgram() {
   btn.disabled = false; btn.dataset.sure = ''; btn.textContent = 'Tümünü değiştir';
 }
 
-// İsim listesini yeni kodun gizli adresine taşır; eski adres ve eski açık liste silinir
+// Bölüm kodu: kodun özetinden türetilen bir belge (kodlar/{kimlik}). Kayıt olan kişi bu belgenin varlığıyla kodu doğrular.
 async function koduDegistir(kod) {
   const yeni = await listeKimligi(kod), eski = uyeKid; // uyeKid aşağıdaki yazımla değişir, eskisini sakla
   if (yeni === eski) return;
-  const kaynak = eski
-    ? (await F.getDocs(F.collection(db, 'kodlar', eski, 'kisiler'))).docs
-    : (await F.getDocs(F.collection(db, 'people'))).docs;
   await F.setDoc(F.doc(db, 'kodlar', yeni), { t: F.serverTimestamp() });
-  const b = F.writeBatch(db);
-  kaynak.forEach(d => b.set(F.doc(db, 'kodlar', yeni, 'kisiler', d.id), { ad: d.data().ad, email: d.data().email, onayli: !!d.data().onayli }));
-  await b.commit();
   await F.setDoc(F.doc(db, 'config', 'uye'), { kid: yeni });
-  const sil = F.writeBatch(db);
-  kaynak.forEach(d => sil.delete(d.ref));
-  if (eski) sil.delete(F.doc(db, 'kodlar', eski));
-  await sil.commit();
+  await girisleriTasi(eski);
+  if (eski) await F.deleteDoc(F.doc(db, 'kodlar', eski));
   await F.updateDoc(F.doc(db, 'config', 'public'), { kodHash: F.deleteField() }).catch(() => { });
-  try { localStorage.setItem('hp-liste', yeni); } catch (e) { }
+}
+
+// Eski sürümlerin isim listelerinden (people, kodlar/…/kisiler) giriş kayıtlarını oluşturur ve listeleri siler
+let tasindi = false;
+async function girisleriTasi(kid) {
+  const kaynak = [...(await F.getDocs(F.collection(db, 'people')).catch(() => ({ docs: [] }))).docs];
+  if (kid) kaynak.push(...(await F.getDocs(F.collection(db, 'kodlar', kid, 'kisiler')).catch(() => ({ docs: [] }))).docs);
+  for (const d of kaynak) {
+    const { ad, email } = d.data();
+    if (ad && email) {
+      const ref = F.doc(db, 'girisler', await girisKimligi(ad));
+      if (!(await F.getDoc(ref)).exists()) await F.setDoc(ref, { email, uid: d.id });
+    }
+    await F.deleteDoc(d.ref);
+  }
 }
 
 export function initYonetim() {
@@ -262,7 +267,10 @@ export function initYonetim() {
       unsub = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(d => ({ id: d.id, ...d.data() })); otoEslestir(); yeniden(); });
       F.onSnapshot(F.collection(db, 'events'), q => { eventCount = q.size; yeniden(); });
       F.onSnapshot(F.query(F.collection(db, 'degisiklikler'), F.orderBy('t', 'desc'), F.limit(60)), q => { degisiklik = q.docs.map(d => ({ id: d.id, ...d.data() })); yeniden(); }, () => { });
-      F.onSnapshot(F.doc(db, 'config', 'uye'), q => { uyeKid = q.exists() ? q.data().kid : null; yeniden(); }, () => { uyeKid = null; yeniden(); });
+      F.onSnapshot(F.doc(db, 'config', 'uye'), q => {
+        uyeKid = q.exists() ? q.data().kid : null; yeniden();
+        if (!tasindi) { tasindi = true; girisleriTasi(uyeKid).catch(x => console.error(x)); }
+      }, () => { uyeKid = null; yeniden(); });
       F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anl = {}; q.docs.forEach(d => { anl[d.id] = d.data(); }); yeniden(); }, () => { });
     }
     if (!s.admin && unsub) { unsub(); unsub = null; }

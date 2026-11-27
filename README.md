@@ -157,9 +157,10 @@ Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun
 
 ## Gizlilik ve erişim
 
-- Giriş ekranındaki isim listesi sadece **bölüm kodunu** girenlere görünür. Liste, kodun özetinden türetilen gizli bir adreste (`kodlar/{kimlik}/kisiler`) durur; kodu bilmeyen bu adresi bulamaz. Telefon kodu bir kere sorar ve hatırlar.
+- Giriş ekranında isim listesi yoktur: kişi adını ve PIN'ini yazarak girer (büyük/küçük harf, fazladan boşluk ve Türkçe harf farkı önemsizdir). Adın özetinden türetilen bir adreste sadece o kişinin giriş için kullanılan teknik adresi durur (`girisler`); isim tutulmaz ve liste alınamaz.
+- **Bölüm kodu** sadece kayıt olurken sorulur.
 - Takvim (veritabanındaki hali), seminerler, anlatıcılar, preparat arşivi, masalar, katılımlar ve doğum günleri sadece **onaylanmış üyelere** açıktır. Giriş yapmamış biri sadece fakültenin zaten yayımladığı ders programını (`data/events.json`) görür; seminer sunanların adları bu dosyada tutulmaz.
-- Bölüm kodu Yönetim → Kişiler → **Bölüm kodu**'ndan değiştirilir (en az 6 karakter, harf ve rakam karışık). Değişince isim listesi yeni adrese taşınır, eskisi silinir; kayıtlı kişilerin girişi bozulmaz, sadece yeni kodu bir kez girerler.
+- Bölüm kodu Yönetim → Kişiler → **Bölüm kodu**'ndan değiştirilir (en az 6 karakter, harf ve rakam karışık). Kayıtlı kişilerin girişi bundan etkilenmez.
 - PIN'ler Google'ın giriş sisteminde şifreli tutulur; yöneticiler dahil kimse göremez. Çok sayıda hatalı denemede Google hesabı geçici olarak kilitler.
 
 ## Yedekleme

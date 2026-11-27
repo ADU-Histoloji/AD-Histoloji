@@ -46,3 +46,7 @@ export const konuId = (s, topic) => (s + '-' + topic).toLocaleLowerCase('tr')
 // Bölüm kodundan isim listesinin gizli adresi türetilir. Kodu bilmeyen liste adresini bulamaz.
 export const listeKimligi = async kod => sha256('histoloji-liste:' + String(kod).trim().toLocaleLowerCase('tr'));
 export const KOD_MIN = 6;
+// Girişte yazılan addan, o kişinin giriş kaydının adresi türetilir (büyük/küçük harf, boşluk ve Türkçe harf farkı önemsiz)
+export const adSade = ad => String(ad || '').toLocaleLowerCase('tr').replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i')
+  .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z0-9]+/g, ' ').trim();
+export const girisKimligi = async ad => sha256('giris:' + adSade(ad));
