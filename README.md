@@ -39,6 +39,8 @@ Her preparat **kod** (ilk numara, ör. 28 = Böbrek) ve **seri** ile tutulur: fa
 
 Bölümün preparat listesi (`data/preparatlar.json`, kaynak: Preparat_listesi_2025.docx) Actions → **Preparat listesini yükle** ile arşive aktarılır; arşivde zaten olan satırlar atlanır, uygulamada yapılan düzeltmelerin üzerine yazılmaz.
 
+Preparatlar uygulama konularına bağlıdır (takvimde uygulama kartının altında "Preparatlar: 28 Böbrek · 14…" olarak görünür, dokununca arşiv o kodla açılır). Toplu eşleştirme `data/preparat-ders.json`'dadır ve Actions → **Preparatları derslere bağla** ile uygulanır (sadece ekler); tek tek değişiklik preparatın Düzenle → Kullanıldığı uygulamalar kısmından yapılır.
+
 ## Sınav gözetmenleri
 
 Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir hocası, her hocanın (varsayılan) 2 gözetmeni olur. Gruplar ve hocaları sabittir: 1. Alpaslan Gökçimen ve Gökçen Gökçe Tepeli, 2. Esra Gökmen Yılmaz, 3. Kemal Ergin, 4. Erkan Gümüş (`js/gozetmen.js` → `VARSAYILAN_HOCALAR`; bir sınav için farklıysa Düzenle'den değiştirilir).
