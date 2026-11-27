@@ -29,15 +29,15 @@ if (ready) {
   let unsubMe = null;
   A.onAuthStateChanged(auth, user => {
     if (unsubMe) { unsubMe(); unsubMe = null; }
-    if (!user) { setState({ user: null, profile: null, approved: false, admin: false }); $('#nav-yonetim').classList.add('hide'); route(); return; }
-    setState({ user });
+    if (!user) { setState({ user: null, profile: null, profileLoaded: false, approved: false, admin: false }); $('#nav-yonetim').classList.add('hide'); route(); return; }
+    setState({ user, profileLoaded: false });
     unsubMe = F.onSnapshot(F.doc(db, 'users', user.uid), s => {
       const p = s.exists() ? s.data() : null;
       const approved = !!p?.onayli, admin = approved && p.rol === 'yonetici';
-      setState({ profile: p, approved, admin });
+      setState({ profile: p, profileLoaded: true, approved, admin });
       $('#nav-yonetim').classList.toggle('hide', !admin);
       route();
-    }, () => setState({ profile: null, approved: false, admin: false }));
+    }, () => setState({ profile: null, profileLoaded: true, approved: false, admin: false }));
   });
 }
 

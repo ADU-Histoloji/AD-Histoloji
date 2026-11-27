@@ -78,20 +78,65 @@ async function kayit(e) {
   if (!kurulum && hash !== config.kodHash) { err.textContent = 'Bölüm kodu yanlış.'; return; }
   err.textContent = 'Hesap oluşturuluyor…';
   const email = 'u' + crypto.getRandomValues(new Uint32Array(2)).join('') + '@' + EMAIL_DOMAIN;
+  let cred;
+  try { cred = await A.createUserWithEmailAndPassword(auth, email, pin); }
+  catch (x) {
+    console.error(x);
+    err.textContent = x?.code === 'auth/operation-not-allowed' ? 'Firebase\'de E-posta/Şifre giriş yöntemi açık değil.'
+      : x?.code === 'auth/unauthorized-domain' || x?.code === 'auth/requests-from-referer-are-blocked' ? 'Bu adres Firebase\'de yetkili alan adı olarak eklenmemiş.'
+      : 'Hesap oluşturulamadı. İnternet bağlantını kontrol edip tekrar dene.';
+    return;
+  }
+  await writeProfile(cred.user.uid, email, { ad, dg, da, dgos, kurulum, hash }, err);
+}
+
+// Veritabanı kayıtlarını yazar. Yarım kalmış bir kaydı tamamlamak için de kullanılır.
+async function writeProfile(uid, email, { ad, dg, da, dgos, kurulum, hash }, err) {
   try {
-    const cred = await A.createUserWithEmailAndPassword(auth, email, pin);
-    const uid = cred.user.uid;
     if (kurulum) await F.setDoc(F.doc(db, 'config', 'public'), { kurucu: uid, kodHash: hash });
     await F.setDoc(F.doc(db, 'users', uid), {
       ad, rol: kurulum ? 'yonetici' : 'asistan', onayli: kurulum, dogumGun: dg, dogumAy: da, dogumGoster: dgos,
       masa: null, seminerSira: null, kayit: F.serverTimestamp()
     });
     await F.setDoc(F.doc(db, 'people', uid), { ad, email, onayli: kurulum });
+    err.textContent = '';
     toast(kurulum ? 'Kurulum tamam, yönetici hesabın açıldı' : 'Kaydın alındı, yönetici onayı bekleniyor');
+    return true;
   } catch (x) {
-    err.textContent = 'Kayıt tamamlanamadı. İnternet bağlantını kontrol edip tekrar dene.';
     console.error(x);
+    err.textContent = x?.code === 'permission-denied'
+      ? 'Veritabanı kaydı reddedildi. Firestore güvenlik kurallarının yayınlandığından emin olun, sonra Profil ekranından kaydı tamamlayın.'
+      : 'Kayıt tamamlanamadı. Profil ekranından tekrar deneyin.';
+    return false;
   }
+}
+
+// Giriş hesabı açılmış ama veritabanı kaydı yazılamamışsa bu form çıkar
+function renderComplete() {
+  const el = $('#v-profil'), kurulum = !config;
+  el.innerHTML = `
+    <form class="card" id="f-tamam">
+      <h3>Kaydını tamamla</h3>
+      <p class="banner">Hesabın oluşturuldu ama kaydın yarım kaldı. Bilgilerini tekrar girip tamamla.${kurulum ? ' İlk kaydolan sen olduğun için hesabın yönetici olarak açılacak.' : ''}</p>
+      <div class="field"><label for="k-kod">${kurulum ? 'Bölüm kodunu belirle' : 'Bölüm kodu'}</label><input id="k-kod" required autocomplete="off"></div>
+      <div class="field"><label for="k-ad">Ad soyad</label><input id="k-ad" required autocomplete="name" placeholder="Ayşe Kaya"></div>
+      ${dogumFields()}
+      <button class="btn" type="submit">Kaydı tamamla</button>
+      <p class="err" id="k-err"></p>
+    </form>
+    <button class="btn del" id="cikis">Çıkış yap</button>`;
+  $('#cikis').addEventListener('click', () => A.signOut(auth));
+  $('#f-tamam').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#k-err'), kod = $('#k-kod').value.trim(), ad = $('#k-ad').value.trim().replace(/\s+/g, ' ');
+    const dg = +$('#dg').value || null, da = +$('#da').value || null, dgos = $('#dgos').checked;
+    if (ad.length < 3) { err.textContent = 'Adını ve soyadını yaz.'; return; }
+    if ((dg && !da) || (!dg && da)) { err.textContent = 'Doğum gününü gün ve ay olarak birlikte seç.'; return; }
+    const hash = await sha256(kod), k = !config;
+    if (!k && hash !== config.kodHash) { err.textContent = 'Bölüm kodu yanlış.'; return; }
+    err.textContent = 'Kaydediliyor…';
+    await writeProfile(state.user.uid, state.user.email, { ad, dg, da, dgos, kurulum: k, hash }, err);
+  });
 }
 
 function renderMe() {
@@ -130,7 +175,9 @@ function renderMe() {
 
 function render() {
   if (!ready) { $('#v-profil').innerHTML = '<div class="banner">Uygulama henüz Firebase projesine bağlanmadı. <code>js/config.js</code> dosyasına proje ayarları girildiğinde giriş ve kayıt açılır.</div>'; return; }
-  state.user ? renderMe() : renderGuest();
+  if (!state.user) return renderGuest();
+  if (!state.profileLoaded || !configLoaded) { $('#v-profil').innerHTML = '<p class="note">Yükleniyor…</p>'; return; }
+  state.profile ? renderMe() : renderComplete();
 }
 
 export function initHesap() {
@@ -140,5 +187,5 @@ export function initHesap() {
   onState(s => { $('#who').textContent = s.user ? (s.profile?.ad?.split(' ')[0] || 'Hesabım') : 'Giriş yap'; });
   if (!ready) return;
   F.onSnapshot(F.collection(db, 'people'), s => { people = s.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); });
-  F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; if (!state.user) render(); }, () => { configLoaded = true; render(); });
+  F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });
 }
