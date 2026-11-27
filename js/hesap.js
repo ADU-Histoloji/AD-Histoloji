@@ -3,14 +3,14 @@ import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
 import { onEvents, etkinlikler, konuFormu, bosKonu } from './takvim.js';
-import { konuId } from './uygulamalar.js';
+import { konuId, MASA_SAYISI } from './uygulamalar.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
 let people = [];
 let config = null, configLoaded = false;
-let anlaticilar = {};
+let anlaticilar = {}, kisiler = [], kap = {}, unsubK = null;
 const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 const tarihGun = iso => { const d = new Date(iso + 'T12:00:00'); return `${iso.split('-').reverse().join('.')} ${GUN[d.getDay()]}`; };
 
@@ -145,6 +145,20 @@ function renderComplete() {
   });
 }
 
+function masaSecici(p) {
+  const ben = state.user.uid;
+  const secenek = Array.from({ length: MASA_SAYISI }, (_, i) => {
+    const n = i + 1, k = Number(kap[n] || 1);
+    const oturan = kisiler.filter(u => u.onayli && Number(u.masa) === n && u.id !== ben).map(u => u.ad.split(' ')[0]);
+    const dolu = oturan.length >= k && Number(p.masa) !== n;
+    const adlar = Number(p.masa) === n ? ['sen', ...oturan] : oturan;
+    return `<option value="${n}"${Number(p.masa) === n ? ' selected' : ''}${dolu ? ' disabled' : ''}>Masa ${n} · ${k} kişilik${adlar.length ? ' · ' + esc(adlar.join(', ')) : ' · boş'}${dolu ? ' (dolu)' : ''}</option>`;
+  }).join('');
+  return `<div class="field"><label for="m-sec">Daimi masam</label>
+    <select id="m-sec"><option value="">Seçilmedi</option>${secenek}</select>
+    <p class="note">Seçtiğin anda kaydedilir. Dolu masalar seçilemez; dolu bir masaya geçmen gerekirse yöneticiye yaz.</p></div>`;
+}
+
 function gorevlerim(p) {
   const d = new Date(), bugun = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const ev = etkinlikler();
@@ -153,7 +167,7 @@ function gorevlerim(p) {
     .sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
   const GOSTER = 6;
   return `<div class="card"><h3>Görevlerim</h3>
-    <dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd></dl>
+    ${masaSecici(p)}
     <h4 class="gorev-bas">🎤 Seminer</h4>
     ${sem.length ? sem.map(e => `<div class="li" style="display:block">
       <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}</div>
@@ -191,6 +205,11 @@ function renderMe() {
       <div class="field"><label for="p-new">Yeni PIN</label><input id="p-new" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" required></div>
       <button class="btn sec" type="submit">PIN'i değiştir</button><p class="err" id="p-err"></p></form>
     <button class="btn del" id="cikis">Çıkış yap</button>`;
+  $('#m-sec')?.addEventListener('change', async e => {
+    const v = e.target.value ? Number(e.target.value) : null;
+    try { await F.updateDoc(F.doc(db, 'users', state.user.uid), { masa: v }); e.target.blur(); toast(v ? `Masa ${v} kaydedildi` : 'Masa bırakıldı'); }
+    catch (x) { console.error(x); toast('Kaydedilemedi'); e.target.blur(); render(); }
+  });
   $('#f-dogum').addEventListener('submit', async e => {
     e.preventDefault();
     const dg = +$('#dg').value || null, da = +$('#da').value || null;
@@ -237,6 +256,15 @@ export function initHesap() {
   $('#who').addEventListener('click', () => { location.hash = 'profil'; });
   onState(s => { $('#who').textContent = s.user ? (s.profile?.ad?.split(' ')[0] || 'Hesabım') : 'Giriş yap'; });
   if (!ready) return;
+  onState(st => {
+    if (st.approved && !unsubK) {
+      const yenile = () => { if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); };
+      const u1 = F.onSnapshot(F.collection(db, 'users'), q => { kisiler = q.docs.map(d => ({ id: d.id, ...d.data() })); yenile(); }, () => { });
+      const u2 = F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; yenile(); }, () => { });
+      unsubK = () => { u1(); u2(); };
+    }
+    if (!st.approved && unsubK) { unsubK(); unsubK = null; }
+  });
   F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anlaticilar = {}; q.docs.forEach(d => { anlaticilar[d.id] = d.data(); }); if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); }, () => { });
   F.onSnapshot(F.collection(db, 'people'), s => { people = s.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); });
   F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });

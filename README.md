@@ -18,7 +18,7 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 
 ## Profil ekranı
 
-Her asistan Profil'deki **Görevlerim** kartında masasını, yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
+Her asistan Profil'deki **Görevlerim** kartında daimi masasını kendisi seçer (dolu masalar seçilemez; yönetici Yönetim → Kişiler'den değiştirebilir), yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
 
 ## Yönetim ekranı
 

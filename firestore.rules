@@ -46,7 +46,12 @@ service cloud.firestore {
         );
       allow update: if admin()
         || (signedIn() && request.auth.uid == uid
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['dogumGun', 'dogumAy', 'dogumGoster']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['dogumGun', 'dogumAy', 'dogumGoster']))
+        // Onaylı kişi kendi daimi masasını seçebilir (1–8) ya da bırakabilir
+        || (approved() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['masa'])
+            && (request.resource.data.masa == null
+                || (request.resource.data.masa is int && request.resource.data.masa >= 1 && request.resource.data.masa <= 8)));
       allow delete: if admin();
     }
 

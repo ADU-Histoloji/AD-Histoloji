@@ -1,6 +1,6 @@
 // Uygulamanın internet zayıfken de açılması için dosyaları önbellekte tutar.
 // Her zaman önce ağdan güncel sürümü dener (tarayıcı önbelleğini atlayarak), olmazsa önbellektekini gösterir.
-const CACHE = 'histoloji-v12';
+const CACHE = 'histoloji-v13';
 const FILES = ['./', 'index.html', 'style.css', 'manifest.webmanifest', 'data/events.json',
   'js/app.js', 'js/config.js', 'js/fb.js', 'js/util.js', 'js/takvim.js', 'js/arsiv.js', 'js/hesap.js', 'js/yonetim.js', 'js/bildirim.js', 'js/uygulamalar.js', 'js/duyurular.js',
   'icons/icon-192.png', 'icons/icon-512.png'];
