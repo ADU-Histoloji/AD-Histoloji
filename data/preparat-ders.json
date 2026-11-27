@@ -233,12 +233,141 @@
  },
  {
   "s": "Tıp D2",
+  "topic": "Kemik, Kıkırdak ve Kan Doku Histolojisi",
+  "kodlar": [
+   "4",
+   "9",
+   "Larinks"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Kas Dokusu Histolojisi",
+  "kodlar": [
+   "30",
+   "31",
+   "32",
+   "43"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Kalp ve Damar Histolojisi",
+  "kodlar": [
+   "32",
+   "33",
+   "40"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Lenforetiküler Sistem Histolojisi",
+  "kodlar": [
+   "5",
+   "6",
+   "7"
+  ]
+ },
+ {
+  "s": "Tıp D2",
   "topic": "Solunum Sistemi Histolojisi",
   "kodlar": [
    "9",
    "8-9",
    "29",
    "Larinks"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Ağız Boşluğu Histolojisi: Dişler, Dudaklar, Yanaklar, Damak, Dil ve Tükürük Bezi",
+  "kodlar": [
+   "41",
+   "43",
+   "23",
+   "24",
+   "25",
+   "5"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Özofagus, Mide ve Endokrin Organların Histolojisi",
+  "kodlar": [
+   "8",
+   "8-9",
+   "13",
+   "35",
+   "36",
+   "38"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "İnce ve Kalın Barsakların Histolojik Yapısı",
+  "kodlar": [
+   "12",
+   "14",
+   "15",
+   "11",
+   "Appendiks"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Karaciğer, Safra Kanalları, Safra Kesesi ve Pankreas Histolojisi",
+  "kodlar": [
+   "2",
+   "22"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Sinir ve Duyu Histolojisi: Cerebrum, Beyin Zarları, Ganglionlar, Periferik Sinirler",
+  "kodlar": [
+   "45",
+   "46",
+   "47",
+   "48",
+   "47-48",
+   "49"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Göz, Kulak ve Deri Histolojisi",
+  "kodlar": [
+   "34",
+   "10"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Üriner Sistem Histolojisi",
+  "kodlar": [
+   "28",
+   "27",
+   "26"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Erkek Genital Sistemi Histolojisi",
+  "kodlar": [
+   "54",
+   "55",
+   "55-56"
+  ]
+ },
+ {
+  "s": "Tıp D2",
+  "topic": "Kadın Genital Sistem Histolojisi",
+  "kodlar": [
+   "50",
+   "51",
+   "50-51",
+   "52",
+   "53"
   ]
  }
 ]
