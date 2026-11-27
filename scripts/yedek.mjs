@@ -18,6 +18,6 @@ Object.keys(belgeler).forEach(p => { const k = p.split('/').filter((_, i) => i %
 const json = JSON.stringify({ surum: 1, zaman: new Date().toISOString(), proje: hesap.project_id, belgeler });
 writeFileSync('yedek.json.gz', gzipSync(json));
 const satirlar = Object.entries(sayim).sort().map(([k, n]) => `| ${k} | ${n} |`).join('\n');
-const ozet = `Toplam ${Object.keys(belgeler).length} belge · ${(json.length / 1048576).toFixed(1)} MB (sıkıştırmadan önce)\n\n| Koleksiyon | Belge |\n|---|---|\n${satirlar}\n`;
+const ozet = `Toplam ${Object.keys(belgeler).length} belge · ${json.length > 1048576 ? (json.length / 1048576).toFixed(1) + " MB" : Math.ceil(json.length / 1024) + " KB"} (sıkıştırmadan önce)\n\n| Koleksiyon | Belge |\n|---|---|\n${satirlar}\n`;
 console.log(ozet);
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Veritabanı yedeği\n\n' + ozet);
