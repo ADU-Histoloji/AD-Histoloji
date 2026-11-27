@@ -8,7 +8,8 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pdfLinkleri, histolojiSatirlari, kurulAdi, farklar, TUR } from './program-fark.mjs';
+import { pdfLinkleri, histolojiSatirlari, kurulAdi, farklar } from './program-fark.mjs';
+import { kurulKisa, satirSade } from './bicim.mjs';
 
 const kok = new URL('../', import.meta.url);
 const DURUM = new URL('data/program-durumu.json', kok);
@@ -80,13 +81,25 @@ else {
 console.log(`${Object.keys(simdi).length} PDF kontrol edildi, ${degisen.length} değişiklik, ${hatalar.length} hata.`);
 
 if (degisen.length) {
-  const satir = f => `${f.sayfa} – ${f.etiket}: ${TUR[f.tur]}${f.eklenen.length + f.cikan.length ? `, ${f.eklenen.length + f.cikan.length} histoloji satırı farklı` : ''}`;
-  await bildir('Ders programı güncellendi', degisen.slice(0, 4).map(satir).join('\n') + (degisen.length > 4 ? `\n+${degisen.length - 4} değişiklik daha` : '') + '\nAyrıntılar Yönetim ekranında.');
+  const sinif = a => a.replace('Tıp Dönem II', 'Tıp D2').replace('Tıp Dönem I', 'Tıp D1');
+  const bloklar = degisen.slice(0, 3).map(f => {
+    const bas = `${sinif(f.sayfa)} · ${kurulKisa(f.etiket) || f.etiket}`;
+    if (f.tur === 'kaldirildi') return `${bas}\n🗑️ Program sayfadan kaldırıldı`;
+    const satir = [...f.cikan.slice(0, 2).map(x => '❌ ' + satirSade(x)), ...f.eklenen.slice(0, 2).map(x => '✅ ' + satirSade(x))];
+    const fazla = f.cikan.length + f.eklenen.length - satir.length;
+    if (!satir.length) satir.push(f.tur === 'yeni' ? '🆕 Yeni program yüklendi' : '🔄 Güncellenmiş program yüklendi');
+    if (fazla > 0) satir.push(`… ve ${fazla} satır daha`);
+    return bas + '\n' + satir.join('\n');
+  });
+  if (degisen.length > 3) bloklar.push(`+${degisen.length - 3} değişiklik daha`);
+  const title = '🗓️ Ders programı güncellendi', body = bloklar.join('\n') + '\nTakvimde düzeltmek için dokun.';
+  await bildir(title, body);
+  await db.collection('yoneticiDuyurulari').add({ title, body, url: './#yonetim', tur: 'program', t: FieldValue.serverTimestamp() });
 }
 // Hata bildirimi sadece durum ilk bozulduğunda gider, her gün tekrarlanmaz
 const hataMetni = hatalar.join(' | ');
-if (hataMetni && hataMetni !== (once?.hata || '')) await bildir('Program sayfası okunamadı', hataMetni.slice(0, 300) + '\nFakülte sitesi değişmiş olabilir; data/program-sayfalari.json adreslerini kontrol edin.');
-if (deneme && !degisen.length) await bildir('[Test] Program kontrolü çalışıyor', `${Object.keys(simdi).length} PDF kontrol edildi, değişiklik yok.${hatalar.length ? '\nHata: ' + hataMetni.slice(0, 200) : ''}`);
+if (hataMetni && hataMetni !== (once?.hata || '')) await bildir('⚠️ Program sayfası okunamadı', hataMetni.slice(0, 300) + '\nFakülte sitesi değişmiş olabilir; data/program-sayfalari.json adreslerini kontrol edin.');
+if (deneme && !degisen.length) await bildir('[Test] ✅ Program kontrolü çalışıyor', `${Object.keys(simdi).length} PDF kontrol edildi, değişiklik yok.${hatalar.length ? '\nHata: ' + hataMetni.slice(0, 200) : ''}`);
 
 // Okunamayan sayfaların eski kayıtlarını koru
 const birlesik = { ...(once?.dosyalar || {}) };

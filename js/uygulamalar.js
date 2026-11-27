@@ -131,6 +131,26 @@ function onClick(e) {
   }
 }
 
+// Bildirimdeki "Katılıyorum / Katılamıyorum" düğmesinden gelen cevap (adres: ?katil=evet&gun=2026-12-03)
+const bekleyen = (() => {
+  const q = new URLSearchParams(location.search), k = q.get('katil'), g = q.get('gun');
+  return (k === 'evet' || k === 'hayir') && /^\d{4}-\d{2}-\d{2}$/.test(g || '') ? { durum: k, gun: g } : null;
+})();
+let bekleyenIslendi = false;
+async function bekleyeniIsle() {
+  if (!bekleyen || bekleyenIslendi || !state.approved) return;
+  bekleyenIslendi = true;
+  history.replaceState(null, '', location.pathname + '#uygulama');
+  try {
+    const ref = F.doc(db, 'katilim', bekleyen.gun, 'kisiler', state.user.uid);
+    const eski = await F.getDoc(ref).catch(() => null);
+    const masa = bekleyen.durum === 'hayir' ? null : (eski?.exists() ? eski.data().masa ?? null : null);
+    await F.setDoc(ref, { durum: bekleyen.durum, masa, t: F.serverTimestamp() });
+    toast(bekleyen.durum === 'evet' ? 'Katılacağın kaydedildi' : 'Katılamayacağın kaydedildi');
+    if (gunler.includes(bekleyen.gun)) gunSec(bekleyen.gun);
+  } catch (x) { console.error(x); toast('Cevabın kaydedilemedi, buradan tekrar dene'); }
+}
+
 export function initUygulamalar() {
   $('#v-uygulama').addEventListener('click', onClick);
   onEvents(ev => {
@@ -148,6 +168,7 @@ export function initUygulamalar() {
       unsubM = F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; render(); }, () => { });
       gunSec(gun);
     }
+    if (s.approved) bekleyeniIsle();
     if (!s.approved && unsubU) { unsubU(); unsubU = null; unsubM && unsubM(); unsubM = null; users = []; gunSec(gun); }
     render();
   });

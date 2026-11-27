@@ -126,6 +126,15 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 ---
 
+## Bildirim biçimi ve bildirim kutusu
+
+Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, 🟢 Diş teorik, 🟠 Diş uygulama, 📝 sınav. Metinler `scripts/bicim.mjs`, `scripts/mesaj.mjs` (haftalık) ve `scripts/gunluk-mesaj.mjs` (katılım sorusu) dosyalarında hazırlanır.
+
+- Katılım sorusu herkese kendi masa numarasıyla gider. Android'de bildirimin altında **Katılıyorum / Katılamıyorum** düğmeleri çıkar; iPhone düğme göstermez, bildirime dokununca Masalar ekranı açılır.
+- Gönderilen her bildirim uygulamada sağ üstteki 🔔 simgesinde (bildirim kutusu) saklanır; okunmamışların sayısı simgede görünür. Program değişikliği bildirimleri sadece yöneticilerin kutusuna düşer.
+
+---
+
 ## Sorun çıkarsa
 
 - **Sayfa açılıyor ama giriş/arşiv çalışmıyor:** `js/config.js` doğru dolduruldu mu, adres Firebase'de *Authorized domains* listesinde mi, kurallar yayınlandı mı?

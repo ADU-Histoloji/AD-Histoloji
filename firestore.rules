@@ -96,6 +96,16 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
+    // Uygulama içi bildirim kutusu (sunucu yazar)
+    match /duyurular/{id} {
+      allow read: if approved();
+      allow write: if false;
+    }
+    match /yoneticiDuyurulari/{id} {
+      allow read: if admin();
+      allow write: if false;
+    }
+
     // Preparat arşivi: herkes görür, onaylı kişiler ekler ve düzenler
     match /preps/{id} {
       allow read: if true;

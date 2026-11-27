@@ -1,7 +1,7 @@
 // Her hafta içi sabah GitHub tarafından çalıştırılır: ertesi gün uygulama varsa
 // herkese katılım sorusunu, anlatıcılara da hatırlatmayı gönderir.
 import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
 import { yarin, oturumlar, genelMesaj, anlaticiMesaj } from './gunluk-mesaj.mjs';
 
@@ -21,21 +21,23 @@ const users = (await db.collection('users').get()).docs.map(d => ({ id: d.id, ..
 const izinli = new Set(users.filter(u => !test || u.rol === 'yonetici').map(u => u.id));
 const tokens = (await db.collection('tokens').get()).docs.map(d => ({ id: d.id, uid: d.data().uid })).filter(t => izinli.has(t.uid));
 
-// Anlatıcısı uygulamaya kayıtlı olan konular
-const anl = new Map();
+// Anlatıcılar: adlar (gösterim için) ve uygulamaya kayıtlı olanların kimlikleri
+const adlar = {}, anl = new Map();
 for (const o of ots) {
   const a = await db.collection('anlaticilar').doc(o.id).get();
-  if (a.exists && a.data().uid) { const uid = a.data().uid; if (!anl.has(uid)) anl.set(uid, []); anl.get(uid).push(o); }
+  if (!a.exists) continue;
+  if (a.data().ad) adlar[o.id] = a.data().ad;
+  const uid = a.data().uid; if (uid) { if (!anl.has(uid)) anl.set(uid, []); anl.get(uid).push(o); }
 }
 
-const genel = genelMesaj(gun, ots);
+const genel = genelMesaj(gun, ots, adlar);
 console.log(genel.title + '\n' + genel.body);
 let basarili = 0, basarisiz = 0;
-async function gonder(liste, m) {
+async function gonder(liste, m, tip) {
   if (!liste.length) return;
   const r = await fcm.sendEachForMulticast({
     tokens: liste.map(t => t.id),
-    data: { title: (test ? '[Test] ' : '') + m.title, body: m.body, url: './#uygulama', tag: 'katilim-' + gun },
+    data: { title: (test ? '[Test] ' : '') + m.title, body: m.body, url: './#uygulama', tag: 'katilim-' + gun, tip, gun },
     webpush: { headers: { Urgency: 'high', TTL: '43200' } }
   });
   basarili += r.successCount; basarisiz += r.failureCount;
@@ -45,6 +47,12 @@ async function gonder(liste, m) {
       return db.collection('tokens').doc(liste[j].id).delete();
   }));
 }
-await gonder(tokens.filter(t => !anl.has(t.uid)), genel);
-for (const [uid, liste] of anl) await gonder(tokens.filter(t => t.uid === uid), anlaticiMesaj(gun, liste));
+// Herkese kendi masasıyla kişisel mesaj; anlatıcılara ayrıca anlatıcı mesajı
+for (const u of users) {
+  const tk = tokens.filter(t => t.uid === u.id);
+  if (!tk.length) continue;
+  if (anl.has(u.id)) await gonder(tk, anlaticiMesaj(gun, anl.get(u.id)), 'katilim');
+  else await gonder(tk, genelMesaj(gun, ots, adlar, u), 'katilim');
+}
+if (!test) await db.collection('duyurular').add({ ...genel, url: './#uygulama', tur: 'katilim', t: FieldValue.serverTimestamp() });
 console.log(`${gun} · gönderildi: ${basarili}, başarısız: ${basarisiz}${test ? ' (test, sadece yöneticiler)' : ''}`);

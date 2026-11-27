@@ -1,6 +1,6 @@
 // Her pazartesi sabah GitHub tarafından çalıştırılır: haftanın programını bildirim olarak gönderir.
 import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
 import { writeFileSync } from 'node:fs';
 import { haftaBasi, gunler, mesaj } from './mesaj.mjs';
@@ -40,6 +40,7 @@ for (let i = 0; i < tokens.length; i += 500) {
       return db.collection('tokens').doc(parca[j].id).delete();
   }));
 }
+if (!sadeceYonetici) await db.collection('duyurular').add({ title, body, url: './#takvim', tur: 'haftalik', t: FieldValue.serverTimestamp() });
 console.log(`Gönderildi: ${basarili}, başarısız: ${basarisiz}, cihaz sayısı: ${tokens.length}`);
 writeFileSync(new URL('../data/son-bildirim.json', import.meta.url),
   JSON.stringify({ zaman: new Date().toISOString(), hafta: gs[0], test: sadeceYonetici, basarili, basarisiz }, null, 2) + '\n');

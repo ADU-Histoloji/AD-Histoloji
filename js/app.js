@@ -5,6 +5,7 @@ import { initArsiv, linkedHtml, onPrepsChange } from './arsiv.js';
 import { initHesap } from './hesap.js';
 import { initYonetim } from './yonetim.js';
 import { initUygulamalar } from './uygulamalar.js';
+import { initDuyurular } from './duyurular.js';
 
 const VIEWS = ['takvim', 'uygulama', 'arsiv', 'profil', 'yonetim'];
 const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', profil: 'Hesabım', yonetim: 'Yönetim' };
@@ -25,6 +26,7 @@ setLinked(linkedHtml);
 onPrepsChange(rerenderTakvim);
 initHesap();
 initYonetim();
+initDuyurular();
 route();
 
 if (ready) {
