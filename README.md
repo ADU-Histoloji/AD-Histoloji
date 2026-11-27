@@ -33,6 +33,12 @@ Yöneticiler her seminerin **Düzenle** menüsünden:
 
 Programa sonradan bir Salı günü histoloji sınavı eklenirse o Salıdaki seminer uyarıyla gösterilir (Yönetim → Yapılacak'ta da çıkar); **Sonrakileri kaydır** ile düzeltilir. "Seminer yok" Salıları `config/seminer` belgesinde tutulur.
 
+## Preparat arşivi
+
+Her preparat **kod** (ilk numara, ör. 28 = Böbrek) ve **seri** ile tutulur: farklı seriler rakamla (28-1, 28-2…), özel boyalar harfle (33-a Verhoeff…). Birleşik kodlar (8-9 Trakea-Özofagus, 47-48, 50-51, 55-56) kendi başına koddur. Kalite bölümün ölçeğiyle girilir (Çok iyi, İyi, Orta-iyi, Orta, Orta-kötü, Kötü); kırık lam sayısı ayrı alandır. "Sorunlu" filtresi kalitesi kötü ya da kırığı olanları gösterir. Aramaya rakam yazılırsa kod olarak aranır (9 → kod 9'un serileri).
+
+Bölümün preparat listesi (`data/preparatlar.json`, kaynak: Preparat_listesi_2025.docx) Actions → **Preparat listesini yükle** ile arşive aktarılır; arşivde zaten olan satırlar atlanır, uygulamada yapılan düzeltmelerin üzerine yazılmaz.
+
 ## Sınav gözetmenleri
 
 Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir hocası, her hocanın (varsayılan) 2 gözetmeni olur. Gruplar ve hocaları sabittir: 1. Alpaslan Gökçimen ve Gökçen Gökçe Tepeli, 2. Esra Gökmen Yılmaz, 3. Kemal Ergin, 4. Erkan Gümüş (`js/gozetmen.js` → `VARSAYILAN_HOCALAR`; bir sınav için farklıysa Düzenle'den değiştirilir).

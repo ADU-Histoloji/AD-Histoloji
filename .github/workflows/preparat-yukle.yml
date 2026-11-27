@@ -1,0 +1,25 @@
+name: Preparat listesini yükle
+
+on:
+  workflow_dispatch:
+    inputs:
+      kuru:
+        description: 'Kuru deneme: hiçbir şey yazma, sadece kaç preparat ekleneceğini göster'
+        type: boolean
+        default: true
+
+jobs:
+  yukle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Yükle
+        run: node scripts/preparat-yukle.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          KURU: ${{ inputs.kuru }}
