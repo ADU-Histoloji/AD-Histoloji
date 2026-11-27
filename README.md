@@ -155,6 +155,19 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun** alanına bir tarih yazılırsa o gün çalışmış gibi davranır (ör. 08.12 seminerinin bir gün öncesi için `2026-12-07`). **test** işaretliyse mesajlar asıl kişiye değil yöneticilere gider; **kuru** işaretliyse hiçbir şey gönderilmez, sadece kime ne gideceği görev kaydına yazılır.
 
+## Yedekleme
+
+**Veritabanı yedeği** görevi her pazar gece 04:30'da veritabanının tamamını (kişiler, takvim, preparat arşivi ve fotoğrafları, anlatıcılar, katılımlar, seminer ayarları; telefonların bildirim adresleri hariç) şifreleyip GitHub'da saklar. Her yedek 90 gün tutulur, yani geriye dönük yaklaşık 13 haftalık yedek hep vardır. Actions → Veritabanı yedeği → bir çalıştırma → en alttaki **Artifacts** kısmında görünür. Depo herkese açık olduğu için yedekler şifrelidir; şifresiz hali hiçbir yerde durmaz.
+
+**Kurulum (bir kere):** GitHub → depo → Settings → Secrets and variables → Actions → **New repository secret**. Name: `YEDEK_SIFRE`, Secret: en az 16 karakterlik rastgele bir şifre. Bu şifreyi bölümün ortak bir yerine (ör. kilitli dolaptaki kurulum notları) de yazın: GitHub'daki gizli değer okunamaz, sadece değiştirilebilir. Şifre değiştirilirse eski yedekler yeni şifreyle açılmaz.
+
+**Geri yükleme:** Actions → **Yedekten geri yükle** → Run workflow.
+- Önce **kuru** işaretli haliyle çalıştırın: hangi yedeğin kullanılacağını ve kaç belge yazılacağını gösterir, hiçbir şey değiştirmez.
+- Gerçekten geri yüklemek için **kuru** işaretini kaldırın ve **onay** alanına `GERİ YÜKLE` yazın.
+- **calistirma** boşsa en son yedek kullanılır; eski bir yedek için Veritabanı yedeği görevinin o çalıştırmasını açıp adres çubuğundaki `/runs/` sonrasındaki sayıyı yazın.
+- **koleksiyon** ile sadece bir bölüm geri yüklenebilir (ör. silinen preparatlar için `preps`).
+- Yedekteki belgeler yedekteki haliyle yazılır; yedekte olmayan (sonradan eklenmiş) belgelere dokunulmaz.
+
 ## Test bildirimi
 
 Bir kişiye bildirim gidip gitmediğini denemek için: GitHub → **Actions** → **Test bildirimi** → **Run workflow** → kişinin adını yaz → **Run workflow**. Görev bitince açıp özet kısmına bakın: kişinin onaylı olup olmadığı, kaç cihazının kayıtlı olduğu ve gönderimin başarılı olup olmadığı yazar. Ad boş bırakılırsa tüm onaylı kişilere gider.

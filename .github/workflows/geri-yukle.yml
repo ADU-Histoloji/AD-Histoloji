@@ -1,0 +1,66 @@
+name: Yedekten geri yükle
+
+on:
+  workflow_dispatch:
+    inputs:
+      calistirma:
+        description: 'Hangi yedek: "Veritabanı yedeği" görevinin çalıştırma numarası (adres çubuğundaki uzun sayı). Boş = en son yedek'
+        type: string
+        required: false
+      koleksiyon:
+        description: 'Sadece bunları geri yükle (virgülle, ör. preps veya users,people). Boş = hepsi'
+        type: string
+        required: false
+      kuru:
+        description: 'Kuru deneme: hiçbir şey yazma, sadece ne yapılacağını göster'
+        type: boolean
+        default: true
+      onay:
+        description: 'Gerçekten yazmak için GERİ YÜKLE yazın'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  geri:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Onay
+        if: ${{ !inputs.kuru && inputs.onay != 'GERİ YÜKLE' }}
+        run: |
+          echo "::error::Kuru deneme kapalıyken onay alanına GERİ YÜKLE yazılmalı."
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Yedeği indir
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SECILEN: ${{ inputs.calistirma }}
+        run: |
+          ID="$SECILEN"
+          if [ -z "$ID" ]; then
+            ID=$(gh run list -R "$GITHUB_REPOSITORY" -w yedek.yml --status success -L 1 --json databaseId -q '.[0].databaseId')
+          fi
+          if [ -z "$ID" ]; then echo "::error::Yedek bulunamadı."; exit 1; fi
+          echo "Kullanılan yedek çalıştırması: $ID"
+          gh run download "$ID" -R "$GITHUB_REPOSITORY" -D indirilen
+          F=$(find indirilen -name 'yedek.json.gz.enc' | head -1)
+          if [ -z "$F" ]; then echo "::error::Bu çalıştırmada yedek dosyası yok (90 günden eski olabilir)."; exit 1; fi
+          mv "$F" yedek.json.gz.enc
+      - name: Şifreyi çöz
+        env:
+          YEDEK_SIFRE: ${{ secrets.YEDEK_SIFRE }}
+        run: openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in yedek.json.gz.enc -out yedek.json.gz -pass env:YEDEK_SIFRE
+      - name: Geri yükle
+        run: node scripts/geri-yukle.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          KURU: ${{ inputs.kuru }}
+          KOLEKSIYON: ${{ inputs.koleksiyon }}
