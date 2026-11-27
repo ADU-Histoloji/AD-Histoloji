@@ -134,6 +134,10 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 ---
 
+## Test bildirimi
+
+Bir kişiye bildirim gidip gitmediğini denemek için: GitHub → **Actions** → **Test bildirimi** → **Run workflow** → kişinin adını yaz → **Run workflow**. Görev bitince açıp özet kısmına bakın: kişinin onaylı olup olmadığı, kaç cihazının kayıtlı olduğu ve gönderimin başarılı olup olmadığı yazar. Ad boş bırakılırsa tüm onaylı kişilere gider.
+
 ## Bildirim biçimi ve bildirim kutusu
 
 Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, 🟢 Diş teorik, 🟠 Diş uygulama, 📝 sınav. Metinler `scripts/bicim.mjs`, `scripts/mesaj.mjs` (haftalık) ve `scripts/gunluk-mesaj.mjs` (katılım sorusu) dosyalarında hazırlanır.

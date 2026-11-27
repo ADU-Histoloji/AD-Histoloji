@@ -1,0 +1,25 @@
+name: Test bildirimi
+
+on:
+  workflow_dispatch:
+    inputs:
+      kisi:
+        description: 'Kişinin adı (bir kısmı yeterli). Boş bırakılırsa tüm onaylı kişilere gider.'
+        type: string
+        required: false
+
+jobs:
+  gonder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Test bildirimini gönder
+        run: node scripts/test-bildirim.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          KISI: ${{ inputs.kisi }}
