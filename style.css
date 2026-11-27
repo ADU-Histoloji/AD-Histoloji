@@ -191,3 +191,9 @@ details.card>summary{cursor:pointer;min-height:44px;display:flex;align-items:cen
 .ysekme{flex-wrap:nowrap;overflow-x:auto;gap:6px;scrollbar-width:none}
 .ysekme .chip{padding:0 10px;font-size:14px;white-space:nowrap;flex:0 0 auto}
 .gorev-bas{margin:18px 0 2px;font:600 15px Inter,sans-serif;color:var(--mute)}
+.masasec{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.masa-b{appearance:none;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;min-height:60px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;font:500 12px Inter,sans-serif}
+.masa-b b{font-size:18px}
+.masa-b span{color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.masa-b.sec{border-color:var(--d1);background:var(--soft)}
+.masa-b:disabled{opacity:.4;cursor:not-allowed}

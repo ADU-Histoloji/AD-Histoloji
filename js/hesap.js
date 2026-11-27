@@ -3,14 +3,14 @@ import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
 import { onEvents, etkinlikler, konuFormu, bosKonu } from './takvim.js';
-import { konuId, MASA_SAYISI } from './uygulamalar.js';
+import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
 let people = [];
 let config = null, configLoaded = false;
-let anlaticilar = {}, kisiler = [], kap = {}, unsubK = null;
+let anlaticilar = {}, kisiler = [], unsubK = null, masaDegis = false;
 const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 const tarihGun = iso => { const d = new Date(iso + 'T12:00:00'); return `${iso.split('-').reverse().join('.')} ${GUN[d.getDay()]}`; };
 
@@ -146,17 +146,15 @@ function renderComplete() {
 }
 
 function masaSecici(p) {
+  if (p.masa && !masaDegis) return `<dl class="kv"><dt>Masa</dt><dd>${esc(p.masa)} <button class="linkbtn" data-masadegis style="min-height:0;padding:0 0 0 8px">Değiştir</button></dd></dl>`;
   const ben = state.user.uid;
-  const secenek = Array.from({ length: MASA_SAYISI }, (_, i) => {
-    const n = i + 1, k = Number(kap[n] || 1);
-    const oturan = kisiler.filter(u => u.onayli && Number(u.masa) === n && u.id !== ben).map(u => u.ad.split(' ')[0]);
-    const dolu = oturan.length >= k && Number(p.masa) !== n;
-    const adlar = Number(p.masa) === n ? ['sen', ...oturan] : oturan;
-    return `<option value="${n}"${Number(p.masa) === n ? ' selected' : ''}${dolu ? ' disabled' : ''}>Masa ${n} · ${k} kişilik${adlar.length ? ' · ' + esc(adlar.join(', ')) : ' · boş'}${dolu ? ' (dolu)' : ''}</option>`;
-  }).join('');
-  return `<div class="field"><label for="m-sec">Daimi masam</label>
-    <select id="m-sec"><option value="">Seçilmedi</option>${secenek}</select>
-    <p class="note">Seçtiğin anda kaydedilir. Dolu masalar seçilemez; dolu bir masaya geçmen gerekirse yöneticiye yaz.</p></div>`;
+  return `<div class="field"><label>${p.masa ? 'Yeni masanı seç' : 'Masanı seç'}</label>
+    <div class="masasec">${Array.from({ length: MASA_SAYISI }, (_, i) => {
+      const n = i + 1, oturan = kisiler.filter(u => u.onayli && Number(u.masa) === n && u.id !== ben).map(u => u.ad.split(' ')[0]);
+      const dolu = oturan.length >= MASA_KAP;
+      return `<button class="masa-b${Number(p.masa) === n ? ' sec' : ''}" data-masasec="${n}"${dolu ? ' disabled' : ''}><b>${n}</b><span>${dolu ? 'dolu' : oturan.length ? esc(oturan.join(', ')) : 'boş'}</span></button>`;
+    }).join('')}</div>
+    ${masaDegis ? '<button class="linkbtn" data-masavazgec>Vazgeç</button>' : ''}</div>`;
 }
 
 function gorevlerim(p) {
@@ -205,11 +203,14 @@ function renderMe() {
       <div class="field"><label for="p-new">Yeni PIN</label><input id="p-new" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" required></div>
       <button class="btn sec" type="submit">PIN'i değiştir</button><p class="err" id="p-err"></p></form>
     <button class="btn del" id="cikis">Çıkış yap</button>`;
-  $('#m-sec')?.addEventListener('change', async e => {
-    const v = e.target.value ? Number(e.target.value) : null;
-    try { await F.updateDoc(F.doc(db, 'users', state.user.uid), { masa: v }); e.target.blur(); toast(v ? `Masa ${v} kaydedildi` : 'Masa bırakıldı'); }
-    catch (x) { console.error(x); toast('Kaydedilemedi'); e.target.blur(); render(); }
-  });
+  $('#v-profil').querySelector('[data-masadegis]')?.addEventListener('click', () => { masaDegis = true; render(); });
+  $('#v-profil').querySelector('[data-masavazgec]')?.addEventListener('click', () => { masaDegis = false; render(); });
+  $('#v-profil').querySelectorAll('[data-masasec]').forEach(b => b.addEventListener('click', async () => {
+    const v = Number(b.dataset.masasec);
+    try { await F.updateDoc(F.doc(db, 'users', state.user.uid), { masa: v }); masaDegis = false; toast(`Masa ${v} kaydedildi`); }
+    catch (x) { console.error(x); toast('Kaydedilemedi'); }
+    render();
+  }));
   $('#f-dogum').addEventListener('submit', async e => {
     e.preventDefault();
     const dg = +$('#dg').value || null, da = +$('#da').value || null;
@@ -260,8 +261,7 @@ export function initHesap() {
     if (st.approved && !unsubK) {
       const yenile = () => { if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); };
       const u1 = F.onSnapshot(F.collection(db, 'users'), q => { kisiler = q.docs.map(d => ({ id: d.id, ...d.data() })); yenile(); }, () => { });
-      const u2 = F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; yenile(); }, () => { });
-      unsubK = () => { u1(); u2(); };
+      unsubK = u1;
     }
     if (!st.approved && unsubK) { unsubK(); unsubK = null; }
   });

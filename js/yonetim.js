@@ -1,12 +1,12 @@
 import { $, esc, state, onState, toast, sha256 } from './util.js';
 import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
-import { konuId, MASA_SAYISI } from './uygulamalar.js';
+import { konuId, MASA_SAYISI, MASA_KAP } from './uygulamalar.js';
 
 const trAd = a => String(a || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ').trim();
 const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
 let users = [], unsub = null, eventCount = null;
-let kap = {}, anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
+let anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
 
 const bugunISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const gunEkle = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
@@ -34,21 +34,21 @@ function yapilacaklar() {
   const anlEksik = konular.filter(k => k.sonraki && k.sonraki <= sinir && !(anl[k.id] || {}).uid);
   const semEksik = seminerler.filter(e => e.date >= bugun && !e.uid);
   const say = {}; users.filter(u => u.onayli && u.masa).forEach(u => { say[u.masa] = (say[u.masa] || 0) + 1; });
-  const tasan = Object.entries(say).filter(([m, n]) => n > Number(kap[m] || 1)).map(([m]) => m);
+  const tasan = Object.entries(say).filter(([m, n]) => n > MASA_KAP).map(([m]) => m);
   const masasiz = users.filter(u => u.onayli && !u.masa);
   const parcalar = [];
   if (wait.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Onay bekleyenler</h3><div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div></div>`);
   if (yeniDeg.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Program değişikliği</h3><p>Fakülte programında ${yeniDeg.length} değişiklik bulundu.</p><button class="btn" data-git="prog">Değişikliklere bak</button></div>`);
   if (anlEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Anlatıcısı olmayan uygulamalar</h3><p class="note">Önümüzdeki 3 hafta. Seçtiğin anda kaydedilir.</p><div class="list">${anlEksik.map(anlSatir).join('')}</div></div>`);
   if (semEksik.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Eşleşmemiş seminerler</h3><p class="note">Sunan kişiyi seç; kendi konusunu yazabilsin ve hatırlatma alsın.</p><div class="list">${semEksik.map(semSatir).join('')}</div></div>`);
-  if (tasan.length || masasiz.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Masalar</h3>${tasan.length ? `<p>Kapasitesinden fazla kişi olan masa: <b>${tasan.join(', ')}</b></p>` : ''}${masasiz.length ? `<p>Masası atanmamış: ${masasiz.map(u => esc(u.ad)).join(', ')}</p>` : ''}<button class="btn sec" data-git="kisi">Kişilere git</button></div>`);
+  if (tasan.length || masasiz.length) parcalar.push(`<div class="card" style="max-width:none"><h3>Masalar</h3>${tasan.length ? `<p>2'den fazla kişi olan masa: <b>${tasan.join(', ')}</b></p>` : ''}${masasiz.length ? `<p>Masasını henüz seçmemiş: ${masasiz.map(u => esc(u.ad)).join(', ')}</p>` : ''}<button class="btn sec" data-git="kisi">Kişilere git</button></div>`);
   return { html: parcalar.join('') || '<div class="card" style="max-width:none"><h3>Her şey yolunda ✓</h3><p class="note">Bekleyen onay, program değişikliği, anlatıcısız uygulama ya da eşleşmemiş seminer yok.</p></div>', sayi: wait.length + yeniDeg.length + anlEksik.length + semEksik.length + tasan.length + masasiz.length };
 }
 
 function kisilerHtml() {
   const ok = users.filter(u => u.onayli).sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
   return `<div class="card" style="max-width:none"><h3>Kişiler</h3>
-    <p class="note">Masa seçtiğin anda kaydedilir. PIN'ini unutan kişi için Diğer → "Kaydı sıfırla"; kişi aynı adla yeniden kayıt olur.</p>
+    <p class="note">Herkes masasını Profil'den kendisi seçer; gerekirse buradan değiştirebilirsin. PIN'ini unutan kişi için Diğer → "Kaydı sıfırla"; kişi aynı adla yeniden kayıt olur.</p>
     <div class="list">${ok.map(u => `<div class="li" data-u="${esc(u.id)}">
       <span class="nm" style="flex:1 1 10em">${esc(u.ad)} ${u.rol === 'yonetici' ? '<span class="pill">Yönetici</span>' : ''}</span>
       <span style="display:flex;gap:8px;align-items:center">
@@ -68,11 +68,7 @@ function uygulamalarHtml() {
   return `<div class="card" style="max-width:none"><h3>Anlatıcılar</h3>
     <p class="note">Her uygulama konusunu anlatacak asistanı seç; seçtiğin anda kaydedilir. Anlatıcı takvimde ve Masalar ekranında görünür, bir gün önce bildirim alır.</p>
     <div class="list">${liste.map(anlSatir).join('') || '<p class="note">Yaklaşan uygulama yok.</p>'}</div>
-    <button class="linkbtn" data-gecmis="anl">${gecmisAnl ? 'Geçmiş uygulamaları gizle' : 'Geçmiş uygulamaları da göster'}</button></div>
-    <div class="card" style="max-width:none"><h3>Masa kapasiteleri</h3>
-    <p class="note">Her masaya kaç kişinin oturduğu. Seçtiğin anda kaydedilir.</p>
-    <div class="masalar">${Array.from({ length: MASA_SAYISI }, (_, i) => `<label class="masa" style="min-height:0">Masa ${i + 1}
-      <select data-oto="kap" data-masa="${i + 1}"><option value="1"${Number(kap[i + 1] || 1) === 1 ? ' selected' : ''}>1 kişi</option><option value="2"${Number(kap[i + 1]) === 2 ? ' selected' : ''}>2 kişi</option></select></label>`).join('')}</div></div>`;
+    <button class="linkbtn" data-gecmis="anl">${gecmisAnl ? 'Geçmiş uygulamaları gizle' : 'Geçmiş uygulamaları da göster'}</button></div>`;
 }
 
 function programHtml() {
@@ -125,7 +121,6 @@ async function onChange(e) {
   const v = s.value, tip = s.dataset.oto;
   try {
     if (tip === 'masa') await F.updateDoc(F.doc(db, 'users', s.closest('[data-u]').dataset.u), { masa: v ? Number(v) : null });
-    else if (tip === 'kap') await F.setDoc(F.doc(db, 'config', 'masalar'), { kap: { ...kap, [s.dataset.masa]: Number(v) } });
     else if (tip === 'sem') await F.updateDoc(F.doc(db, 'events', s.closest('[data-sem]').dataset.sem), { uid: v || F.deleteField() });
     else if (tip === 'anl') {
       const row = s.closest('[data-k]');
@@ -231,7 +226,6 @@ export function initYonetim() {
     if (s.admin && !unsub) {
       unsub = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(d => ({ id: d.id, ...d.data() })); otoEslestir(); yeniden(); });
       F.onSnapshot(F.collection(db, 'events'), q => { eventCount = q.size; yeniden(); });
-      F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; yeniden(); }, () => { });
       F.onSnapshot(F.query(F.collection(db, 'degisiklikler'), F.orderBy('t', 'desc'), F.limit(60)), q => { degisiklik = q.docs.map(d => ({ id: d.id, ...d.data() })); yeniden(); }, () => { });
       F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anl = {}; q.docs.forEach(d => { anl[d.id] = d.data(); }); yeniden(); }, () => { });
     }

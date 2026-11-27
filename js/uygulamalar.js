@@ -3,6 +3,7 @@ import { ready, db, F } from './fb.js';
 import { onEvents, setAnlatici } from './takvim.js';
 
 export const MASA_SAYISI = 8;
+export const MASA_KAP = 2; // her masada en fazla 2 kişi
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const GUN = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
 const pad = n => String(n).padStart(2, '0');
@@ -15,7 +16,7 @@ export const konuId = (s, topic) => (s + '-' + topic).toLocaleLowerCase('tr')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 120);
 
 let EV = [], gunler = [], gun = null;
-let users = [], kap = {}, anlatici = {}, katilim = {};
+let users = [], anlatici = {}, katilim = {};
 let unsubK = null, unsubU = null, unsubM = null;
 
 const ad = uid => users.find(u => u.id === uid)?.ad || '';
@@ -47,7 +48,7 @@ function oturumlar() {
 }
 
 function masaHtml(n) {
-  const cap = Number(kap[n] || 1);
+  const cap = MASA_KAP;
   const sabit = users.filter(u => Number(u.masa) === n);
   const burada = users.filter(u => Number(etkinMasa(u)) === n && katilim[u.id]?.durum !== 'hayir');
   const gelmeyen = sabit.filter(u => katilim[u.id]?.durum === 'hayir');
@@ -61,7 +62,7 @@ function masaHtml(n) {
   };
   const cls = burada.some(u => katilim[u.id]?.durum === 'evet') ? 'dolu' : burada.length ? 'bekliyor' : 'bos';
   return `<div class="masa ${cls}">
-    <div class="mno">Masa ${n}${cap > 1 ? ` · ${cap} kişi` : ''}</div>
+    <div class="mno">Masa ${n}</div>
     ${burada.map(kisi).join('')}
     ${gelmeyen.map(u => `<div class="mute"><s>${esc(kisaAd(u.ad))}</s> gelemiyor</div>`).join('')}
     ${bos > 0 && !burada.length && !gelmeyen.length ? '<div class="mute">Boş</div>' : ''}
@@ -165,7 +166,6 @@ export function initUygulamalar() {
   onState(s => {
     if (ready && s.approved && !unsubU) {
       unsubU = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(x => ({ id: x.id, ...x.data() })).filter(u => u.onayli); render(); }, () => { });
-      unsubM = F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; render(); }, () => { });
       gunSec(gun);
     }
     if (s.approved) bekleyeniIsle();

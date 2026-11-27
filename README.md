@@ -18,11 +18,11 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 
 ## Profil ekranı
 
-Her asistan Profil'deki **Görevlerim** kartında daimi masasını kendisi seçer (dolu masalar seçilemez; yönetici Yönetim → Kişiler'den değiştirebilir), yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
+Her asistan Profil'deki **Görevlerim** kartında masasını görür; kayıt olunca masasını kendisi seçer, gerekirse **Değiştir** ile değiştirir (her masa en fazla 2 kişilik, dolu masalar seçilemez; yönetici Yönetim → Kişiler'den de değiştirebilir). Ayrıca yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
 
 ## Yönetim ekranı
 
-**Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masası olmayan ya da kapasitesi aşılmış masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi, masa kapasitesi) seçildiği anda kaydedilir.
+**Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masasını seçmemiş kişiler ya da 2'den fazla kişi olan masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi) seçildiği anda kaydedilir.
 
 ## Klasördeki dosyalar
 
@@ -111,7 +111,7 @@ Her pazartesi 08:50 civarında (GitHub birkaç dakika geç başlatabilir) haftan
 
 Alttaki **Masalar** sekmesi her uygulama gününü gösterir: günün oturumları, anlatıcı, 8 masalık kroki ve kimin katılıp katılmadığı.
 
-- Herkesin sabit masası **Yönetim → Kişiler**'den, masaların 1 veya 2 kişilik olduğu **Yönetim → Uygulama**'dan girilir. Seçim yapıldığı anda kaydedilir; Kaydet düğmesi yoktur.
+- Herkes sabit masasını Profil'den kendisi seçer; yönetici gerekirse **Yönetim → Kişiler**'den değiştirir. Her masa en fazla 2 kişiliktir (`js/uygulamalar.js` → `MASA_KAP`).
 - Asistan "Katılıyorum / Katılamıyorum" der. Gelemeyen birinin masası boş görünür; katılan başka biri o günlüğüne **Bu masaya geç** ile alabilir.
 - Anlatıcılar asistanlar arasından seçilir: **Yönetim → Uygulama → Anlatıcılar**'dan her uygulama konusu için bir kere. Programdaki öğretim üyesi ayrıca gösterilir; anlatıcı seçilmemişse "Anlatıcı belirlenmedi" yazar.
 - **Bildirim:** Uygulamadan bir gün önce 08:50 civarında herkese "Yarın uygulama var, katılıyor musun?" gider; anlatıcı uygulamaya kayıtlıysa ona "Yarın anlatıcısın" gider. Görev: `.github/workflows/gunluk.yml`, betik: `scripts/gunluk.mjs`. Elle test: Actions → *Uygulama katılım sorusu* → Run workflow.
