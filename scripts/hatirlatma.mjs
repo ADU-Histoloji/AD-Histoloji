@@ -51,7 +51,7 @@ for (const e of events.filter(x => x.k === 'M' && x.uid)) {
 }
 
 // Uygulama sınavı gözetmenleri: 1 hafta önce ve bir önceki iş günü
-const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Kemal Ergin', 'Erkan Gümüş', 'Esra Gökmen Yılmaz']; // js/gozetmen.js ile aynı
+const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Esra Gökmen Yılmaz', 'Kemal Ergin', 'Erkan Gümüş']; // js/gozetmen.js ile aynı
 const gozetmenli = e => e.k === 'S' && /uygulama sınav/i.test(e.topic || '');
 for (const e of events.filter(x => gozetmenli(x) && (x.date === haftaya || yakin.includes(x.date)))) {
   const kac = e.date === haftaya ? 7 : 1;

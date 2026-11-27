@@ -6,7 +6,7 @@ import { ready, db, F } from './fb.js';
 
 export const GRUP_SAYISI = 4, VARSAYILAN_KAP = 2;
 // Sınav gruplarının sabit hocaları (programdan). Yönetici bir sınav için Düzenle'den değiştirebilir.
-export const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Kemal Ergin', 'Erkan Gümüş', 'Esra Gökmen Yılmaz'];
+export const VARSAYILAN_HOCALAR = ['Alpaslan Gökçimen, Gökçen Gökçe Tepeli', 'Esra Gökmen Yılmaz', 'Kemal Ergin', 'Erkan Gümüş'];
 export const gozetmenliSinav = e => e.k === 'S' && /uygulama sınav/i.test(e.topic || '');
 const bugun = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const tr = iso => iso.split('-').reverse().join('.');
