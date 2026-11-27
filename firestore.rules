@@ -54,6 +54,10 @@ service cloud.firestore {
     match /events/{id} {
       allow read: if true;
       allow write: if admin();
+      // Seminer sunan kişi sadece kendi seminerinin konusunu değiştirebilir
+      allow update: if approved() && resource.data.k == 'M' && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['topic'])
+        && request.resource.data.topic is string && request.resource.data.topic.size() <= 200;
     }
     match /notices/{id} {
       allow read: if true;

@@ -40,6 +40,16 @@ for (let i = 0; i < tokens.length; i += 500) {
       return db.collection('tokens').doc(parca[j].id).delete();
   }));
 }
+// Bu hafta semineri olup konusunu yazmamış kişiye hatırlatma
+const bosKonu = t => !t || /henüz belirlenmedi/i.test(t);
+for (const d of evSnap.docs.map(x => x.data()).filter(e => e.k === 'M' && e.uid && bosKonu(e.topic))) {
+  const tk = (await db.collection('tokens').where('uid', '==', d.uid).get()).docs.map(x => x.id);
+  if (!tk.length) continue;
+  if (sadeceYonetici && (await db.collection('users').doc(d.uid).get()).data()?.rol !== 'yonetici') continue;
+  const gun = new Date(d.date + 'T00:00:00Z').toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const r = await fcm.sendEachForMulticast({ tokens: tk, data: { title: (sadeceYonetici ? '[Test] ' : '') + '🎤 Bu hafta seminerin var', body: `${gun} ${d.t}\nKonunu henüz yazmadın. Takvimde seminer kartından ya da Profil ekranından yazabilirsin.`, url: './#profil', tag: 'seminer-konu' }, webpush: { headers: { Urgency: 'high' } } });
+  console.log(`Seminer konusu hatırlatması: ${r.successCount} gönderildi`);
+}
 if (!sadeceYonetici) await db.collection('duyurular').add({ title, body, url: './#takvim', tur: 'haftalik', t: FieldValue.serverTimestamp() });
 console.log(`Gönderildi: ${basarili}, başarısız: ${basarisiz}, cihaz sayısı: ${tokens.length}`);
 writeFileSync(new URL('../data/son-bildirim.json', import.meta.url),

@@ -148,5 +148,6 @@ Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, �
 - [ ] Bildirime seminer bilgisinin eklenmesi
 - [x] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
 - [x] Seminerler takvimde ve pazartesi bildiriminde (2026-2027 güz listesi, sınav günleri atlanarak)
+- [x] Seminer sunan kişinin kendi konusunu yazması (Yönetim → Seminerler ile eşleştirme, pazartesi hatırlatması)
 - [ ] Seminer sırası ekranı (tatil/sınav haftalarında otomatik kayma, takas)
 - [ ] Doğum günleri ve özel günler takvimde

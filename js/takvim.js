@@ -74,6 +74,7 @@ function renderWeek() {
           ${e.warn ? `<div class="warn">${esc(e.warn)}</div>` : ''}
           ${first ? linkedFn(e.ders) : ''}
           ${duzenle() && e.id ? `<button class="linkbtn" data-duzenle="${esc(e.id)}">Düzenle</button>` : ''}
+          ${!state.admin && fromDb && e.k === 'M' && e.id && e.uid && e.uid === state.user?.uid ? `<button class="linkbtn" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>` : ''}
         </div></div>`;
       }).join('') : `<p class="empty">${d.ev.length ? 'Bu filtrede ders yok.' : 'Histoloji dersi yok.'}</p>`}
     </div>`;
@@ -83,6 +84,27 @@ function renderWeek() {
 function render() { emit(); if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); }
 function goWeek(d) { wk = monday(d); const m = addD(wk, 2); mon = new Date(m.getFullYear(), m.getMonth(), 1); render(); }
 
+
+/* ---------- Seminer sunan kişinin kendi konusunu yazması ---------- */
+export const bosKonu = t => !t || /henüz belirlenmedi/i.test(t);
+export function konuFormu(ev) {
+  sheet(`<div class="sh"><div><div class="date">Seminer · ${esc(ev.date.split('-').reverse().join('.'))} ${esc(ev.t)}</div><h3>Seminer konun</h3></div><button class="x" type="button" aria-label="Kapat">×</button></div>
+  <form id="kf">
+    <label for="k-konu">Konu başlığı</label>
+    <textarea id="k-konu" maxlength="200" required placeholder="Doku ve organlar neden kıvrılır?">${esc(bosKonu(ev.topic) ? '' : ev.topic)}</textarea>
+    <p class="note">Takvimde ve pazartesi bildiriminde bu başlık görünecek.</p>
+    <p class="err" id="k-msg"></p>
+    <div class="acts"><button class="btn" type="submit">Kaydet</button><button class="btn sec" data-close type="button">Vazgeç</button></div>
+  </form>`);
+  $('#kf').addEventListener('submit', async e => {
+    e.preventDefault();
+    const topic = $('#k-konu').value.trim().replace(/\s+/g, ' ');
+    if (topic.length < 3) { $('#k-msg').textContent = 'Konu başlığını yaz.'; return; }
+    try { await F.updateDoc(F.doc(db, 'events', ev.id), { topic }); closeSheet(); toast('Seminer konun kaydedildi'); }
+    catch (x) { console.error(x); $('#k-msg').textContent = 'Kaydedilemedi. Bu seminer senin hesabınla eşleştirilmemiş olabilir; bir yöneticiye haber ver.'; }
+  });
+}
+export const etkinlikler = () => EV;
 
 /* ---------- Yöneticiler için ders ekleme/düzenleme ---------- */
 const SINIF = ['Tıp D1', 'Tıp D2', 'Diş D1', 'Diş D2', 'Diş D3', 'Seminer'];
@@ -115,6 +137,7 @@ function dersFormu(ev, tarih) {
     const s = $('#d-s').value, body = { s, c: s === 'Seminer' ? 'seminer' : s.startsWith('Diş') ? 'dis' : 'tip', k: $('#d-k').value, date: $('#d-date').value, t: $('#d-t').value, e: $('#d-e').value, topic: $('#d-topic').value.trim() };
     for (const k of ['who', 'g', 'yer', 'note', 'prep', 'warn']) { const x = $('#d-' + k).value.trim(); if (x) body[k] = x; }
     if (!yeni && ev.ders) body.ders = ev.ders;
+    if (!yeni && ev.uid && body.k === 'M') body.uid = ev.uid;
     try {
       if (yeni) await F.addDoc(F.collection(db, 'events'), body); else await F.setDoc(F.doc(db, 'events', ev.id), body);
       closeSheet(); toast('Kaydedildi'); goWeek(parse(body.date));
@@ -140,7 +163,8 @@ export function initTakvim() {
     if (t && innerWidth < 1000) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
   $('#week').addEventListener('click', e => {
-    const b = e.target.closest('[data-duzenle],[data-ekle]'); if (!b) return;
+    const b = e.target.closest('[data-duzenle],[data-ekle],[data-konu]'); if (!b) return;
+    if (b.dataset.konu) return konuFormu(EV.find(x => x.id === b.dataset.konu));
     if (b.dataset.ekle) dersFormu(null, b.dataset.ekle); else dersFormu(EV.find(x => x.id === b.dataset.duzenle));
   });
   onState(() => render());

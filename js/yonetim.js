@@ -3,9 +3,10 @@ import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
 import { konuId, MASA_SAYISI } from './uygulamalar.js';
 
+const trAd = a => String(a || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ').trim();
 const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
 let users = [], unsub = null, eventCount = null;
-let kap = {}, anl = {}, konular = [], degisiklik = [], eskileriGoster = false;
+let kap = {}, anl = {}, konular = [], seminerler = [], degisiklik = [], eskileriGoster = false;
 
 function render() {
   const el = $('#v-yonetim');
@@ -39,6 +40,16 @@ function render() {
           <button class="btn del" data-sil="${esc(u.id)}">Kaydı sıfırla</button>`}
         </span></div>`).join('')}</div>
     </div>
+    <form class="card" id="f-sem" style="max-width:none"><h3>Seminerler</h3>
+      <p class="note">Her seminerin sunan kişisini uygulamadaki hesabıyla eşleştir. Eşleşen kişi takvimde ve Profil ekranında kendi seminer konusunu yazabilir; konusu boşsa pazartesi sabahı hatırlatma alır. Adı listedeki kayıtla aynı olanlar önceden seçili gelir.</p>
+      ${seminerler.length ? `<div class="list">${seminerler.map(e => {
+        const sec = e.uid || users.find(u => u.onayli && trAd(u.ad) === trAd(e.who))?.id || '';
+        return `<div class="li" data-sem="${esc(e.id)}">
+          <span style="flex:1 1 16em"><span class="nm">${esc(e.date.split('-').reverse().join('.'))} · ${esc(e.who || '')}</span><br><span class="note">${esc(e.topic || '')}</span></span>
+          <select data-f="uid" style="width:auto;max-width:15em"><option value="">Eşleştirilmedi</option>${users.filter(u => u.onayli).map(u => `<option value="${esc(u.id)}"${u.id === sec ? ' selected' : ''}>${esc(u.ad)}</option>`).join('')}</select>
+          ${e.uid ? '<span class="pill">eşleşti</span>' : sec ? '<span class="pill wait">kaydedilmedi</span>' : ''}
+        </div>`; }).join('')}</div>` : '<p class="note">Takvimde seminer yok.</p>'}
+      <button class="btn sec" type="submit">Eşleştirmeleri kaydet</button></form>
     <form class="card" id="f-masa" style="max-width:none"><h3>Masa kapasiteleri</h3>
       <p class="note">Her masaya kaç kişinin oturduğunu seç. Kişilerin sabit masa numaralarını yukarıdaki "Kişiler" bölümünden gir.</p>
       <div class="masalar">${Array.from({ length: MASA_SAYISI }, (_, i) => `<label class="masa" style="min-height:0">Masa ${i + 1}
@@ -136,10 +147,25 @@ export function initYonetim() {
       if (!m.has(id)) m.set(id, { id, s: e.s, topic: e.topic, who: e.who, ilk: e.date.split('-').reverse().join('.') });
     });
     const yeni = [...m.values()];
-    if (yeni.length !== konular.length) { konular = yeni; if (!document.activeElement?.closest('#v-yonetim')) render(); }
+    const sem = ev.filter(e => e.k === 'M' && e.id).sort((a, b) => a.date.localeCompare(b.date));
+    const degisti = yeni.length !== konular.length || JSON.stringify(sem.map(e => [e.id, e.uid, e.topic, e.who])) !== JSON.stringify(seminerler.map(e => [e.id, e.uid, e.topic, e.who]));
+    konular = yeni; seminerler = sem;
+    if (degisti && !document.activeElement?.closest('#v-yonetim')) render();
   });
   $('#v-yonetim').addEventListener('click', onClick);
   $('#v-yonetim').addEventListener('submit', async e => {
+    if (e.target.id === 'f-sem') {
+      e.preventDefault();
+      try {
+        for (const row of e.target.querySelectorAll('[data-sem]')) {
+          const uid = row.querySelector('[data-f=uid]').value || null, ev = seminerler.find(x => x.id === row.dataset.sem);
+          if (!ev || (ev.uid || null) === uid) continue;
+          await F.updateDoc(F.doc(db, 'events', ev.id), { uid: uid || F.deleteField() });
+        }
+        toast('Seminer eşleştirmeleri kaydedildi');
+      } catch (x) { console.error(x); toast('Kaydedilemedi'); }
+      return;
+    }
     if (e.target.id === 'f-masa') {
       e.preventDefault();
       const k = {}; e.target.querySelectorAll('[data-masa]').forEach(x => { k[x.dataset.masa] = Number(x.value); });

@@ -2,6 +2,7 @@ import { $, esc, state, onState, toast, sha256 } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
+import { onEvents, etkinlikler, konuFormu, bosKonu } from './takvim.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
@@ -148,6 +149,16 @@ function renderMe() {
       <p>${p.onayli ? `<span class="pill">${p.rol === 'yonetici' ? 'Yönetici' : 'Asistan'}</span>` : '<span class="pill wait">Onay bekliyor</span>'}</p>
       ${p.onayli ? `<dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd><dt>Seminer sırası</dt><dd>${p.seminerSira ? esc(p.seminerSira) + '.' : 'Henüz atanmadı'}</dd></dl>` : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, masa ve seminer bilgilerini görebilirsin.</p>'}
     </div>
+    ${(() => {
+      const bugun = new Date().toISOString().slice(0, 10);
+      const benim = etkinlikler().filter(e => e.k === 'M' && e.uid === state.user.uid && e.date >= bugun).sort((a, b) => a.date.localeCompare(b.date));
+      if (!benim.length) return '';
+      return `<div class="card"><h3>Seminerlerim</h3>${benim.map(e => `<div class="li" style="display:block">
+        <div class="nm">${esc(e.date.split('-').reverse().join('.'))} ${esc(e.t)}</div>
+        <div class="${bosKonu(e.topic) ? 'warn' : ''}">${bosKonu(e.topic) ? 'Konu henüz yazılmadı' : esc(e.topic)}</div>
+        <button class="btn sec" style="margin-top:6px" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>
+      </div>`).join('')}</div>`;
+    })()}
     <div class="card" id="c-bildirim"><h3>Bildirimler</h3>
       <p class="note">Her pazartesi 09:00'da haftanın programı telefonuna bildirim olarak gelir.</p>
       <p id="b-durum"></p>
@@ -177,6 +188,7 @@ function renderMe() {
     } catch (x) { er.textContent = 'Şu anki PIN hatalı.'; }
   });
   $('#cikis').addEventListener('click', () => A.signOut(auth));
+  $('#v-profil').querySelectorAll('[data-konu]').forEach(b => b.addEventListener('click', () => konuFormu(etkinlikler().find(x => x.id === b.dataset.konu))));
   const bd = d => {
     $('#b-durum').textContent = DURUM_METNI[d] || '';
     $('#b-ac').classList.toggle('hide', !(d === 'kapali'));
@@ -200,6 +212,7 @@ function render() {
 
 export function initHesap() {
   render();
+  onEvents(() => { if (state.user && !$('#v-profil').contains(document.activeElement)) render(); });
   onState(() => { if (!document.activeElement || !$('#v-profil').contains(document.activeElement)) render(); });
   $('#who').addEventListener('click', () => { location.hash = 'profil'; });
   onState(s => { $('#who').textContent = s.user ? (s.profile?.ad?.split(' ')[0] || 'Hesabım') : 'Giriş yap'; });
