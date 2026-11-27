@@ -35,7 +35,7 @@ Her asistan Profil'deki **Görevlerim** kartında masasını görür; kayıt olu
 | `js/hesap.js` | Kayıt, giriş, profil |
 | `js/yonetim.js` | Yönetim ekranı (sekmeler: Yapılacak · Kişiler · Uygulama · Program) |
 | `data/events.json` | Öğretim yılının ders programı |
-| `firestore.rules` | Veritabanı güvenlik kuralları |
+| `firestore.rules` | Veritabanı güvenlik kuralları (değiştiğinde GitHub otomatik olarak Firebase'e yayınlar) |
 | `manifest.webmanifest`, `sw.js`, `icons/` | Telefonda "ana ekrana ekle" ile uygulama gibi çalışması için |
 
 ---
@@ -43,7 +43,7 @@ Her asistan Profil'deki **Görevlerim** kartında masasını görür; kayıt olu
 ## İlk kurulum (bir kere)
 
 1. **Firebase ayarları:** Firebase konsolu → Proje ayarları → Genel → Uygulamalarınız → web uygulaması. `firebaseConfig` bloğundaki değerleri `js/config.js` dosyasına yazın.
-2. **Güvenlik kuralları:** Firebase konsolu → Firestore Database → **Kurallar** sekmesi. `firestore.rules` dosyasının içeriğini olduğu gibi yapıştırıp **Yayınla**'ya basın.
+2. **Güvenlik kuralları:** Firebase konsolu → Firestore Database → **Kurallar** sekmesi. `firestore.rules` dosyasının içeriğini olduğu gibi yapıştırıp **Yayınla**'ya basın. Sonrasında elle yapmaya gerek yok: dosya GitHub'da her değiştiğinde **Firestore kurallarını yayınla** görevi kuralları kendisi yayınlar (Actions'tan elle de çalıştırılabilir).
 3. **GitHub'a yükleme:** Organizasyonda `histoloji` adında **public** bir depo (repository) açın. Bu klasördeki bütün dosyaları **Add file → Upload files** ile yükleyin.
 4. **Yayına alma:** Depo → Settings → Pages → *Build and deployment* → Source: **Deploy from a branch**, Branch: **main** / **(root)** → Save. Birkaç dakika sonra adres görünür (örneğin `https://adu-histoloji.github.io/histoloji/`).
 5. **Firebase'e adresi tanıtma:** Firebase konsolu → Authentication → Settings → **Authorized domains** → `adu-histoloji.github.io` adresini ekleyin.
