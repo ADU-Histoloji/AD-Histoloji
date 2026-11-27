@@ -4,6 +4,9 @@ on:
   schedule:
     # Hafta içi her gün 10:20 UTC = 13:20 Türkiye
     - cron: '20 10 * * 1-5'
+  push:
+    branches: [main]
+    paths: ['scripts/program-*.mjs', 'data/program-sayfalari.json']
   workflow_dispatch:
     inputs:
       deneme:

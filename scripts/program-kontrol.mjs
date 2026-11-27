@@ -8,7 +8,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pdfLinkleri, histolojiSatirlari, kurulAdi, farklar } from './program-fark.mjs';
+import { pdfLinkleri, histolojiSatirlari, kurulAdi, farklar, sinavlar } from './program-fark.mjs';
 import { kurulKisa, satirSade } from './bicim.mjs';
 
 const kok = new URL('../', import.meta.url);
@@ -41,13 +41,13 @@ for (const s of sayfalar) {
         const hash = createHash('sha256').update(buf).digest('hex').slice(0, 20);
         // Dosya değişmediyse metni yeniden çıkarmaya gerek yok
         const eski = once?.dosyalar?.[l.url];
-        let satirlar = eski?.satirlar || [], kurul = eski?.kurul || '';
-        if (!eski || eski.hash !== hash) {
+        let satirlar = eski?.satirlar || [], kurul = eski?.kurul || '', sinav = eski?.sinavlar;
+        if (!eski || eski.hash !== hash || !sinav) {
           const yol = join(tmpdir(), 'p.pdf'); writeFileSync(yol, buf);
           const metin = execFileSync('pdftotext', ['-layout', yol, '-'], { maxBuffer: 64 << 20 }).toString();
-          satirlar = histolojiSatirlari(metin); kurul = kurulAdi(metin);
+          satirlar = histolojiSatirlari(metin); kurul = kurulAdi(metin); sinav = sinavlar(metin);
         }
-        simdi[l.url] = { sayfa: s.ad, etiket: kurul || l.etiket, link: l.etiket, kurul, hash, satirlar };
+        simdi[l.url] = { sayfa: s.ad, etiket: kurul || l.etiket, link: l.etiket, kurul, hash, satirlar, sinavlar: sinav };
       } catch (e) { console.warn('PDF okunamadı:', l.url, e.message); }
     }
   } catch (e) { hatalar.push(e.message); console.error(e.message); }

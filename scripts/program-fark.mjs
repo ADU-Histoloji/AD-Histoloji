@@ -71,3 +71,21 @@ export function kurulAdi(metin) {
   const s = satirlar.find(x => /kurul/i.test(x.toLocaleLowerCase('tr')) && x.length < 120);
   return s ? s.replace(/^\d+\.\s*/, '') : '';
 }
+
+// Sınav satırlarını ve yakınlarındaki tarihleri bulur: [{metin, once, sonra}]
+// once: sınav satırından geriye doğru en yakın tarih, sonra: ileriye doğru en yakın tarih
+export function sinavlar(metin) {
+  const satir = metin.split(/\r?\n/).map(x => x.replace(/\s+/g, ' ').trim());
+  const tarihRe = /(\d{1,2})[./](\d{1,2})[./](20\d{2})/;
+  const iso = m => `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+  const out = [];
+  satir.forEach((x, i) => {
+    if (!/s[ıi]nav/i.test(x.toLocaleLowerCase('tr')) || x.length > 160) return;
+    const ayni = x.match(tarihRe);
+    let once = ayni ? iso(ayni) : '', sonra = '';
+    for (let j = i - 1; !once && j >= Math.max(0, i - 40); j--) { const m = satir[j].match(tarihRe); if (m) once = iso(m); }
+    for (let j = i + 1; !sonra && j <= Math.min(satir.length - 1, i + 40); j++) { const m = satir[j].match(tarihRe); if (m) sonra = iso(m); }
+    out.push({ metin: x, once, sonra });
+  });
+  return out;
+}
