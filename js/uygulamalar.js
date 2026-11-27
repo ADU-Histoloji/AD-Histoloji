@@ -1,6 +1,7 @@
 import { $, esc, state, onState, toast } from './util.js';
 import { ready, db, F } from './fb.js';
 import { onEvents, setAnlatici } from './takvim.js';
+import { anlaticiDugmeleri, anlaticiTikla } from './anlatici.js';
 
 export const MASA_SAYISI = 8;
 export const MASA_KAP = 2; // her masada en fazla 2 kişi
@@ -10,10 +11,8 @@ const pad = n => String(n).padStart(2, '0');
 const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
 
-// Bir uygulama konusunun anlatıcı kaydı için kimlik: "Tıp D2|Solunum..." → "tip-d2-solunum-..."
-export const konuId = (s, topic) => (s + '-' + topic).toLocaleLowerCase('tr')
-  .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
-  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 120);
+export { konuId } from './util.js';
+import { konuId } from './util.js';
 
 let EV = [], gunler = [], gun = null;
 let users = [], anlatici = {}, katilim = {};
@@ -88,7 +87,8 @@ function render() {
       <div><div class="meta"><span class="c">${esc(o.s)}</span><span class="kind">Uygulama</span></div>
       <div class="topic">${esc(o.topic)}</div>
       <div class="who">${o.saatler.map(esc).join(' · ')}${o.who ? ' · Öğretim üyesi: ' + esc(o.who) : ''}</div>
-      <div class="anl">${aAd ? `Anlatıcı: <b>${esc(aAd)}</b>${aDurum === 'hayir' ? ' <span class="pill wait">gelemiyor</span>' : aDurum === 'evet' ? ' <span class="pill">onayladı</span>' : ''}` : '<span class="mute">Anlatıcı belirlenmedi</span>'}</div></div>
+      <div class="anl">${aAd ? `Anlatıcı: <b>${esc(aAd)}</b>${aDurum === 'hayir' ? ' <span class="pill wait">gelemiyor</span>' : aDurum === 'evet' ? ' <span class="pill">onayladı</span>' : ''}` : '<span class="mute">Anlatıcı belirlenmedi</span>'}</div>
+      ${anlaticiDugmeleri({ s: o.s, topic: o.topic, date: gun })}</div>
     </div>`;
   }).join('');
   if (!ready) { el.innerHTML = h; return; }
@@ -120,7 +120,8 @@ async function yaz(patch) {
   catch (x) { console.error(x); toast('Kaydedilemedi'); }
 }
 
-function onClick(e) {
+async function onClick(e) {
+  if (await anlaticiTikla(e.target)) return;
   const b = e.target.closest('button'); if (!b) return;
   if (b.id === 'u-prev') return gunSec(gunler[Math.max(0, gunler.indexOf(gun) - 1)]);
   if (b.id === 'u-next') return gunSec(gunler[Math.min(gunler.length - 1, gunler.indexOf(gun) + 1)]);

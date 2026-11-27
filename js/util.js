@@ -37,3 +37,8 @@ export async function shrink(file, max = 1280, q = 0.72) {
   return c.toDataURL('image/jpeg', q);
 }
 export const trLower = s => String(s || '').toLocaleLowerCase('tr');
+
+// Bir uygulama konusunun anlatıcı kaydı için kimlik: "Tıp D2|Solunum..." → "tip-d2-solunum-..."
+export const konuId = (s, topic) => (s + '-' + topic).toLocaleLowerCase('tr')
+  .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 120);

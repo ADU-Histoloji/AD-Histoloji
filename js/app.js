@@ -7,6 +7,7 @@ import { initYonetim } from './yonetim.js';
 import { initUygulamalar } from './uygulamalar.js';
 import { initDuyurular } from './duyurular.js';
 import { initSeminer } from './seminer.js';
+import { initAnlatici } from './anlatici.js';
 
 const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim'];
 const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
@@ -20,6 +21,7 @@ function route() {
 }
 addEventListener('hashchange', route);
 
+initAnlatici();
 initTakvim();
 initArsiv();
 initUygulamalar();

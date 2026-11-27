@@ -93,6 +93,12 @@ service cloud.firestore {
     match /anlaticilar/{id} {
       allow read: if true;
       allow write: if admin();
+      // Asistan anlatıcısı olmayan bir konuyu kendi adına alabilir, kendi aldığını bırakabilir
+      allow create: if approved()
+        && request.resource.data.keys().hasOnly(['s', 'topic', 'ad', 'uid'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.ad == get(meRef()).data.ad;
+      allow delete: if approved() && resource.data.uid == request.auth.uid;
     }
 
     // Uygulama günlerinde katılım ve o günlük masa değişikliği

@@ -126,7 +126,7 @@ Alttaki **Masalar** sekmesi her uygulama gününü gösterir: günün oturumlar�
 
 - Herkes sabit masasını Profil'den kendisi seçer; yönetici gerekirse **Yönetim → Kişiler**'den değiştirir. Her masa en fazla 2 kişiliktir (`js/uygulamalar.js` → `MASA_KAP`).
 - Asistan "Katılıyorum / Katılamıyorum" der. Gelemeyen birinin masası boş görünür; katılan başka biri o günlüğüne **Bu masaya geç** ile alabilir.
-- Anlatıcılar asistanlar arasından seçilir: **Yönetim → Uygulama → Anlatıcılar**'dan her uygulama konusu için bir kere. Programdaki öğretim üyesi ayrıca gösterilir; anlatıcı seçilmemişse "Anlatıcı belirlenmedi" yazar.
+- Anlatıcılar asistanlar arasından seçilir. Her asistan takvimdeki ya da Masalar ekranındaki uygulama kartında anlatıcısı olmayan bir konuya **🎤 Anlatıcı ol** diyebilir, kendi aldığını **Anlatıcılığı bırak** ile bırakabilir; başkasının aldığı konuyu alamaz. Yönetici kartlardaki **Anlatıcı ata / değiştir** ile ya da **Yönetim → Uygulama → Anlatıcılar**'dan herkesi atayabilir. Anlatıcı konu başına bir kere seçilir, bütün grupları kapsar. Programdaki öğretim üyesi ayrıca gösterilir; anlatıcı seçilmemişse "Anlatıcı belirlenmedi" yazar.
 - **Bildirim:** Uygulamadan bir gün önce 08:50 civarında herkese "Yarın uygulama var, katılıyor musun?" gider; anlatıcı uygulamaya kayıtlıysa ona "Yarın anlatıcısın" gider. Görev: `.github/workflows/gunluk.yml`, betik: `scripts/gunluk.mjs`. Elle test: Actions → *Uygulama katılım sorusu* → Run workflow.
 
 ---
