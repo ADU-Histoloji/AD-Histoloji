@@ -10,7 +10,7 @@ import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
 
 const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim'];
-const TITLES = { takvim: 'Histoloji bölümü', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
+const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
