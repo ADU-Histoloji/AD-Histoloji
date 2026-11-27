@@ -56,9 +56,11 @@ function render() {
       <div class="field"><label for="y-kod">Yeni bölüm kodu</label><input id="y-kod" required autocomplete="off"></div>
       <button class="btn sec" type="submit">Kodu değiştir</button></form>
     <div class="card"><h3>Ders programı</h3>
-      <p class="note">Uygulamayla gelen <code>data/events.json</code> dosyasındaki programı veritabanına yükler. Mevcut program silinip yerine yenisi yazılır; takvimde elle yapılan düzeltmeler de silinir. Sadece yeni öğretim yılı başında kullanın.</p>
+      <p class="note">Uygulamayla gelen <code>data/events.json</code> dosyasındaki programı veritabanına yükler.</p>
       <p>Veritabanındaki ders sayısı: <b>${eventCount ?? '…'}</b></p>
-      <button class="btn" id="y-import">Programı içe aktar</button><p class="err" id="y-msg"></p></div>`;
+      <p class="note"><b>Yeni dersleri ekle:</b> Dosyada olup takvimde olmayan dersleri ekler, dosyada kaldırılması istenenleri siler. Takvimde elle yaptığın düzeltmelere dokunmaz.<br><b>Tümünü değiştir:</b> Takvimi silip dosyadakini baştan yazar; sadece yeni öğretim yılı başında kullan.</p>
+      <div class="acts"><button class="btn" id="y-ekle">Yeni dersleri ekle</button><button class="btn del" id="y-import">Tümünü değiştir</button></div>
+      <p class="err" id="y-msg"></p></div>`;
 }
 
 async function onClick(e) {
@@ -79,12 +81,38 @@ async function onClick(e) {
       await F.updateDoc(F.doc(db, 'degisiklikler', b.dataset.bak), { durum: 'bakildi' });
     } else if ('eski' in b.dataset) { eskileriGoster = !eskileriGoster; render();
     } else if (b.id === 'y-import') await importProgram();
+    else if (b.id === 'y-ekle') await eksikleriEkle();
   } catch (x) { console.error(x); toast('İşlem yapılamadı'); }
+}
+
+const anahtar = e => ['date', 't', 's', 'k', 'topic', 'g'].map(k => e[k] ?? '').join('|');
+async function eksikleriEkle() {
+  const msg = $('#y-msg'), btn = $('#y-ekle');
+  btn.disabled = true; msg.textContent = 'Karşılaştırılıyor…';
+  try {
+    const j = await (await fetch('data/events.json', { cache: 'no-store' })).json();
+    const mevcut = (await F.getDocs(F.collection(db, 'events'))).docs.map(d => ({ ref: d.ref, k: anahtar(d.data()) }));
+    const var_ = new Set(mevcut.map(x => x.k)), kaldir = new Set(j.kaldir || []);
+    const ops = [];
+    (j.events || []).filter(e => !var_.has(anahtar(e))).forEach(e => ops.push(['set', F.doc(F.collection(db, 'events')), e]));
+    mevcut.filter(x => kaldir.has(x.k)).forEach(x => ops.push(['del', x.ref]));
+    const eklenen = ops.filter(o => o[0] === 'set').length, silinen = ops.length - eklenen;
+    // Notlar (tarihi belli olmayan uygulamalar vb.) her zaman dosyadakiyle değiştirilir
+    (await F.getDocs(F.collection(db, 'notices'))).forEach(d => ops.push(['del', d.ref]));
+    (j.notices || []).forEach(n => ops.push(['set', F.doc(F.collection(db, 'notices')), n]));
+    for (let i = 0; i < ops.length; i += 400) {
+      const b = F.writeBatch(db);
+      ops.slice(i, i + 400).forEach(([t, r, d]) => t === 'del' ? b.delete(r) : b.set(r, d));
+      await b.commit();
+    }
+    msg.textContent = eklenen || silinen ? `${eklenen} ders eklendi${silinen ? `, ${silinen} ders silindi` : ''}.` : 'Takvim zaten güncel.';
+  } catch (x) { console.error(x); msg.textContent = 'Yüklenemedi.'; }
+  btn.disabled = false;
 }
 
 async function importProgram() {
   const msg = $('#y-msg'), btn = $('#y-import');
-  if (btn.dataset.sure !== '1') { btn.dataset.sure = '1'; btn.textContent = 'Mevcut program silinecek. Emin misin?'; return; }
+  if (btn.dataset.sure !== '1') { btn.dataset.sure = '1'; btn.textContent = 'Takvim silinip baştan yazılacak. Emin misin?'; return; }
   btn.disabled = true; msg.textContent = 'Yükleniyor…';
   const j = await (await fetch('data/events.json', { cache: 'no-store' })).json();
   const ops = [];
@@ -97,7 +125,7 @@ async function importProgram() {
     await b.commit();
   }
   msg.textContent = `${(j.events || []).length} ders ve ${(j.notices || []).length} not yüklendi.`;
-  btn.disabled = false; btn.dataset.sure = ''; btn.textContent = 'Programı içe aktar';
+  btn.disabled = false; btn.dataset.sure = ''; btn.textContent = 'Tümünü değiştir';
 }
 
 export function initYonetim() {

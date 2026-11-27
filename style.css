@@ -4,7 +4,7 @@
    COLOUR white ground, ink #1c1730, hematoxylin #3a2c86 (Tıp D1), eosin #c8326b (Tıp D2), teal (Diş)
    TYPE Source Serif 4 titles + Inter text
    LAYOUT band with title + tabs; plan: filters then days; archive: search row then boxes; phone: single column */
-:root{color-scheme:light dark;--bg:light-dark(#ffffff,#13111c);--ink:light-dark(#1c1730,#ece9f6);--mute:light-dark(#5d5873,#a7a2bd);--line:light-dark(#e6e2f0,#2b2740);--band:light-dark(#3a2c86,#241b5c);--d1:light-dark(#3a2c86,#a99bff);--d2:light-dark(#c8326b,#ff7aa8);--dis:light-dark(#0f7c78,#5fd1cb);--soft:light-dark(#f5f2fb,#1c1928);--today:light-dark(#fff4f8,#2a1724);--ok:light-dark(#2f7d4f,#7fd6a0);--teo:light-dark(#3a2c86,#a99bff);--uyg:light-dark(#c8326b,#ff7aa8);--sin:light-dark(#1c1730,#ece9f6);--disu:light-dark(#c45f12,#ffa45c)}
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#13111c);--ink:light-dark(#1c1730,#ece9f6);--mute:light-dark(#5d5873,#a7a2bd);--line:light-dark(#e6e2f0,#2b2740);--band:light-dark(#3a2c86,#241b5c);--d1:light-dark(#3a2c86,#a99bff);--d2:light-dark(#c8326b,#ff7aa8);--dis:light-dark(#0f7c78,#5fd1cb);--soft:light-dark(#f5f2fb,#1c1928);--today:light-dark(#fff4f8,#2a1724);--ok:light-dark(#2f7d4f,#7fd6a0);--teo:light-dark(#3a2c86,#a99bff);--uyg:light-dark(#c8326b,#ff7aa8);--sin:light-dark(#1c1730,#ece9f6);--disu:light-dark(#c45f12,#ffa45c);--sem:light-dark(#1f6fb2,#7fb8ef)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0}
@@ -32,7 +32,7 @@ main{padding:14px max(5vw,16px) 40px}
 .c,.tag{color:light-dark(#fff,#13111c)}
 .empty{color:var(--mute);font-size:15px;margin:4px 0 0}
 .ev{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 18px;padding:12px 14px;margin:8px 0;border-left:5px solid var(--k);border-radius:0 10px 10px 0;background:color-mix(in srgb,var(--k) 9%,var(--bg))}
-.kT{--k:var(--teo)}.kU{--k:var(--uyg)}.kD{--k:var(--dis)}.kDU{--k:var(--disu)}.kS{--k:var(--sin)}
+.kT{--k:var(--teo)}.kU{--k:var(--uyg)}.kD{--k:var(--dis)}.kDU{--k:var(--disu)}.kM{--k:var(--sem)}.kS{--k:var(--sin)}
 .kind{font-size:13px;font-weight:600;color:var(--k)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--mute);margin:4px 0 8px}
 .legend span{display:inline-flex;align-items:center;gap:6px}

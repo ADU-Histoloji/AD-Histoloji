@@ -4,7 +4,7 @@ export const GUN_UZUN = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe
 export const AY = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
 // Uygulamadaki renklerle aynı: teorik mor, uygulama pembe/kırmızı, Diş teorik yeşil, Diş uygulama turuncu, sınav
-export const isaret = e => e.k === 'S' ? '📝' : e.c === 'dis' ? (e.k === 'U' ? '🟠' : '🟢') : (e.k === 'U' ? '🔴' : '🟣');
+export const isaret = e => e.k === 'M' ? '🎤' : e.k === 'S' ? '📝' : e.c === 'dis' ? (e.k === 'U' ? '🟠' : '🟢') : (e.k === 'U' ? '🔴' : '🟣');
 
 export const kisalt = (s, n = 30) => { s = String(s || '').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; };
 

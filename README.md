@@ -71,7 +71,7 @@ Program `data/events.json` dosyasındadır. Her ders bir satırdır:
 | `c` | `tip` veya `dis` |
 | `date` | Tarih, YIL-AY-GÜN biçiminde |
 | `t`, `e` | Başlangıç ve bitiş saati |
-| `k` | `T` teorik, `U` uygulama, `S` sınav |
+| `k` | `T` teorik, `U` uygulama, `S` sınav, `M` seminer (`s` = `Seminer`, `who` = sunan kişi) |
 | `topic`, `who` | Konu ve öğretim üyesi |
 | `g` | Grup (A, B, C, D), varsa |
 | `yer`, `note`, `prep`, `warn` | İsteğe bağlı: derslik, not, hazırlık notu, uyarı |
@@ -147,5 +147,6 @@ Bildirimler takvimdeki renkleri emojiyle taşır: 🟣 teorik, 🔴 uygulama, �
 - [x] Pazartesi bildirimi (haftalık program)
 - [ ] Bildirime seminer bilgisinin eklenmesi
 - [x] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
-- [ ] Seminer sırası (tatil/sınav haftalarında kayma, takas)
+- [x] Seminerler takvimde ve pazartesi bildiriminde (2026-2027 güz listesi, sınav günleri atlanarak)
+- [ ] Seminer sırası ekranı (tatil/sınav haftalarında otomatik kayma, takas)
 - [ ] Doğum günleri ve özel günler takvimde

@@ -3,7 +3,7 @@ import { ready, db, F } from './fb.js';
 
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const GUN = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
-const KIND = { T: 'Teorik', U: 'Uygulama', S: 'Sınav' };
+const KIND = { T: 'Teorik', U: 'Uygulama', S: 'Sınav', M: 'Seminer' };
 const pad = n => String(n).padStart(2, '0');
 const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
@@ -26,7 +26,7 @@ const emit = () => { if (loaded) evSubs.forEach(fn => fn(EV)); };
 export const setLinked = fn => { linkedFn = fn; render(); };
 
 const show = e => f === 'all' || (f === 'u' ? e.k === 'U' : f === 'dis' ? e.c === 'dis' : e.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'));
-const kcls = e => e.k === 'S' ? 'kS' : e.c === 'dis' ? (e.k === 'U' ? 'kDU' : 'kD') : 'k' + e.k;
+const kcls = e => e.k === 'M' ? 'kM' : e.k === 'S' ? 'kS' : e.c === 'dis' ? (e.k === 'U' ? 'kDU' : 'kD') : 'k' + e.k;
 const fmtR = (a, b) => a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${AY[a.getMonth()]} ${a.getFullYear()}` : `${a.getDate()} ${AY[a.getMonth()]} – ${b.getDate()} ${AY[b.getMonth()]} ${b.getFullYear()}`;
 
 function renderMonth() {
@@ -53,7 +53,7 @@ function renderWeek() {
   $('#wsub').textContent = diff === 0 ? 'Bu hafta' : diff === 1 ? 'Gelecek hafta' : diff === -1 ? 'Geçen hafta' : diff > 0 ? diff + ' hafta sonra' : (-diff) + ' hafta önce';
   const days = GUN.map((g, i) => { const d = addD(wk, i), di = iso(d); return { g, d, di, ev: EV.filter(e => e.date === di).sort((a, b) => (a.t || '').localeCompare(b.t || '')) }; });
   const all = days.flatMap(d => d.ev).filter(show);
-  $('#stats').innerHTML = `<span><b>${all.filter(e => e.k === 'T').length}</b>teorik</span><span><b>${all.filter(e => e.k === 'U').length}</b>uygulama</span><span><b>${all.filter(e => e.k === 'S').length}</b>sınav</span>`;
+  $('#stats').innerHTML = `<span><b>${all.filter(e => e.k === 'T').length}</b>teorik</span><span><b>${all.filter(e => e.k === 'U').length}</b>uygulama</span><span><b>${all.filter(e => e.k === 'S').length}</b>sınav</span>${all.some(e => e.k === 'M') ? '<span><b>1</b>seminer</span>' : ''}`;
   const nos = NO.filter(n => n.week === iso(wk) && (f === 'all' || (f === 'u' ? n.k === 'U' : f === 'dis' ? false : n.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'))));
   $('#notices').innerHTML = nos.map(n => `<div class="notice ${n.k === 'S' ? 'kS' : 'kU'}"><b>${esc(n.s)}:</b> ${esc(n.text)}</div>`).join('');
   if (!loaded) return;
@@ -67,7 +67,7 @@ function renderWeek() {
         return `<div class="ev ${kcls(e)}">
         <div class="time">${esc(e.t)}${e.e ? `<small>${esc(e.e)}</small>` : ''}</div>
         <div>
-          <div class="meta"><span class="c">${esc(e.s)}</span><span class="kind">${KIND[e.k] || ''}</span>${e.g ? `<span class="grp">${esc(e.g)}${String(e.g).length === 1 ? ' grubu' : ''}</span>` : ''}</div>
+          <div class="meta"><span class="c">${esc(e.s)}</span>${e.k === 'M' && e.s === 'Seminer' ? '' : `<span class="kind">${KIND[e.k] || ''}</span>`}${e.g ? `<span class="grp">${esc(e.g)}${String(e.g).length === 1 ? ' grubu' : ''}</span>` : ''}</div>
           <div class="topic">${esc(e.topic)}</div>
           ${e.who || e.yer || e.note ? `<div class="who">${[e.who, e.yer, e.note].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
           ${e.prep ? `<div class="prep">${esc(e.prep)}</div>` : ''}
@@ -85,7 +85,7 @@ function goWeek(d) { wk = monday(d); const m = addD(wk, 2); mon = new Date(m.get
 
 
 /* ---------- Yöneticiler için ders ekleme/düzenleme ---------- */
-const SINIF = ['Tıp D1', 'Tıp D2', 'Diş D1', 'Diş D2', 'Diş D3'];
+const SINIF = ['Tıp D1', 'Tıp D2', 'Diş D1', 'Diş D2', 'Diş D3', 'Seminer'];
 function dersFormu(ev, tarih) {
   const yeni = !ev;
   ev = ev || { s: 'Tıp D1', k: 'T', date: tarih, t: '08:30', e: '10:15', topic: '', who: '', g: '', yer: '', note: '', prep: '', warn: '' };
@@ -94,7 +94,7 @@ function dersFormu(ev, tarih) {
   <form id="df">
     <div class="row">
       <div><label for="d-s">Sınıf</label><select id="d-s">${SINIF.map(x => `<option${x === ev.s ? ' selected' : ''}>${x}</option>`).join('')}</select></div>
-      <div><label for="d-k">Tür</label><select id="d-k">${[['T', 'Teorik'], ['U', 'Uygulama'], ['S', 'Sınav']].map(([k, l]) => `<option value="${k}"${k === ev.k ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div><label for="d-k">Tür</label><select id="d-k">${[['T', 'Teorik'], ['U', 'Uygulama'], ['S', 'Sınav'], ['M', 'Seminer']].map(([k, l]) => `<option value="${k}"${k === ev.k ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
       <div><label for="d-g">Grup</label><input id="d-g" value="${v('g')}" placeholder="A"></div>
     </div>
     <div class="row">
@@ -112,7 +112,7 @@ function dersFormu(ev, tarih) {
   </form>`);
   $('#df').addEventListener('submit', async e => {
     e.preventDefault();
-    const s = $('#d-s').value, body = { s, c: s.startsWith('Diş') ? 'dis' : 'tip', k: $('#d-k').value, date: $('#d-date').value, t: $('#d-t').value, e: $('#d-e').value, topic: $('#d-topic').value.trim() };
+    const s = $('#d-s').value, body = { s, c: s === 'Seminer' ? 'seminer' : s.startsWith('Diş') ? 'dis' : 'tip', k: $('#d-k').value, date: $('#d-date').value, t: $('#d-t').value, e: $('#d-e').value, topic: $('#d-topic').value.trim() };
     for (const k of ['who', 'g', 'yer', 'note', 'prep', 'warn']) { const x = $('#d-' + k).value.trim(); if (x) body[k] = x; }
     if (!yeni && ev.ders) body.ders = ev.ders;
     try {

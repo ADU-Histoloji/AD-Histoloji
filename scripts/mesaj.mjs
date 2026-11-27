@@ -17,7 +17,8 @@ export function mesaj(pzt, events, notices = []) {
     ? `${pzt.getUTCDate()}–${cum.getUTCDate()} ${AY[cum.getUTCMonth()]}`
     : `${pzt.getUTCDate()} ${AY[pzt.getUTCMonth()]} – ${cum.getUTCDate()} ${AY[cum.getUTCMonth()]}`;
   const satirlar = [];
-  let ders = 0, uyg = 0, sinav = 0;
+  let ders = 0, uyg = 0, sinav = 0, seminer = null;
+  const sinavlar = new Set();
   gs.forEach(g => {
     const ev = events.filter(e => e.date === g).sort((a, b) => (a.t || '').localeCompare(b.t || ''));
     // Aynı ders/tür/konudaki grupları birleştir: "Per 08:30 🔴 Tıp D1 · Hücre … (A–D)"
@@ -29,18 +30,21 @@ export function mesaj(pzt, events, notices = []) {
       parca.push({ key, e, g: e.g ? [e.g] : [] });
     }
     for (const p of parca) {
-      ders++; if (p.e.k === 'U') uyg++; if (p.e.k === 'S') sinav++;
-      const gr = p.g.length > 1 ? ` (${p.g.length === 4 && p.g.join('') === 'ABCD' ? 'A–D' : p.g.join(', ')})` : '';
-      const konu = kisalt(p.e.topic, 28) + (p.e.k === 'U' && !/uygulama/i.test(p.e.topic) ? ' uyg.' : '');
+      if (p.e.k === 'M') { seminer = p.e; satirlar.push(`${sadeceGun(g)} ${p.e.t} 🎤 Seminer: ${p.e.who || ''} · ${kisalt(p.e.topic, 30)}`); continue; }
+      if (p.e.k === 'S') sinavlar.add(p.e.topic); else { ders++; if (p.e.k === 'U') uyg++; }
+      const gr = p.g.length ? ` (${p.g.length === 4 && p.g.join('') === 'ABCD' ? 'A–D' : p.g.join(', ')})` : '';
+      const konu = p.e.k === 'S' ? kisalt(p.e.topic.replace(/ kurulu histoloji uygulama sınavı/i, ' uyg. sınavı'), 34)
+        : kisalt(p.e.topic, 28) + (p.e.k === 'U' && !/uygulama/i.test(p.e.topic) ? ' uyg.' : '');
       satirlar.push(`${sadeceGun(g)} ${p.e.t} ${isaret(p.e)} ${p.e.s} · ${konu}${gr}`);
     }
   });
+  sinav += sinavlar.size;
   const notlar = notices.filter(n => n.week === iso(pzt));
   for (const n of notlar) {
     if (n.k === 'S') { sinav++; satirlar.push(`📝 ${n.s}: histoloji uygulama sınavı bu hafta`); }
     else if (n.k === 'U') { uyg++; satirlar.push(`🔴 ${n.s}: uygulama bu hafta (gün teyit edilecek)`); }
   }
-  const ozet = [ders ? `${ders} ders` : '', uyg ? `${uyg} uygulama` : '', sinav ? `${sinav} sınav` : ''].filter(Boolean).join(' · ');
+  const ozet = [ders ? `${ders} ders` : '', uyg ? `${uyg} uygulama` : '', sinav ? `${sinav} sınav` : '', seminer ? 'seminer' : ''].filter(Boolean).join(' · ');
   return {
     title: `📅 Bu hafta · ${aralik}`,
     body: satirlar.length ? [ozet, ...satirlar].join('\n') : 'Bu hafta histoloji dersi yok. İyi haftalar!'
