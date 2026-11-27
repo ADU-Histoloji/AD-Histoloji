@@ -258,3 +258,6 @@ div.kura-son{padding-left:0}
 .kg-dugme{display:flex;flex-direction:column}.kg-dugme .linkbtn{min-height:32px;padding:0 6px;text-decoration:none;font-size:18px}
 .kg-prep ol{margin:4px 0 10px;padding-left:1.4em}
 .kg-alan textarea{width:100%;min-height:0;font:inherit;font-size:14px}.kg-kalip{font-size:13px;min-height:36px}
+.kg-oncul{display:grid;grid-template-columns:2.2em 1fr auto;gap:6px;align-items:center}
+.kg-oncul b{text-align:right;font-size:14px}.kg-oncul .linkbtn{min-height:32px;padding:0 6px;text-decoration:none;font-size:18px}
+.kg-oncul-ekle{align-self:flex-start;min-height:32px !important;padding:0 !important;font-size:14px !important}

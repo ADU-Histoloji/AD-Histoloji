@@ -13,7 +13,7 @@ function calisma(p) {
 
 function paragraf(p) {
   if (p.sayfaSonu) return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-  const ppr = `<w:pPr><w:spacing w:before="0" w:after="${Math.round((p.bosluk ?? 4) * 20)}" w:line="264" w:lineRule="auto"/>${p.hiza === 'center' ? '<w:jc w:val="center"/>' : ''}</w:pPr>`;
+  const ppr = `<w:pPr><w:spacing w:before="0" w:after="${Math.round((p.bosluk ?? 4) * 20)}" w:line="264" w:lineRule="auto"/>${p.girinti ? `<w:ind w:left="${p.girinti}"/>` : ''}${p.hiza === 'center' ? '<w:jc w:val="center"/>' : ''}</w:pPr>`;
   return `<w:p>${ppr}${(p.parcalar || []).map(calisma).join('')}</w:p>`;
 }
 

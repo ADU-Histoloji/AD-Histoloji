@@ -46,6 +46,7 @@ function varsayilan(evId) {
 }
 // Hazır kalıplar + daha önce kaydedilmiş kâğıtlarda kullanılan sorular (soru bankası)
 const kaliplar = () => [...new Set([...KALIPLAR, ...Object.values(kayitlar).flatMap(k => (k.oturumlar || []).flatMap(o => o.sorular.map(s => s.metin)))].filter(Boolean))];
+const ROMA = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const yeniSoru = () => ({ metin: KALIPLAR[0], puan: 1, cevap: '', prep: '' });
 const toplam = o => o.sorular.reduce((t, s) => t + (Number(String(s.puan).replace(',', '.')) || 0), 0);
 const puanYazi = p => String(p ?? '').replace('.', ',');
@@ -87,6 +88,8 @@ function render() {
         <div class="kg-no">${si + 1}.</div>
         <div class="kg-alan">
           <textarea data-k="metin" rows="2" aria-label="Soru">${esc(s.metin)}</textarea>
+          ${(s.onculler || []).map((x, ci) => `<div class="kg-oncul"><b>${ROMA[ci] || ci + 1}.</b><input data-k="oncul" data-c="${ci}" value="${esc(x)}" placeholder="Öncül"><button type="button" class="linkbtn" data-is="oncul-sil" data-c="${ci}" aria-label="Öncülü sil">×</button></div>`).join('')}
+          <button type="button" class="linkbtn kg-oncul-ekle" data-is="oncul-ekle">+ Öncül ekle</button>
           <select class="kg-kalip" aria-label="Hazır soru kalıbı"><option value="">Hazır soru seç…</option>${kaliplar().map(x => `<option>${esc(x)}</option>`).join('')}</select>
           <div class="kg-satir">
             <label>Puan<input data-k="puan" value="${esc(puanYazi(s.puan))}" inputmode="decimal"></label>
@@ -101,11 +104,10 @@ function render() {
     <div class="card kg-cikti" style="max-width:none">
       <div class="acts">
         <button class="btn" data-is="kaydet">${degisti ? 'Kaydet •' : 'Kaydedildi'}</button>
-        <button class="btn sec" data-is="ogrenci">📄 Öğrenci kâğıdı (Word)</button>
-        <button class="btn sec" data-is="anahtar">🔑 Cevap anahtarı (Word)</button>
-        <button class="btn sec" data-is="yazdir-ogrenci">🖨️ Öğrenci kâğıdını yazdır</button>
-        <button class="btn sec" data-is="yazdir-anahtar">🖨️ Cevap anahtarını yazdır</button>
+        <button class="btn sec" data-is="yazdir-ogrenci">📄 Öğrenci kâğıdını aç</button>
+        <button class="btn sec" data-is="yazdir-anahtar">🔑 Cevap anahtarını aç</button>
       </div>
+      <p class="note" style="margin:6px 0 0">Açılan sayfadan yazdırabilirsin. Word dosyası gerekirse: <button class="linkbtn" data-is="ogrenci" style="min-height:0">öğrenci kâğıdı</button> · <button class="linkbtn" data-is="anahtar" style="min-height:0">cevap anahtarı</button></p>
       <h3 style="margin-top:14px">Mikroskoplara konacak preparatlar</h3>
       <div id="kg-preplist">${prepListesi()}</div>
     </div>
@@ -134,7 +136,9 @@ function belge(anahtar) {
       p.push({ bosluk: j === a.length - 1 ? 16 : 0, parcalar: m ? [{ t: m[1], b: true }, ...parcala(m[2])] : parcala(n) });
     });
     o.sorular.forEach((s, j) => {
-      p.push({ bosluk: 4, parcalar: [{ t: `${j + 1}. `, b: true }, ...parcala(s.metin, { b: true }), { t: ` (${puanYazi(s.puan)} PUAN)`, b: true }] });
+      const onc = (s.onculler || []).filter(x => String(x).trim());
+      p.push({ bosluk: onc.length ? 2 : 4, parcalar: [{ t: `${j + 1}. `, b: true }, ...parcala(s.metin, { b: true }), { t: ` (${puanYazi(s.puan)} PUAN)`, b: true }] });
+      onc.forEach((x, ci) => p.push({ girinti: 360, bosluk: ci === onc.length - 1 ? 4 : 0, parcalar: [{ t: `${ROMA[ci] || ci + 1}. `, b: true }, ...parcala(x)] }));
       p.push({ bosluk: 14, parcalar: anahtar ? [{ t: '……………………' }, { t: buyuk(s.cevap), b: true, renk: 'FF0000' }, { t: '……………………' }] : [{ t: '…'.repeat(80) }] });
     });
   });
@@ -143,7 +147,7 @@ function belge(anahtar) {
 
 function yazdir(anahtar) {
   const w = window.open('', '_blank'); if (!w) { toast('Açılır pencereye izin ver'); return; }
-  const html = belge(anahtar).map(x => x.sayfaSonu ? '<div style="page-break-after:always"></div>' : `<p style="margin:0 0 ${x.bosluk ?? 4}pt;text-align:${x.hiza || 'left'}">${x.parcalar.map(r => `<span style="${r.b ? 'font-weight:700;' : ''}${r.u ? 'text-decoration:underline;' : ''}${r.renk ? 'color:#' + r.renk : ''}">${esc(r.t)}</span>`).join('')}</p>`).join('');
+  const html = belge(anahtar).map(x => x.sayfaSonu ? '<div style="page-break-after:always"></div>' : `<p style="margin:0 0 ${x.bosluk ?? 4}pt ${x.girinti ? x.girinti / 20 + 'pt' : '0'};text-align:${x.hiza || 'left'}">${x.parcalar.map(r => `<span style="${r.b ? 'font-weight:700;' : ''}${r.u ? 'text-decoration:underline;' : ''}${r.renk ? 'color:#' + r.renk : ''}">${esc(r.t)}</span>`).join('')}</p>`).join('');
   // Üstteki düğmeler kâğıda basılmaz; yazdırma menüsü kapatılsa da "Yazdır" ile yeniden açılır
   w.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${anahtar ? 'Cevap anahtarı' : 'Sınav kâğıdı'}</title><style>
     body{font:11pt Calibri,Arial,sans-serif;margin:16px;max-width:17cm}@page{size:A4;margin:2cm}
@@ -151,7 +155,7 @@ function yazdir(anahtar) {
     .arac button{font:600 16px system-ui,sans-serif;min-height:44px;padding:0 18px;border-radius:10px;border:0;cursor:pointer}
     .arac .y{background:#c2185b;color:#fff}.arac .k{background:#fff;border:1px solid #ccc;color:#222}.arac span{font:13px system-ui,sans-serif;color:#555}
     @media print{.arac{display:none}body{margin:0}}
-  </style></head><body><div class="arac"><button class="y" onclick="print()">🖨️ Yazdır</button><button class="k" onclick="kapat()">Kapat</button><span>${anahtar ? 'Cevap anahtarı' : 'Öğrenci kâğıdı'} · kapanmazsa sol üstteki “Bitti”ye bas</span></div>${html}<script>function kapat(){close();setTimeout(function(){history.length>1?history.back():0},300)}onload=function(){setTimeout(print,300)}<\/script></body></html>`);
+  </style></head><body><div class="arac"><button class="y" onclick="print()">🖨️ Yazdır</button><button class="k" onclick="kapat()">Kapat</button><span>${anahtar ? 'Cevap anahtarı' : 'Öğrenci kâğıdı'} · Kapat çalışmazsa sol üstteki “Bitti”ye bas</span></div>${html}<script>function kapat(){close();setTimeout(function(){history.length>1?history.back():0},300)}<\/script></body></html>`);
   w.document.close();
 }
 
@@ -162,7 +166,7 @@ const dosyaAdi = ek => {
 };
 
 async function kaydet() {
-  const temiz = { ...taslak, oturumlar: taslak.oturumlar.map(o => ({ saat: o.saat, sorular: o.sorular.map(s => ({ metin: s.metin, puan: Number(String(s.puan).replace(',', '.')) || 0, cevap: s.cevap, prep: s.prep || '' })) })) };
+  const temiz = { ...taslak, oturumlar: taslak.oturumlar.map(o => ({ saat: o.saat, sorular: o.sorular.map(s => ({ metin: s.metin, onculler: (s.onculler || []).map(x => x.trim()).filter(Boolean), puan: Number(String(s.puan).replace(',', '.')) || 0, cevap: s.cevap, prep: s.prep || '' })) })) };
   await F.setDoc(F.doc(db, 'sinavKagitlari', secili), { ...temiz, kaydeden: state.user.uid, kaydedenAd: state.profile?.ad || '', zaman: F.serverTimestamp() });
   degisti = false; toast('Kaydedildi'); render();
 }
@@ -172,7 +176,7 @@ function onInput(e) {
   const kart = t.closest('[data-s]');
   if (kart) {
     const s = taslak.oturumlar[+kart.dataset.o].sorular[+kart.dataset.s];
-    if (k === 'prep') s.prep = prepBul(t.value); else s[k] = t.value;
+    if (k === 'prep') s.prep = prepBul(t.value); else if (k === 'oncul') s.onculler[+t.dataset.c] = t.value; else s[k] = t.value;
   } else if (t.dataset.o !== undefined) taslak.oturumlar[+t.dataset.o][k] = t.value;
   else taslak[k] = t.value;
   if (!degisti) { degisti = true; const b = document.querySelector('[data-is="kaydet"]'); if (b) b.textContent = 'Kaydet •'; }
@@ -185,6 +189,8 @@ async function onClick(e) {
   try {
     if (kart) {
       const l = taslak.oturumlar[+kart.dataset.o].sorular, i = +kart.dataset.s;
+      if (is === 'oncul-ekle') { (l[i].onculler = l[i].onculler || []).push(''); degisti = true; render(); document.querySelector(`[data-o="${kart.dataset.o}"][data-s="${i}"] [data-c="${l[i].onculler.length - 1}"]`)?.focus(); return; }
+      if (is === 'oncul-sil') { l[i].onculler.splice(+b.dataset.c, 1); degisti = true; render(); return; }
       if (is === 'sil') l.splice(i, 1);
       else if (is === 'yukari' && i > 0) [l[i - 1], l[i]] = [l[i], l[i - 1]];
       else if (is === 'asagi' && i < l.length - 1) [l[i + 1], l[i]] = [l[i], l[i + 1]];
