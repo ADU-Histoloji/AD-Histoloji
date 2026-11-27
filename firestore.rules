@@ -60,6 +60,14 @@ service cloud.firestore {
       allow write: if admin();
     }
 
+    // Bildirim adresleri: herkes sadece kendi cihazını ekler/siler, kimse okuyamaz (gönderen sunucu okur)
+    match /tokens/{token} {
+      allow read: if false;
+      allow create, update: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 't', 'cihaz']);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
     // Preparat arşivi: herkes görür, onaylı kişiler ekler ve düzenler
     match /preps/{id} {
       allow read: if true;

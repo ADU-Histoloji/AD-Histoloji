@@ -1,6 +1,7 @@
 import { $, esc, state, onState, toast, sha256 } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
+import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
@@ -147,6 +148,11 @@ function renderMe() {
       <p>${p.onayli ? `<span class="pill">${p.rol === 'yonetici' ? 'Yönetici' : 'Asistan'}</span>` : '<span class="pill wait">Onay bekliyor</span>'}</p>
       ${p.onayli ? `<dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd><dt>Seminer sırası</dt><dd>${p.seminerSira ? esc(p.seminerSira) + '.' : 'Henüz atanmadı'}</dd></dl>` : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, masa ve seminer bilgilerini görebilirsin.</p>'}
     </div>
+    <div class="card" id="c-bildirim"><h3>Bildirimler</h3>
+      <p class="note">Her pazartesi 09:00'da haftanın programı telefonuna bildirim olarak gelir.</p>
+      <p id="b-durum"></p>
+      <button class="btn" id="b-ac">Bildirimleri aç</button> <button class="btn sec hide" id="b-kapat">Kapat</button>
+    </div>
     <form class="card" id="f-dogum"><h3>Doğum günü</h3>${dogumFields(p.dogumGun || '', p.dogumAy || '', p.dogumGoster !== false)}
       <button class="btn sec" type="submit">Kaydet</button><p class="err" id="d-err"></p></form>
     <form class="card" id="f-pin"><h3>PIN değiştir</h3>
@@ -171,6 +177,18 @@ function renderMe() {
     } catch (x) { er.textContent = 'Şu anki PIN hatalı.'; }
   });
   $('#cikis').addEventListener('click', () => A.signOut(auth));
+  const bd = d => {
+    $('#b-durum').textContent = DURUM_METNI[d] || '';
+    $('#b-ac').classList.toggle('hide', !(d === 'kapali'));
+    $('#b-kapat').classList.toggle('hide', d !== 'acik');
+  };
+  bd(durum());
+  $('#b-ac').addEventListener('click', async () => {
+    $('#b-durum').textContent = 'Bildirim izni isteniyor…';
+    try { bd(await bildirimAc()); if (durum() === 'acik') toast('Bildirimler açıldı'); }
+    catch (x) { console.error(x); $('#b-durum').textContent = 'Bildirimler açılamadı. Uygulamayı kapatıp açarak tekrar dene.'; }
+  });
+  $('#b-kapat').addEventListener('click', async () => { bd(await bildirimKapat()); });
 }
 
 function render() {

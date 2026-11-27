@@ -14,3 +14,7 @@ export const firebaseConfig = {
 export const EMAIL_DOMAIN = "kullanici.histoloji-uygulama.app";
 
 export const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/13.1.0";
+
+// Bildirimler için Web Push anahtarı. Firebase konsolu → Proje ayarları → Cloud Messaging →
+// Web Push certificates → "Key pair". Gizli değildir.
+export const VAPID_KEY = "BAlCYH0nJDQZRMBN7wi6PKmNQioBYUZ3eZhurjlU8jiO_dK7i6MIzQgkU3wzvGj1Df0k9_7ogSvXYGm-p_sPw-g";

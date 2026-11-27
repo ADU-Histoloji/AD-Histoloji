@@ -80,6 +80,25 @@ Değişiklik için: GitHub'da dosyayı açın → kalem simgesi (Edit) → düze
 
 ---
 
+## Pazartesi bildirimi
+
+Her pazartesi 08:50 civarında (GitHub birkaç dakika geç başlatabilir) haftanın programı, bildirimleri açmış herkesin telefonuna gider.
+
+**Nasıl çalışır:** `.github/workflows/pazartesi.yml` GitHub'ın zamanlanmış görevidir. `scripts/pazartesi.mjs` dosyasını çalıştırır; bu betik veritabanından haftanın derslerini okur, `scripts/mesaj.mjs` ile kısa bir metin hazırlar ve kayıtlı cihazlara gönderir. Her gönderimden sonra `data/son-bildirim.json` güncellenir (GitHub 60 gün hareketsiz kalan depolarda zamanlanmış görevleri kapattığı için bu dosya görevi açık tutar).
+
+**Kurulum (bir kere):**
+1. Firebase → Proje ayarları → Cloud Messaging → Web Push certificates → **Generate key pair**. Anahtarı `js/config.js` içindeki `VAPID_KEY` satırına yazın.
+2. Firebase → Proje ayarları → Service accounts → **Generate new private key**. İnen dosyanın içeriğini GitHub'da Settings → Secrets and variables → Actions → **New repository secret** ile `FIREBASE_SERVICE_ACCOUNT` adıyla kaydedin. Dosyayı kimseyle paylaşmayın, sonra silin.
+3. GitHub → Settings → Actions → General → Workflow permissions → **Read and write permissions**.
+
+**Kullanıcı tarafı:** Profil → **Bildirimleri aç**. iPhone'da önce uygulamanın ana ekrana eklenmesi ve oradan açılması gerekir (iOS 16.4 ve sonrası).
+
+**Elle test:** GitHub → Actions → *Pazartesi bildirimi* → **Run workflow**. "Test" kutusu işaretliyse sadece yöneticilere gider.
+
+**Gönderilmediyse:** Actions sekmesinde son çalıştırmanın kaydına bakın. "FIREBASE_SERVICE_ACCOUNT tanımlı değil" yazıyorsa 2. adım eksiktir.
+
+---
+
 ## Sorun çıkarsa
 
 - **Sayfa açılıyor ama giriş/arşiv çalışmıyor:** `js/config.js` doğru dolduruldu mu, adres Firebase'de *Authorized domains* listesinde mi, kurallar yayınlandı mı?
@@ -89,7 +108,8 @@ Değişiklik için: GitHub'da dosyayı açın → kalem simgesi (Edit) → düze
 ## Yol haritası
 
 - [x] Takvim, preparat arşivi, kayıt/giriş, yönetim
-- [ ] Pazartesi 09:00 bildirimi (haftalık program + seminer)
+- [x] Pazartesi bildirimi (haftalık program)
+- [ ] Bildirime seminer bilgisinin eklenmesi
 - [ ] Uygulama masaları: 8 masa, sabit masa, bir gün önce katılım sorusu, anlatıcı
 - [ ] Seminer sırası (tatil/sınav haftalarında kayma, takas)
 - [ ] Doğum günleri ve özel günler takvimde

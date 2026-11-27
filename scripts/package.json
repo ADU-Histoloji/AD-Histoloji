@@ -1,0 +1,8 @@
+{
+  "name": "histoloji-bildirim",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "14.5.0"
+  }
+}
