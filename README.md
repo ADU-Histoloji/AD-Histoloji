@@ -16,6 +16,10 @@ Bütün hesaplar bölüm Gmail hesabına aittir. En az iki kişi hem GitHub orga
 
 ---
 
+## Profil ekranı
+
+Her asistan Profil'deki **Görevlerim** kartında masasını, yaklaşan seminerini (konusunu buradan yazabilir) ve anlatıcı olarak atandığı yaklaşan uygulamaları görür.
+
 ## Yönetim ekranı
 
 **Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masası olmayan ya da kapasitesi aşılmış masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi, masa kapasitesi) seçildiği anda kaydedilir.

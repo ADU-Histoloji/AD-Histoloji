@@ -190,3 +190,4 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 details.card>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .ysekme{flex-wrap:nowrap;overflow-x:auto;gap:6px;scrollbar-width:none}
 .ysekme .chip{padding:0 10px;font-size:14px;white-space:nowrap;flex:0 0 auto}
+.gorev-bas{margin:18px 0 2px;font:600 15px Inter,sans-serif;color:var(--mute)}

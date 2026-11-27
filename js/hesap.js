@@ -3,12 +3,16 @@ import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
 import { durum, bildirimAc, bildirimKapat, DURUM_METNI } from './bildirim.js';
 import { onEvents, etkinlikler, konuFormu, bosKonu } from './takvim.js';
+import { konuId } from './uygulamalar.js';
 
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
 let people = [];
 let config = null, configLoaded = false;
+let anlaticilar = {};
+const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+const tarihGun = iso => { const d = new Date(iso + 'T12:00:00'); return `${iso.split('-').reverse().join('.')} ${GUN[d.getDay()]}`; };
 
 const dogumFields = (g = '', a = '', goster = true) => `
   <div class="row2">
@@ -141,24 +145,40 @@ function renderComplete() {
   });
 }
 
+function gorevlerim(p) {
+  const d = new Date(), bugun = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const ev = etkinlikler();
+  const sem = ev.filter(e => e.k === 'M' && e.uid === state.user.uid && e.date >= bugun).sort((a, b) => a.date.localeCompare(b.date));
+  const anl = ev.filter(e => e.k === 'U' && e.date >= bugun && anlaticilar[konuId(e.s, e.topic)]?.uid === state.user.uid)
+    .sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
+  const GOSTER = 6;
+  return `<div class="card"><h3>Görevlerim</h3>
+    <dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd></dl>
+    <h4 class="gorev-bas">🎤 Seminer</h4>
+    ${sem.length ? sem.map(e => `<div class="li" style="display:block">
+      <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}</div>
+      <div class="${bosKonu(e.topic) ? 'warn' : ''}">${bosKonu(e.topic) ? 'Konu henüz yazılmadı' : esc(e.topic)}</div>
+      ${e.note ? `<div class="note">${esc(e.note)}</div>` : ''}
+      <button class="btn sec" style="margin-top:6px" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>
+    </div>`).join('') : '<p class="note">Yaklaşan seminerin yok.</p>'}
+    <h4 class="gorev-bas">🔬 Anlatacağın uygulamalar</h4>
+    ${anl.length ? anl.slice(0, GOSTER).map(e => `<div class="li" style="display:block">
+      <div class="nm">${esc(tarihGun(e.date))} · ${esc(e.t)}${e.g ? ' · ' + esc(e.g) : ''}</div>
+      <div>${esc(e.topic)}</div>
+      <div class="note">${esc(e.s)}${e.yer ? ' · ' + esc(e.yer) : ''}</div>
+    </div>`).join('') + (anl.length > GOSTER ? `<p class="note">ve ${anl.length - GOSTER} uygulama daha</p>` : '') : '<p class="note">Şu an anlatıcı olarak atandığın uygulama yok.</p>'}
+  </div>`;
+}
+
 function renderMe() {
   const p = state.profile || {}, el = $('#v-profil');
   el.innerHTML = `
     <div class="card">
       <h3>${esc(p.ad || 'Hesabım')}</h3>
       <p>${p.onayli ? `<span class="pill">${p.rol === 'yonetici' ? 'Yönetici' : 'Asistan'}</span>` : '<span class="pill wait">Onay bekliyor</span>'}</p>
-      ${p.onayli ? `<dl class="kv"><dt>Masa</dt><dd>${p.masa ? esc(p.masa) : 'Henüz atanmadı'}</dd></dl>` : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, masa bilgini görebilirsin.</p>'}
+      ${p.onayli ? '' : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, görevlerini görebilirsin.</p>'}
     </div>
-    ${(() => {
-      const bugun = new Date().toISOString().slice(0, 10);
-      const benim = etkinlikler().filter(e => e.k === 'M' && e.uid === state.user.uid && e.date >= bugun).sort((a, b) => a.date.localeCompare(b.date));
-      if (!benim.length) return '';
-      return `<div class="card"><h3>Seminerlerim</h3>${benim.map(e => `<div class="li" style="display:block">
-        <div class="nm">${esc(e.date.split('-').reverse().join('.'))} ${esc(e.t)}</div>
-        <div class="${bosKonu(e.topic) ? 'warn' : ''}">${bosKonu(e.topic) ? 'Konu henüz yazılmadı' : esc(e.topic)}</div>
-        <button class="btn sec" style="margin-top:6px" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>
-      </div>`).join('')}</div>`;
-    })()}
+    ${p.onayli ? gorevlerim(p) : ''}
     <div class="card" id="c-bildirim"><h3>Bildirimler</h3>
       <p class="note">Her pazartesi 09:00'da haftanın programı telefonuna bildirim olarak gelir.</p>
       <p id="b-durum"></p>
@@ -217,6 +237,7 @@ export function initHesap() {
   $('#who').addEventListener('click', () => { location.hash = 'profil'; });
   onState(s => { $('#who').textContent = s.user ? (s.profile?.ad?.split(' ')[0] || 'Hesabım') : 'Giriş yap'; });
   if (!ready) return;
+  F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anlaticilar = {}; q.docs.forEach(d => { anlaticilar[d.id] = d.data(); }); if (state.profile && !$('#v-profil').contains(document.activeElement)) render(); }, () => { });
   F.onSnapshot(F.collection(db, 'people'), s => { people = s.docs.map(d => ({ id: d.id, ...d.data() })); if (!state.user) render(); });
   F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });
 }
