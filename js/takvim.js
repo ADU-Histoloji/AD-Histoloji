@@ -1,4 +1,4 @@
-import { $, $$, esc } from './util.js';
+import { $, $$, esc, state, onState, sheet, closeSheet, toast } from './util.js';
 import { ready, db, F } from './fb.js';
 
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
@@ -18,6 +18,8 @@ let f = 'all';
 try { f = localStorage.getItem('hp-filter') || 'all'; } catch (e) { }
 
 let linkedFn = () => '';
+let fromDb = false;
+const duzenle = () => ready && fromDb && state.admin;
 const evSubs = new Set();
 export const onEvents = fn => { evSubs.add(fn); if (loaded) fn(EV); };
 const emit = () => { if (loaded) evSubs.forEach(fn => fn(EV)); };
@@ -59,7 +61,7 @@ function renderWeek() {
   $('#week').innerHTML = days.map(d => {
     const ev = d.ev.filter(show), today = d.di === todayIso, nU = d.ev.filter(e => e.k === 'U').length;
     return `<div class="day${today ? ' is-today' : ''}">
-      <div class="dh"><h2>${d.g}</h2><span class="date">${d.d.getDate()} ${AY[d.d.getMonth()]}</span>${today ? '<span class="tag">Bugün</span>' : ''}${nU >= 4 ? '<span class="tag" style="background:var(--d1)">Yoğun gün</span>' : ''}</div>
+      <div class="dh"><h2>${d.g}</h2><span class="date">${d.d.getDate()} ${AY[d.d.getMonth()]}</span>${today ? '<span class="tag">Bugün</span>' : ''}${nU >= 4 ? '<span class="tag" style="background:var(--d1)">Yoğun gün</span>' : ''}${duzenle() ? `<button class="linkbtn" data-ekle="${d.di}" style="margin-left:auto">+ Ders</button>` : ''}</div>
       ${ev.length ? ev.map(e => {
         const first = e.ders && !seen.has(e.ders); if (e.ders) seen.add(e.ders);
         return `<div class="ev ${kcls(e)}">
@@ -71,6 +73,7 @@ function renderWeek() {
           ${e.prep ? `<div class="prep">${esc(e.prep)}</div>` : ''}
           ${e.warn ? `<div class="warn">${esc(e.warn)}</div>` : ''}
           ${first ? linkedFn(e.ders) : ''}
+          ${duzenle() && e.id ? `<button class="linkbtn" data-duzenle="${esc(e.id)}">Düzenle</button>` : ''}
         </div></div>`;
       }).join('') : `<p class="empty">${d.ev.length ? 'Bu filtrede ders yok.' : 'Histoloji dersi yok.'}</p>`}
     </div>`;
@@ -79,6 +82,50 @@ function renderWeek() {
 
 function render() { emit(); if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); }
 function goWeek(d) { wk = monday(d); const m = addD(wk, 2); mon = new Date(m.getFullYear(), m.getMonth(), 1); render(); }
+
+
+/* ---------- Yöneticiler için ders ekleme/düzenleme ---------- */
+const SINIF = ['Tıp D1', 'Tıp D2', 'Diş D1', 'Diş D2', 'Diş D3'];
+function dersFormu(ev, tarih) {
+  const yeni = !ev;
+  ev = ev || { s: 'Tıp D1', k: 'T', date: tarih, t: '08:30', e: '10:15', topic: '', who: '', g: '', yer: '', note: '', prep: '', warn: '' };
+  const v = k => esc(ev[k] ?? '');
+  sheet(`<div class="sh"><h3>${yeni ? 'Ders ekle' : 'Dersi düzenle'}</h3><button class="x" type="button" aria-label="Kapat">×</button></div>
+  <form id="df">
+    <div class="row">
+      <div><label for="d-s">Sınıf</label><select id="d-s">${SINIF.map(x => `<option${x === ev.s ? ' selected' : ''}>${x}</option>`).join('')}</select></div>
+      <div><label for="d-k">Tür</label><select id="d-k">${[['T', 'Teorik'], ['U', 'Uygulama'], ['S', 'Sınav']].map(([k, l]) => `<option value="${k}"${k === ev.k ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div><label for="d-g">Grup</label><input id="d-g" value="${v('g')}" placeholder="A"></div>
+    </div>
+    <div class="row">
+      <div><label for="d-date">Tarih</label><input id="d-date" type="date" required value="${v('date')}"></div>
+      <div><label for="d-t">Başlangıç</label><input id="d-t" type="time" required value="${v('t')}"></div>
+      <div><label for="d-e">Bitiş</label><input id="d-e" type="time" value="${v('e')}"></div>
+    </div>
+    <div class="row"><div><label for="d-topic">Konu</label><input id="d-topic" required value="${v('topic')}"></div></div>
+    <div class="row"><div><label for="d-who">Öğretim üyesi</label><input id="d-who" value="${v('who')}"></div><div><label for="d-yer">Yer</label><input id="d-yer" value="${v('yer')}" placeholder="Derslik-4"></div></div>
+    <label for="d-note">Not</label><input id="d-note" value="${v('note')}">
+    <label for="d-prep" style="margin-top:10px">Hazırlık notu</label><input id="d-prep" value="${v('prep')}">
+    <label for="d-warn" style="margin-top:10px">Uyarı</label><input id="d-warn" value="${v('warn')}">
+    <p class="err" id="d-msg"></p>
+    <div class="acts"><button class="btn" type="submit">Kaydet</button><button class="btn sec" data-close type="button">Vazgeç</button>${yeni ? '' : '<button class="btn del" type="button" id="d-del">Sil</button>'}</div>
+  </form>`);
+  $('#df').addEventListener('submit', async e => {
+    e.preventDefault();
+    const s = $('#d-s').value, body = { s, c: s.startsWith('Diş') ? 'dis' : 'tip', k: $('#d-k').value, date: $('#d-date').value, t: $('#d-t').value, e: $('#d-e').value, topic: $('#d-topic').value.trim() };
+    for (const k of ['who', 'g', 'yer', 'note', 'prep', 'warn']) { const x = $('#d-' + k).value.trim(); if (x) body[k] = x; }
+    if (!yeni && ev.ders) body.ders = ev.ders;
+    try {
+      if (yeni) await F.addDoc(F.collection(db, 'events'), body); else await F.setDoc(F.doc(db, 'events', ev.id), body);
+      closeSheet(); toast('Kaydedildi'); goWeek(parse(body.date));
+    } catch (x) { $('#d-msg').textContent = 'Kaydedilemedi. Yönetici olarak giriş yaptığından emin ol.'; }
+  });
+  const del = $('#d-del');
+  if (del) del.addEventListener('click', async () => {
+    if (del.dataset.sure !== '1') { del.dataset.sure = '1'; del.textContent = 'Emin misin? Tekrar bas'; return; }
+    try { await F.deleteDoc(F.doc(db, 'events', ev.id)); closeSheet(); toast('Silindi'); } catch (x) { $('#d-msg').textContent = 'Silinemedi.'; }
+  });
+}
 
 export function initTakvim() {
   $('#wprev').addEventListener('click', () => goWeek(addD(wk, -7)));
@@ -92,13 +139,18 @@ export function initTakvim() {
     const t = document.querySelector('.day:nth-child(' + Math.min(5, ((d.getDay() + 6) % 7) + 1) + ')');
     if (t && innerWidth < 1000) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
+  $('#week').addEventListener('click', e => {
+    const b = e.target.closest('[data-duzenle],[data-ekle]'); if (!b) return;
+    if (b.dataset.ekle) dersFormu(null, b.dataset.ekle); else dersFormu(EV.find(x => x.id === b.dataset.duzenle));
+  });
+  onState(() => render());
   $$('.chip').forEach(b => b.addEventListener('click', () => { f = b.dataset.f; try { localStorage.setItem('hp-filter', f); } catch (e) { } render(); }));
   render();
 
   if (ready) {
     let gotE = false, gotN = false;
     // Veritabanında program yoksa uygulamayla gelen dosyadaki program gösterilir
-    const done = () => { if (!(gotE && gotN)) return; if (!EV.length) loadStatic(); else { loaded = true; render(); } };
+    const done = () => { if (!(gotE && gotN)) return; if (!EV.length) loadStatic(); else { loaded = true; fromDb = true; render(); } };
     F.onSnapshot(F.collection(db, 'events'), s => { EV = s.docs.map(d => ({ id: d.id, ...d.data() })); gotE = true; done(); },
       () => loadStatic());
     F.onSnapshot(F.collection(db, 'notices'), s => { NO = s.docs.map(d => ({ id: d.id, ...d.data() })); gotN = true; done(); },

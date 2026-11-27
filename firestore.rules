@@ -89,6 +89,13 @@ service cloud.firestore {
       allow delete: if approved() && (request.auth.uid == uid || admin());
     }
 
+    // Fakülte ders programlarında bulunan değişiklikler (sunucu yazar, yöneticiler görür ve "baktım" der)
+    match /degisiklikler/{id} {
+      allow read: if admin();
+      allow update: if admin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['durum']);
+      allow delete: if admin();
+    }
+
     // Preparat arşivi: herkes görür, onaylı kişiler ekler ve düzenler
     match /preps/{id} {
       allow read: if true;

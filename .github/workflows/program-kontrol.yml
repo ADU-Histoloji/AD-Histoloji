@@ -1,0 +1,41 @@
+name: Ders programı kontrolü
+
+on:
+  schedule:
+    # Hafta içi her gün 10:20 UTC = 13:20 Türkiye
+    - cron: '20 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      deneme:
+        description: 'Değişiklik olmasa da yöneticilere "çalışıyor" bildirimi gönder'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: PDF okuma aracını kur
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Programları kontrol et
+        run: node scripts/program-kontrol.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DENEME: ${{ github.event_name == 'workflow_dispatch' && inputs.deneme }}
+      - name: Kontrol kaydını yaz
+        run: |
+          git config user.name "histoloji-bildirim"
+          git config user.email "histoloji-bildirim@users.noreply.github.com"
+          git add data/program-durumu.json
+          git commit -m "Ders programı kontrolü" || exit 0
+          git pull --rebase -q || true
+          git push

@@ -1,0 +1,7 @@
+{
+  "aciklama": "Her öğretim yılı başında fakültenin yeni yıl sayfalarının adresleriyle güncelleyin.",
+  "sayfalar": [
+    { "ad": "Tıp Dönem I", "url": "https://fakulte.adu.edu.tr/med/tr/donem-i-21712" },
+    { "ad": "Tıp Dönem II", "url": "https://fakulte.adu.edu.tr/med/tr/donem-ii-21711" }
+  ]
+}

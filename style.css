@@ -166,3 +166,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .katil{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
 .anl{margin-top:4px;font-size:15px}
 .nav:disabled{opacity:.35;cursor:default}
+
+.fark{font-size:14px;padding:2px 8px;border-radius:6px;margin:2px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fark.eksi{background:color-mix(in srgb,var(--d2) 10%,var(--bg));color:var(--d2)}
+.fark.arti{background:color-mix(in srgb,var(--ok) 10%,var(--bg));color:var(--ok)}

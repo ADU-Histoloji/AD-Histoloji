@@ -76,7 +76,7 @@ Program `data/events.json` dosyasındadır. Her ders bir satırdır:
 | `g` | Grup (A, B, C, D), varsa |
 | `yer`, `note`, `prep`, `warn` | İsteğe bağlı: derslik, not, hazırlık notu, uyarı |
 
-Değişiklik için: GitHub'da dosyayı açın → kalem simgesi (Edit) → düzenleyin → **Commit changes**. Ardından uygulamada Yönetim → **Programı içe aktar**.
+Yıl içindeki tek tük değişiklikler için dosyaya dokunmayın: uygulamada yönetici olarak takvimde ilgili güne gidip **Düzenle** ya da **+ Ders** kullanın. Dosya sadece yeni öğretim yılının programı için düzenlenir; ardından Yönetim → **Programı içe aktar** (bu işlem takvimdeki elle yapılmış düzeltmeleri siler).
 
 ---
 
@@ -107,6 +107,22 @@ Alttaki **Masalar** sekmesi her uygulama gününü gösterir: günün oturumlar�
 - Asistan "Katılıyorum / Katılamıyorum" der. Gelemeyen birinin masası boş görünür; katılan başka biri o günlüğüne **Bu masaya geç** ile alabilir.
 - Anlatıcılar **Yönetim → Anlatıcılar**'dan her uygulama konusu için bir kere girilir. Boş bırakılırsa programdaki öğretim üyesi gösterilir.
 - **Bildirim:** Uygulamadan bir gün önce 08:50 civarında herkese "Yarın uygulama var, katılıyor musun?" gider; anlatıcı uygulamaya kayıtlıysa ona "Yarın anlatıcısın" gider. Görev: `.github/workflows/gunluk.yml`, betik: `scripts/gunluk.mjs`. Elle test: Actions → *Uygulama katılım sorusu* → Run workflow.
+
+---
+
+## Ders programı değişiklik kontrolü
+
+Hafta içi her gün 13:20 civarında `.github/workflows/program-kontrol.yml` fakültenin ders programı sayfalarını kontrol eder (adresler: `data/program-sayfalari.json`). Yeni, güncellenmiş ya da içeriği değişmiş bir PDF bulursa:
+
+- PDF'teki histoloji satırlarını öncekiyle karşılaştırır,
+- yöneticilere "Ders programı güncellendi" bildirimi gönderir,
+- ayrıntıyı **Yönetim → Program değişiklikleri** bölümüne yazar.
+
+Satır karşılaştırması PDF tablosundan otomatik çıkarıldığı için ipucudur; kesin bilgi için PDF açılmalıdır. Takvim otomatik değişmez: yönetici takvimde ilgili güne gidip **Düzenle** / **+ Ders** ile düzeltir, sonra **Baktım** der.
+
+**Her yıl başında:** `data/program-sayfalari.json` içindeki adresleri fakültenin yeni yıl sayfalarıyla değiştirin (GitHub'da dosyayı açıp kalem simgesiyle). Sayfa okunamazsa yöneticilere "Program sayfası okunamadı" bildirimi gider.
+
+Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle değiştirmeyin.
 
 ---
 

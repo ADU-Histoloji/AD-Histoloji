@@ -3,8 +3,9 @@ import { ready, db, F } from './fb.js';
 import { onEvents } from './takvim.js';
 import { konuId, MASA_SAYISI } from './uygulamalar.js';
 
+const DTUR = { yeni: 'Yeni program eklendi', guncel: 'Güncellenmiş program yüklendi', icerik: 'Dosyanın içeriği değişti', kaldirildi: 'Program sayfadan kaldırıldı' };
 let users = [], unsub = null, eventCount = null;
-let kap = {}, anl = {}, konular = [];
+let kap = {}, anl = {}, konular = [], degisiklik = [], eskileriGoster = false;
 
 function render() {
   const el = $('#v-yonetim');
@@ -13,6 +14,18 @@ function render() {
   el.innerHTML = `
     <div class="card" style="max-width:none"><h3>Onay bekleyenler</h3>
       ${wait.length ? `<div class="list">${wait.map(u => `<div class="li"><span class="nm">${esc(u.ad)}</span><span><button class="btn" data-onay="${esc(u.id)}">Onayla</button> <button class="btn del" data-sil="${esc(u.id)}">Reddet</button></span></div>`).join('')}</div>` : '<p class="note">Onay bekleyen kayıt yok.</p>'}
+    </div>
+    <div class="card" style="max-width:none" id="c-degisiklik"><h3>Program değişiklikleri</h3>
+      <p class="note">Fakültenin ders programı sayfaları her hafta içi öğlen kontrol edilir. Bulunan değişiklikleri takvimde düzeltip "Baktım" deyin. Satır karşılaştırması PDF'ten otomatik çıkarılır, ipucu niteliğindedir; kesin bilgi için PDF'i açın.</p>
+      ${(() => { const liste = degisiklik.filter(d => eskileriGoster || d.durum !== 'bakildi'); return liste.length ? `<div class="list">${liste.map(d => `<div class="li" style="display:block">
+        <div><span class="nm">${esc(d.sayfa)} – ${esc(d.etiket)}</span> ${d.durum === 'bakildi' ? '<span class="pill">bakıldı</span>' : '<span class="pill wait">yeni</span>'}</div>
+        <div class="note">${esc(DTUR[d.tur] || d.tur)}${d.t?.toDate ? ' · ' + d.t.toDate().toLocaleDateString('tr-TR') : ''} · ${/^https:\/\//.test(d.url || '') ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">PDF'i aç</a>` : ''}</div>
+        ${(d.cikan || []).map(x => `<div class="fark eksi">− ${esc(x)}</div>`).join('')}
+        ${(d.eklenen || []).map(x => `<div class="fark arti">+ ${esc(x)}</div>`).join('')}
+        ${d.tur !== 'kaldirildi' && !(d.cikan || []).length && !(d.eklenen || []).length ? '<div class="note">Histoloji satırlarında fark bulunamadı; değişiklik başka dersleri ilgilendiriyor olabilir.</div>' : ''}
+        ${d.durum !== 'bakildi' ? `<button class="btn sec" style="margin-top:6px" data-bak="${esc(d.id)}">Baktım</button>` : ''}
+      </div>`).join('')}</div>` : '<p class="note">Bekleyen değişiklik yok.</p>'; })()}
+      <button class="linkbtn" data-eski>${eskileriGoster ? 'Bakılanları gizle' : 'Bakılanları da göster'}</button>
     </div>
     <div class="card" style="max-width:none"><h3>Kişiler</h3>
       <p class="note">Masa no ve seminer sırasını buradan atayın. PIN'ini unutan kişi için "Kaydı sıfırla" deyin; kişi aynı adla yeniden kayıt olur.</p>
@@ -43,7 +56,7 @@ function render() {
       <div class="field"><label for="y-kod">Yeni bölüm kodu</label><input id="y-kod" required autocomplete="off"></div>
       <button class="btn sec" type="submit">Kodu değiştir</button></form>
     <div class="card"><h3>Ders programı</h3>
-      <p class="note">Uygulamayla gelen <code>data/events.json</code> dosyasındaki programı veritabanına yükler. Mevcut program silinip yerine yenisi yazılır.</p>
+      <p class="note">Uygulamayla gelen <code>data/events.json</code> dosyasındaki programı veritabanına yükler. Mevcut program silinip yerine yenisi yazılır; takvimde elle yapılan düzeltmeler de silinir. Sadece yeni öğretim yılı başında kullanın.</p>
       <p>Veritabanındaki ders sayısı: <b>${eventCount ?? '…'}</b></p>
       <button class="btn" id="y-import">Programı içe aktar</button><p class="err" id="y-msg"></p></div>`;
 }
@@ -62,6 +75,9 @@ async function onClick(e) {
       if (b.dataset.rol) patch.rol = b.dataset.rol;
       else row.querySelectorAll('[data-f]').forEach(i => { patch[i.dataset.f] = i.value.trim() === '' ? null : Number(i.value) || i.value.trim(); });
       await F.updateDoc(F.doc(db, 'users', id), patch); toast('Kaydedildi');
+    } else if (b.dataset.bak) {
+      await F.updateDoc(F.doc(db, 'degisiklikler', b.dataset.bak), { durum: 'bakildi' });
+    } else if ('eski' in b.dataset) { eskileriGoster = !eskileriGoster; render();
     } else if (b.id === 'y-import') await importProgram();
   } catch (x) { console.error(x); toast('İşlem yapılamadı'); }
 }
@@ -129,6 +145,7 @@ export function initYonetim() {
       unsub = F.onSnapshot(F.collection(db, 'users'), q => { users = q.docs.map(d => ({ id: d.id, ...d.data() })); render(); });
       F.onSnapshot(F.collection(db, 'events'), q => { eventCount = q.size; if (!document.activeElement?.closest('#v-yonetim')) render(); });
       F.onSnapshot(F.doc(db, 'config', 'masalar'), q => { kap = q.exists() ? (q.data().kap || {}) : {}; if (!document.activeElement?.closest('#v-yonetim')) render(); }, () => { });
+      F.onSnapshot(F.query(F.collection(db, 'degisiklikler'), F.orderBy('t', 'desc'), F.limit(60)), q => { degisiklik = q.docs.map(d => ({ id: d.id, ...d.data() })); if (!document.activeElement?.closest('#v-yonetim')) render(); }, () => { });
       F.onSnapshot(F.collection(db, 'anlaticilar'), q => { anl = {}; q.docs.forEach(d => { anl[d.id] = d.data(); }); if (!document.activeElement?.closest('#v-yonetim')) render(); }, () => { });
     }
     if (!s.admin && unsub) { unsub(); unsub = null; }
