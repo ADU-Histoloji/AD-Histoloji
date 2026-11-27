@@ -147,6 +147,14 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 ---
 
+## Görev hatırlatmaları
+
+**Görev hatırlatmaları** görevi hafta içi her sabah 08:55'te çalışır:
+- Seminer sunacak kişiye **1 hafta önce** ve **1 gün önce** (Pazartesi) bildirim gider; konusunu yazmamışsa yazmasını hatırlatır.
+- Uygulama anlatıcısına **1 hafta önce** bildirim gider; **1 gün önceki** "Yarın anlatıcısın" bildirimini katılım sorusu görevi gönderir.
+
+Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun** alanına bir tarih yazılırsa o gün çalışmış gibi davranır (ör. 08.12 seminerinin bir gün öncesi için `2026-12-07`). **test** işaretliyse mesajlar asıl kişiye değil yöneticilere gider; **kuru** işaretliyse hiçbir şey gönderilmez, sadece kime ne gideceği görev kaydına yazılır.
+
 ## Test bildirimi
 
 Bir kişiye bildirim gidip gitmediğini denemek için: GitHub → **Actions** → **Test bildirimi** → **Run workflow** → kişinin adını yaz → **Run workflow**. Görev bitince açıp özet kısmına bakın: kişinin onaylı olup olmadığı, kaç cihazının kayıtlı olduğu ve gönderimin başarılı olup olmadığı yazar. Ad boş bırakılırsa tüm onaylı kişilere gider.

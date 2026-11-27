@@ -1,0 +1,41 @@
+name: Görev hatırlatmaları
+
+on:
+  schedule:
+    # Pazartesi–Cuma 05:55 UTC = 08:55 Türkiye
+    - cron: '55 5 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Test: mesajları asıl kişiye değil yöneticilere gönder'
+        type: boolean
+        default: true
+      bugun:
+        description: 'İsteğe bağlı: bugün sayılacak tarih (YYYY-AA-GG), ör. bir seminerden bir gün öncesi'
+        type: string
+        required: false
+      kuru:
+        description: 'Kuru deneme: hiçbir bildirim gönderme, sadece kime ne gideceğini yaz'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  gonder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paketleri kur
+        run: npm install --prefix scripts --no-audit --no-fund
+      - name: Hatırlatmaları gönder
+        run: node scripts/hatirlatma.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SADECE_YONETICI: ${{ github.event_name == 'workflow_dispatch' && inputs.test }}
+          BUGUN: ${{ inputs.bugun }}
+          KURU: ${{ inputs.kuru }}
