@@ -66,7 +66,11 @@ else {
   // Bir sayfa okunamadıysa o sayfadaki dosyaları "kaldırıldı" sayma
   const okunamayan = new Set(sayfalar.filter(s => !Object.values(simdi).some(d => d.sayfa === s.ad)).map(s => s.ad));
   const onceFilt = Object.fromEntries(Object.entries(once.dosyalar || {}).filter(([, d]) => !okunamayan.has(d.sayfa)));
-  degisen = farklar(onceFilt, simdi);
+  // Histolojiyle ilgisi olmayan PDF'lerdeki (grup listesi, rehber vb.) değişiklikleri bildirme
+  degisen = farklar(onceFilt, simdi).filter(f =>
+    f.eklenen.length || f.cikan.length ||
+    (f.tur !== 'kaldirildi' && (simdi[f.url]?.satirlar || []).length) ||
+    (f.tur === 'kaldirildi' && (onceFilt[f.url]?.satirlar || []).length));
   for (const f of degisen) {
     await db.collection('degisiklikler').add({
       ...f, eklenen: f.eklenen.slice(0, 40), cikan: f.cikan.slice(0, 40), durum: 'yeni', t: FieldValue.serverTimestamp()
