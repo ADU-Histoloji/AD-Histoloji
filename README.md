@@ -42,6 +42,15 @@ Histoloji uygulama sınavlarının her oturumunda 4 grup vardır; her grubun bir
 - Önümüzdeki 3 haftada gözetmeni eksik sınavlar Yönetim → Yapılacak'ta görünür.
 - Kişi Profil → Görevlerim'de kendi gözetmenliklerini görür; **1 hafta önce** ve **bir önceki iş günü** hatırlatma bildirimi gelir (Pazartesi sınavları için Cuma).
 
+## Kura
+
+Üst banttaki 🎲 düğmesi (onaylı üyelere görünür) kura ekranını açar. Üç tür kura var:
+- **Kişi seç:** seçilenler arasından istenen sayıda kişi.
+- **Sırala:** herkesi rastgele sıraya dizer (ör. nöbet ya da seminer sırası).
+- **Görevlere dağıt:** her satıra bir görev yazılır, her göreve istenen sayıda kişi düşer.
+
+Katılanlar üye listesinden işaretlenir; listede olmayan adlar da eklenebilir. Kura tarayıcının güvenli rastgele sayı üreteciyle çekilir, çekildiği anda kimin çektiği ve saatiyle kaydedilir ve herkes görür. Kayıtlar değiştirilemez (sadece yönetici silebilir); böylece bir kuranın tekrar çekilip çekilmediği de görülür.
+
 ## Yönetim ekranı
 
 **Yapılacak** sekmesi açılışta gelir ve sadece iş bekleyen şeyleri gösterir: onay bekleyen kayıtlar, fakülte programındaki değişiklikler, önümüzdeki 3 haftada anlatıcısı olmayan uygulamalar, eşleşmemiş seminerler, masasını seçmemiş kişiler ya da 2'den fazla kişi olan masalar. Hiçbiri yoksa "Her şey yolunda ✓" yazar. Tüm seçimler (masa, anlatıcı, seminer kişisi) seçildiği anda kaydedilir.

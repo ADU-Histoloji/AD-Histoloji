@@ -232,3 +232,16 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gz-ayar{width:100%}.gz-ayar summary{cursor:pointer;color:var(--d1);font-weight:600;font-size:14px;min-height:36px;display:flex;align-items:center}
 .gz-ayar label{display:block;margin:6px 0 0;font-size:14px}.gz-ayar input,.gz-ayar select{width:100%;margin-top:4px}
 .gz-kap{display:inline-flex;align-items:center;gap:10px;margin-left:10px}
+/* Kura */
+a.who-btn.zil{display:flex;color:#fff;text-decoration:none}
+a.who-btn.zil.hide{display:none}
+.kura-kisi{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:12px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 12px}
+.kura-kisi legend{font-weight:600;padding:0 4px}
+.kura-kisi label{display:flex;align-items:center;gap:8px;min-height:40px;margin:0;font-weight:400}
+.kura-son{margin:8px 0;padding-left:1.4em}
+.kura-son li{padding:3px 0;font-size:17px}
+div.kura-son{padding-left:0}
+.kura-g{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.kura-g span{color:var(--mute)}
+.kura-yeni{border:2px solid var(--d2)}
+.kura-kisi input[type=checkbox]{width:22px;height:22px;min-height:0;flex:0 0 22px;margin:0;padding:0;accent-color:var(--d1)}

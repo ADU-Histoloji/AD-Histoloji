@@ -138,6 +138,18 @@ service cloud.firestore {
       allow write: if admin();
     }
 
+    // Kuralar: onaylı üyeler çeker ve görür; çekilen kura değiştirilemez, sadece yönetici silebilir
+    match /kuralar/{id} {
+      allow read: if approved();
+      allow create: if approved()
+        && request.resource.data.keys().hasOnly(['baslik', 'tur', 'katilimcilar', 'sonuc', 'ceken', 'cekenAd', 't'])
+        && request.resource.data.ceken == request.auth.uid
+        && request.resource.data.t == request.time
+        && request.resource.data.tur in ['sec', 'sirala', 'dagit'];
+      allow update: if false;
+      allow delete: if admin();
+    }
+
     // Uygulama günlerinde katılım ve o günlük masa değişikliği
     match /katilim/{gun}/kisiler/{uid} {
       allow read: if approved();

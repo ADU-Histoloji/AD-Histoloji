@@ -9,9 +9,10 @@ import { initDuyurular } from './duyurular.js';
 import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
 import { initGozetmen } from './gozetmen.js';
+import { initKura } from './kura.js';
 
-const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim'];
-const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', profil: 'Hesabım', yonetim: 'Yönetim' };
+const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim', 'kura'];
+const TITLES = { takvim: 'ADÜ Histoloji ve Embriyoloji', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', kura: 'Kura', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
@@ -33,6 +34,7 @@ initHesap();
 initYonetim();
 initDuyurular();
 initSeminer();
+initKura();
 route();
 
 if (ready) {
@@ -48,6 +50,7 @@ if (ready) {
       if (approved && state.profileLoaded && state.profile && !state.approved) { location.reload(); return; }
       setState({ profile: p, profileLoaded: true, approved, admin });
       $('#nav-yonetim').classList.toggle('hide', !admin);
+      $('#kura-btn').classList.toggle('hide', !approved);
       route();
     }, () => setState({ profile: null, profileLoaded: true, approved: false, admin: false }));
   });
