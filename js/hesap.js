@@ -10,7 +10,7 @@ import { benimGozetmenliklerim, gruplar as gzGruplar, gozetmenFormu, onGozetmenD
 const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
-let girisKontrol = false;
+let girisKontrol = false, baglantiHatasi = false;
 const TERCIHLER = [
   ['haftalik', 'Haftalık program', 'Her pazartesi 09:00, haftanın dersleri'],
   ['katilim', 'Uygulama katılım sorusu', 'Uygulamadan bir gün önce "katılacak mısın?" ve masan'],
@@ -28,11 +28,14 @@ const dogumFields = (g = '', a = '', goster = true) => `
   </div>
   <div class="cks"><label><input type="checkbox" id="dgos"${goster ? ' checked' : ''}> Doğum günüm takvimde görünsün</label></div>`;
 
+const TANITIM = `<div class="tanitim"><b>HistoApp</b>, Aydın Adnan Menderes Üniversitesi Histoloji ve Embriyoloji Anabilim Dalı'nın bölüm içi planlama uygulamasıdır (ders takvimi, uygulama masaları, seminer ve preparat arşivi). Üniversite e-postası ya da başka bir hizmetin şifresi <b>istenmez</b>; burada belirlediğin 6 haneli PIN sadece bu uygulamada geçerlidir.
+  <span lang="en">Internal scheduling tool of the ADÜ Department of Histology and Embryology. It is not a sign-in page for any university or third-party account. Source: <a href="https://github.com/ADU-Histoloji/AD-Histoloji" rel="noopener">github.com/ADU-Histoloji/AD-Histoloji</a></span></div>`;
 function renderGuest() {
   const el = $('#v-profil');
-  if (!configLoaded) { el.innerHTML = '<p class="note">Yükleniyor…</p>'; return; }
+  if (!configLoaded) { el.innerHTML = TANITIM + '<p class="note">Yükleniyor…</p>'; return; }
+  if (baglantiHatasi) { el.innerHTML = TANITIM + '<div class="banner">Şu an sunucuya ulaşılamıyor, giriş ve kayıt geçici olarak kapalı. Ders programı takvimde görünmeye devam ediyor.</div>'; return; }
   const kurulum = !config;
-  el.innerHTML = `
+  el.innerHTML = TANITIM + `
     <div class="chips" role="tablist">
       <button class="chip" data-m="giris" aria-pressed="${mode === 'giris'}">Giriş yap</button>
       <button class="chip" data-m="kayit" aria-pressed="${mode === 'kayit'}">Kayıt ol</button>
@@ -310,5 +313,5 @@ export function initHesap() {
       if (!(await F.getDoc(ref)).exists()) await F.setDoc(ref, { email: st.user.email, uid: st.user.uid });
     } catch (x) { console.error(x); }
   });
-  F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; render(); }, () => { configLoaded = true; render(); });
+  F.onSnapshot(F.doc(db, 'config', 'public'), s => { config = s.exists() ? s.data() : null; configLoaded = true; baglantiHatasi = false; render(); }, () => { configLoaded = true; baglantiHatasi = true; render(); });
 }

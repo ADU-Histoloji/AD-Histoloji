@@ -296,3 +296,5 @@ div.kura-son{padding-left:0}
 .bugun .linkbtn{min-height:0;padding:0 0 0 4px}
 .bg-soru{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .bg-soru .acts{margin:0;gap:6px}
+.tanitim{border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px 14px;margin:0 0 14px;font-size:14px;line-height:1.5}
+.tanitim span{display:block;margin-top:6px;color:var(--mute);font-size:13px}
