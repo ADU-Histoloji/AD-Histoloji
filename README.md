@@ -1,4 +1,6 @@
-# Histoloji Bölümü Uygulaması
+# HistoApp
+
+ADÜ Histoloji ve Embriyoloji Anabilim Dalı uygulaması.
 
 ADÜ Tıp Fakültesi Histoloji ve Embriyoloji Anabilim Dalı için ders takvimi, preparat arşivi ve (ileride) uygulama masaları, seminer sırası ve bildirimler.
 

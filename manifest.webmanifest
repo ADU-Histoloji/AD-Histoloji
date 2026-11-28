@@ -1,6 +1,6 @@
 {
-  "name": "ADÜ Histoloji ve Embriyoloji",
-  "short_name": "Histoloji",
+  "name": "HistoApp · ADÜ Histoloji ve Embriyoloji",
+  "short_name": "HistoApp",
   "start_url": "./#takvim",
   "scope": "./",
   "display": "standalone",
