@@ -1,3 +1,4 @@
+import { temaKarti } from './tema.js';
 import { $, esc, state, onState, toast, listeKimligi, girisKimligi, KOD_MIN } from './util.js';
 import { ready, auth, db, A, F } from './fb.js';
 import { EMAIL_DOMAIN } from './config.js';
@@ -210,6 +211,7 @@ function renderMe() {
       ${p.onayli ? '' : '<p class="note">Bir yönetici kaydını onayladığında preparat ekleyebilir, görevlerini görebilirsin.</p>'}
     </div>
     ${p.onayli ? gorevlerim(p) : ''}
+    ${temaKarti()}
     <div class="card" id="c-bildirim"><h3>Bildirimler</h3>
       <p class="note">Her pazartesi 09:00'da haftanın programı telefonuna bildirim olarak gelir.</p>
       <p id="b-durum"></p>

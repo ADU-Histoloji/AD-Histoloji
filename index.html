@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ADÜ Histoloji ve Embriyoloji</title>
 <meta name="theme-color" content="#3a2c86">
+<script>
+  // Seçilen boya teması ve açık/koyu görünüm, sayfa çizilmeden uygulanır (renk sıçraması olmasın)
+  try { var b = localStorage.getItem('hp-boya'), g = localStorage.getItem('hp-gorunum'); if (b) document.documentElement.dataset.boya = b; if (g) document.documentElement.dataset.theme = g; } catch (e) {}
+</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">

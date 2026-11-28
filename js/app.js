@@ -10,6 +10,7 @@ import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
 import { initGozetmen } from './gozetmen.js';
 import { initKura } from './kura.js';
+import { initTema } from './tema.js';
 import { initSinavKagidi } from './sinavkagidi.js';
 
 const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim', 'kura', 'kagit'];
@@ -24,6 +25,7 @@ function route() {
 }
 addEventListener('hashchange', route);
 
+initTema();
 initAnlatici();
 initGozetmen(onEvents);
 initTakvim();

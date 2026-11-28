@@ -190,6 +190,10 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 
 Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun** alanına bir tarih yazılırsa o gün çalışmış gibi davranır (ör. 08.12 seminerinin bir gün öncesi için `2026-12-07`). **test** işaretliyse mesajlar asıl kişiye değil yöneticilere gider; **kuru** işaretliyse hiçbir şey gönderilmez, sadece kime ne gideceği görev kaydına yazılır.
 
+## Tema
+
+Profil → **Tema**'dan uygulamanın renkleri bir histolojik boyaya göre seçilir: H&E (varsayılan), Masson trikrom, PAS, Toluidin mavisi, Gümüşleme, Giemsa. Ders türü renkleri (teorik, uygulama, Diş, seminer) seçilen boyanın renklerine uyar. Aynı yerden görünüm Otomatik / Açık / Koyu seçilir. Seçim cihazda saklanır (`hp-boya`, `hp-gorunum`); renkler `style.css` sonundaki `:root[data-boya=…]` bloklarındadır.
+
 ## Gizlilik ve erişim
 
 - Giriş ekranında isim listesi yoktur: kişi adını ve PIN'ini yazarak girer (büyük/küçük harf, fazladan boşluk ve Türkçe harf farkı önemsizdir). Adın özetinden türetilen bir adreste sadece o kişinin giriş için kullanılan teknik adresi durur (`girisler`); isim tutulmaz ve liste alınamaz.
