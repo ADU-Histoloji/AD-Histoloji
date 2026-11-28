@@ -63,7 +63,7 @@ Takvimdeki uygulama sınavı kartında **📄 Sınav kâğıdı** (ya da Yöneti
 
 ## Kura
 
-Üst banttaki 🎲 düğmesi (onaylı üyelere görünür) kura ekranını açar. Üç tür kura var:
+Araçlar → **Kura** (onaylı üyelere) kura ekranını açar. Üç tür kura var:
 - **Kişi seç:** seçilenler arasından istenen sayıda kişi.
 - **Sırala:** herkesi rastgele sıraya dizer (ör. nöbet ya da seminer sırası).
 - **Görevlere dağıt:** her satıra bir görev yazılır, her göreve istenen sayıda kişi düşer.
@@ -191,6 +191,13 @@ Kontrolün son durumu `data/program-durumu.json` dosyasında tutulur; elle deği
 - Uygulama anlatıcısına **1 hafta önce** bildirim gider; **1 gün önceki** "Yarın anlatıcısın" bildirimini katılım sorusu görevi gönderir.
 
 Denemek için: Actions → **Görev hatırlatmaları** → Run workflow. **bugun** alanına bir tarih yazılırsa o gün çalışmış gibi davranır (ör. 08.12 seminerinin bir gün öncesi için `2026-12-07`). **test** işaretliyse mesajlar asıl kişiye değil yöneticilere gider; **kuru** işaretliyse hiçbir şey gönderilmez, sadece kime ne gideceği görev kaydına yazılır.
+
+## Ekranlar ve kullanım
+
+- **Bugün kartı:** Takvimin en üstünde kişinin bugünkü ve bir sonraki iş günündeki görevleri (anlatıcılık, sınav gözetmenliği), 1 hafta içindeki semineri (konusu boşsa "Konunu yaz") ve ertesi iş günü uygulama varsa "Katılacak mısın?" sorusu. Masası seçilmemişse "Masanı seç" uyarısı.
+- **Benim görevlerim** filtresi: takvimde sadece kişinin anlattığı uygulamalar, gözetmen olduğu sınavlar ve sunduğu seminer kalır.
+- **Alt menü:** Takvim · Masalar · Arşiv · Araçlar · Profil (· Yönetim). **Araçlar**'da seminer sırası, sınav kâğıtları, kura ve yaklaşan sınavların gözetmen durumu bulunur.
+- **Bildirim tercihleri** (Profil → Bildirimler): haftalık program, uygulama katılım sorusu ve görev hatırlatmaları ayrı ayrı açılıp kapatılır (`users/{uid}.bildirimTercih`); bildirim görevleri buna uyar. Yönetici uyarıları (program değişikliği) bundan etkilenmez.
 
 ## Tema
 

@@ -11,6 +11,11 @@ const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz',
 const pinOk = p => /^\d{6}$/.test(p);
 let mode = 'giris';
 let girisKontrol = false;
+const TERCIHLER = [
+  ['haftalik', 'Haftalık program', 'Her pazartesi 09:00, haftanın dersleri'],
+  ['katilim', 'Uygulama katılım sorusu', 'Uygulamadan bir gün önce "katılacak mısın?" ve masan'],
+  ['hatirlatma', 'Görev hatırlatmaları', 'Anlatıcılık, seminer ve sınav gözetmenliği (1 hafta ve 1 gün önce)']
+];
 let config = null, configLoaded = false;
 let anlaticilar = {}, kisiler = [], unsubK = null, masaDegis = false;
 const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
@@ -213,9 +218,10 @@ function renderMe() {
     ${p.onayli ? gorevlerim(p) : ''}
     ${temaKarti()}
     <div class="card" id="c-bildirim"><h3>Bildirimler</h3>
-      <p class="note">Her pazartesi 09:00'da haftanın programı telefonuna bildirim olarak gelir.</p>
+      <p class="note">Bu telefona bildirim gelmesi için önce bildirimleri aç, sonra hangilerini almak istediğini seç.</p>
       <p id="b-durum"></p>
       <button class="btn" id="b-ac">Bildirimleri aç</button> <button class="btn sec hide" id="b-kapat">Kapat</button>
+      <div class="tercihler">${TERCIHLER.map(([k, ad, ac]) => `<label class="tercih"><input type="checkbox" data-tercih="${k}"${(p.bildirimTercih || {})[k] !== false ? ' checked' : ''}><span><b>${ad}</b><small>${ac}</small></span></label>`).join('')}</div>
     </div>
     <form class="card" id="f-dogum"><h3>Doğum günü</h3>${dogumFields(p.dogumGun || '', p.dogumAy || '', p.dogumGoster !== false)}
       <button class="btn sec" type="submit">Kaydet</button><p class="err" id="d-err"></p></form>
@@ -263,6 +269,12 @@ function renderMe() {
     catch (x) { console.error(x); $('#b-durum').textContent = 'Bildirimler açılamadı. Uygulamayı kapatıp açarak tekrar dene.'; }
   });
   $('#b-kapat').addEventListener('click', async () => { bd(await bildirimKapat()); });
+  $('#v-profil').querySelectorAll('[data-tercih]').forEach(c => c.addEventListener('change', async () => {
+    const t = { ...(state.profile?.bildirimTercih || {}) };
+    $('#v-profil').querySelectorAll('[data-tercih]').forEach(x => { t[x.dataset.tercih] = x.checked; });
+    try { await F.updateDoc(F.doc(db, 'users', state.user.uid), { bildirimTercih: t }); toast('Kaydedildi'); }
+    catch (x) { console.error(x); toast('Kaydedilemedi'); c.checked = !c.checked; }
+  }));
 }
 
 function render() {

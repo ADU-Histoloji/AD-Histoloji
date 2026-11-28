@@ -19,6 +19,9 @@ const { title, body } = mesaj(pzt, evSnap.docs.map(d => d.data()), noSnap.docs.m
 console.log(title + '\n' + body);
 
 let tokens = (await db.collection('tokens').get()).docs.map(d => ({ id: d.id, uid: d.data().uid }));
+// Profil → Bildirimler'den haftalık programı kapatanlara gönderilmez
+const kapatan = new Set((await db.collection('users').get()).docs.filter(d => d.data().bildirimTercih?.haftalik === false).map(d => d.id));
+tokens = tokens.filter(t => !kapatan.has(t.uid));
 if (sadeceYonetici) {
   const yon = new Set((await db.collection('users').where('rol', '==', 'yonetici').get()).docs.map(d => d.id));
   tokens = tokens.filter(t => yon.has(t.uid));

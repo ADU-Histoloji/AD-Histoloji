@@ -28,6 +28,7 @@ const events = (await db.collection('events').where('date', 'in', [...yakin, haf
 
 let gonderilen = 0;
 async function gonder(uid, m, tag) {
+  if (!test && users.find(u => u.id === uid)?.bildirimTercih?.hatirlatma === false) { console.log(`→ ${adi(uid)}: hatırlatmaları kapalı, gönderilmedi`); return; }
   const hedef = test ? yoneticiler : [uid];
   const tk = tokens.filter(t => hedef.includes(t.uid));
   console.log(`→ ${adi(uid)}: ${m.title}\n${m.body}\n  (${tk.length} cihaz)`);

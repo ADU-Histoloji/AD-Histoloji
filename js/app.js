@@ -10,16 +10,21 @@ import { initSeminer } from './seminer.js';
 import { initAnlatici } from './anlatici.js';
 import { initGozetmen } from './gozetmen.js';
 import { initKura } from './kura.js';
+import { initAraclar } from './araclar.js';
+import { initBugun } from './bugun.js';
 import { initTema } from './tema.js';
 import { initSinavKagidi } from './sinavkagidi.js';
 
-const VIEWS = ['takvim', 'uygulama', 'arsiv', 'seminer', 'profil', 'yonetim', 'kura', 'kagit'];
-const TITLES = { takvim: 'HistoApp', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', seminer: 'Seminer sırası', kura: 'Kura', kagit: 'Sınav kâğıdı', profil: 'Hesabım', yonetim: 'Yönetim' };
+const VIEWS = ['takvim', 'uygulama', 'arsiv', 'araclar', 'seminer', 'profil', 'yonetim', 'kura', 'kagit'];
+// Bu ekranlar Araçlar'ın altındadır; alt menüde Araçlar seçili görünür
+const ARAC = ['araclar', 'seminer', 'kura', 'kagit'];
+const TITLES = { takvim: 'HistoApp', uygulama: 'Uygulama masaları', arsiv: 'Preparat arşivi', araclar: 'Araçlar', seminer: 'Seminer sırası', kura: 'Kura', kagit: 'Sınav kâğıdı', profil: 'Hesabım', yonetim: 'Yönetim' };
 function route() {
   let v = location.hash.slice(1);
   if (!VIEWS.includes(v) || (v === 'yonetim' && !state.admin)) v = 'takvim';
   VIEWS.forEach(x => $('#v-' + x).classList.toggle('hide', x !== v));
-  $$('.bnav a').forEach(a => a.dataset.v === v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  const nv = ARAC.includes(v) ? 'araclar' : v;
+  $$('.bnav a').forEach(a => a.dataset.v === nv ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
   $('#title').textContent = TITLES[v];
   scrollTo(0, 0);
 }
@@ -39,6 +44,8 @@ initDuyurular();
 initSeminer();
 initKura();
 initSinavKagidi(onEvents);
+initAraclar(onEvents);
+initBugun(onEvents);
 route();
 
 if (ready) {
@@ -54,7 +61,6 @@ if (ready) {
       if (approved && state.profileLoaded && state.profile && !state.approved) { location.reload(); return; }
       setState({ profile: p, profileLoaded: true, approved, admin });
       $('#nav-yonetim').classList.toggle('hide', !admin);
-      $('#kura-btn').classList.toggle('hide', !approved);
       route();
     }, () => setState({ profile: null, profileLoaded: true, approved: false, admin: false }));
   });

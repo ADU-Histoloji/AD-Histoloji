@@ -51,8 +51,10 @@ async function gonder(liste, m, tip) {
 for (const u of users) {
   const tk = tokens.filter(t => t.uid === u.id);
   if (!tk.length) continue;
-  if (anl.has(u.id)) await gonder(tk, anlaticiMesaj(gun, anl.get(u.id)), 'katilim');
-  else await gonder(tk, genelMesaj(gun, ots, adlar, u), 'katilim');
+  // Profil → Bildirimler tercihleri: anlatıcı mesajı "görev hatırlatmaları", diğeri "katılım sorusu" sayılır
+  const tercih = u.bildirimTercih || {};
+  if (anl.has(u.id) && tercih.hatirlatma !== false) await gonder(tk, anlaticiMesaj(gun, anl.get(u.id)), 'katilim');
+  else if (tercih.katilim !== false) await gonder(tk, genelMesaj(gun, ots, adlar, u), 'katilim');
 }
 if (!test) await db.collection('duyurular').add({ ...genel, url: './#uygulama', tur: 'katilim', t: FieldValue.serverTimestamp() });
 console.log(`${gun} · gönderildi: ${basarili}, başarısız: ${basarisiz}${test ? ' (test, sadece yöneticiler)' : ''}`);

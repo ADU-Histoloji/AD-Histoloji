@@ -1,5 +1,5 @@
 import { $, $$, esc, state, onState, sheet, closeSheet, toast } from './util.js';
-import { gozetmenKarti, gozetmenFormu, onGozetmenDegis } from './gozetmen.js';
+import { gozetmenKarti, gozetmenFormu, onGozetmenDegis, atananlar } from './gozetmen.js';
 import { sinavKagidiAc } from './sinavkagidi.js';
 import { anlaticiDugmeleri, anlaticiTikla, onAnlaticiDegis, anlaticiKaydi } from './anlatici.js';
 import { konuId } from './util.js';
@@ -31,7 +31,15 @@ export const onEvents = fn => { evSubs.add(fn); if (loaded) fn(EV); };
 const emit = () => { if (loaded) evSubs.forEach(fn => fn(EV)); };
 export const setLinked = fn => { linkedFn = fn; render(); };
 
-const show = e => f === 'all' || (f === 'u' ? e.k === 'U' : f === 'dis' ? e.c === 'dis' : e.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'));
+// "Benim görevlerim": anlattığım uygulamalar, gözetmen olduğum sınavlar, sunduğum seminer
+const benim = e => {
+  const ben = state.user?.uid; if (!ben) return false;
+  if (e.k === 'U') return anlaticiKaydi(e.s, e.topic)?.uid === ben;
+  if (e.k === 'S') return !!e.id && atananlar(e.id).some(a => a.uid === ben);
+  if (e.k === 'M') return e.uid === ben;
+  return false;
+};
+const show = e => f === 'ben' ? (state.approved ? benim(e) : true) : f === 'all' || (f === 'u' ? e.k === 'U' : f === 'dis' ? e.c === 'dis' : e.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'));
 const kcls = e => e.k === 'M' ? 'kM' : e.k === 'S' ? 'kS' : e.c === 'dis' ? (e.k === 'U' ? 'kDU' : 'kD') : 'k' + e.k;
 const fmtR = (a, b) => a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${AY[a.getMonth()]} ${a.getFullYear()}` : `${a.getDate()} ${AY[a.getMonth()]} – ${b.getDate()} ${AY[b.getMonth()]} ${b.getFullYear()}`;
 
@@ -60,7 +68,7 @@ function renderWeek() {
   const days = GUN.map((g, i) => { const d = addD(wk, i), di = iso(d); return { g, d, di, ev: EV.filter(e => e.date === di).sort((a, b) => (a.t || '').localeCompare(b.t || '')) }; });
   const all = days.flatMap(d => d.ev).filter(show);
   $('#stats').innerHTML = `<span><b>${all.filter(e => e.k === 'T').length}</b>teorik</span><span><b>${all.filter(e => e.k === 'U').length}</b>uygulama</span><span><b>${all.filter(e => e.k === 'S').length}</b>sınav</span>${all.some(e => e.k === 'M') ? '<span><b>1</b>seminer</span>' : ''}`;
-  const nos = NO.filter(n => n.week === iso(wk) && (f === 'all' || (f === 'u' ? n.k === 'U' : f === 'dis' ? false : n.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'))));
+  const nos = NO.filter(n => n.week === iso(wk) && f !== 'ben' && (f === 'all' || (f === 'u' ? n.k === 'U' : f === 'dis' ? false : n.s === (f === 'd1' ? 'Tıp D1' : 'Tıp D2'))));
   $('#notices').innerHTML = nos.map(n => `<div class="notice ${n.k === 'S' ? 'kS' : 'kU'}"><b>${esc(n.s)}:</b> ${esc(n.text)}</div>`).join('');
   if (!loaded) return;
   const seen = new Set();
@@ -86,12 +94,12 @@ function renderWeek() {
           ${duzenle() && e.id ? `<button class="linkbtn" data-duzenle="${esc(e.id)}">Düzenle</button>` : ''}
           ${!state.admin && fromDb && e.k === 'M' && e.id && e.uid && e.uid === state.user?.uid ? `<button class="linkbtn" data-konu="${esc(e.id)}">${bosKonu(e.topic) ? 'Konunu yaz' : 'Konunu düzenle'}</button>` : ''}
         </div></div>`;
-      }).join('') : `<p class="empty">${d.ev.length ? 'Bu filtrede ders yok.' : 'Histoloji dersi yok.'}</p>`}
+      }).join('') : `<p class="empty">${d.ev.length ? (f === 'ben' ? 'Bu gün görevin yok.' : 'Bu filtrede ders yok.') : 'Histoloji dersi yok.'}</p>`}
     </div>`;
   }).join('');
 }
 
-function render() { emit(); if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); }
+function render() { emit(); if (!$('#mgrid')) return; renderMonth(); renderWeek(); $$('.chip[data-f]').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === f)); const cb = $('#chip-ben'); if (cb) cb.classList.toggle('hide', !(ready && state.approved)); }
 function goWeek(d) { wk = monday(d); const m = addD(wk, 2); mon = new Date(m.getFullYear(), m.getMonth(), 1); render(); }
 
 
@@ -183,7 +191,7 @@ export function initTakvim() {
   onState(() => render());
   onAnlaticiDegis(() => render());
   onGozetmenDegis(() => render());
-  $$('.chip').forEach(b => b.addEventListener('click', () => { f = b.dataset.f; try { localStorage.setItem('hp-filter', f); } catch (e) { } render(); }));
+  $$('.chip[data-f]').forEach(b => b.addEventListener('click', () => { f = b.dataset.f; try { localStorage.setItem('hp-filter', f); } catch (e) { } render(); }));
   render();
 
   if (ready) {
